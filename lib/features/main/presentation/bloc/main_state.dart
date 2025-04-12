@@ -30,10 +30,12 @@ class CheckOutSuccess extends MainState {
 }
 
 class MainError extends MainState {
+  final bool isCheckin;
+  final bool isCheckout;
   final String message;
 
-  const MainError(this.message);
+  const MainError(this.message, {this.isCheckin = false, this.isCheckout = false});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [message, isCheckin, isCheckout];
 }

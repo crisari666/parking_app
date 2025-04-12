@@ -11,7 +11,7 @@ class CheckOutVehicle extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<MainBloc, MainState>(
       listener: (context, state) {
-        if (state is MainError) {
+        if (state is MainError && state.isCheckout) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
         }
       },

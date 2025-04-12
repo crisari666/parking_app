@@ -42,14 +42,14 @@ class MainPage extends StatelessWidget {
           }
         },
         builder: (context, state) {
-          return const Padding(
-            padding: EdgeInsets.all(16.0),
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 CheckInVehicle(),
-                SizedBox(height: 16),
-                CheckOutVehicle(),
+                const SizedBox(height: 16),
+                const CheckOutVehicle(),
               ],
             ),
           );

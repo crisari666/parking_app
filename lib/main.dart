@@ -4,6 +4,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:quantum_parking_flutter/core/theme/app_theme.dart';
 import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:quantum_parking_flutter/features/closure/presentation/bloc/closure_bloc.dart';
+import 'package:quantum_parking_flutter/features/main/data/datasources/local_storage_service.dart';
+import 'package:quantum_parking_flutter/features/main/data/models/vehicle_model.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_bloc.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/bloc/records_bloc.dart';
 import 'package:quantum_parking_flutter/features/setup/data/datasources/setup_local_datasource.dart';
@@ -18,14 +20,21 @@ void main() async {
   // Initialize Hive
   await Hive.initFlutter();
   
-  // Register the adapter
+  // Register the adapters
   Hive.registerAdapter(BusinessSetupModelAdapter());
+  Hive.registerAdapter(VehicleModelAdapter());
   
-  // Open the box
+  // Open the boxes
   final setupBox = await Hive.openBox<BusinessSetupModel>('setup_box');
-  //Register SetupLocalDatasourceImpl with injection
+  
+  // Initialize LocalStorageService
+  final localStorageService = LocalStorageService();
+  await localStorageService.init();
+  
+  //Register dependencies
   await configureDependencies();
   getIt.registerSingleton<SetupLocalDatasource>(SetupLocalDatasourceImpl(setupBox));
+  getIt.registerSingleton<LocalStorageService>(localStorageService);
   
   runApp(MyApp(setupBox: setupBox));
 }
