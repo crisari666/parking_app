@@ -1,69 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-// Events
-abstract class SetupEvent extends Equatable {
-  const SetupEvent();
-
-  @override
-  List<Object> get props => [];
-}
-
-class BusinessNameChanged extends SetupEvent {
-  final String name;
-
-  const BusinessNameChanged(this.name);
-
-  @override
-  List<Object> get props => [name];
-}
-
-class BusinessBrandChanged extends SetupEvent {
-  final String brand;
-
-  const BusinessBrandChanged(this.brand);
-
-  @override
-  List<Object> get props => [brand];
-}
-
-class CarHourCostChanged extends SetupEvent {
-  final String cost;
-
-  const CarHourCostChanged(this.cost);
-
-  @override
-  List<Object> get props => [cost];
-}
-
-class MotorcycleHourCostChanged extends SetupEvent {
-  final String cost;
-
-  const MotorcycleHourCostChanged(this.cost);
-
-  @override
-  List<Object> get props => [cost];
-}
-
-class CarMonthlyCostChanged extends SetupEvent {
-  final String cost;
-
-  const CarMonthlyCostChanged(this.cost);
-
-  @override
-  List<Object> get props => [cost];
-}
-
-class MotorcycleMonthlyCostChanged extends SetupEvent {
-  final String cost;
-
-  const MotorcycleMonthlyCostChanged(this.cost);
-
-  @override
-  List<Object> get props => [cost];
-}
-
-class SetupSubmitted extends SetupEvent {}
+import '../../data/datasources/setup_local_datasource.dart';
+import '../../data/models/business_setup_model.dart';
+import 'setup_event.dart';
 
 // States
 abstract class SetupState extends Equatable {
@@ -77,7 +16,14 @@ class SetupInitial extends SetupState {}
 
 class SetupLoading extends SetupState {}
 
-class SetupSuccess extends SetupState {}
+class SetupSuccess extends SetupState {
+  final BusinessSetupModel? setup;
+  
+  const SetupSuccess([this.setup]);
+
+  @override
+  List<Object> get props => [if (setup != null) setup!];
+}
 
 class SetupError extends SetupState {
   final String message;
@@ -90,30 +36,73 @@ class SetupError extends SetupState {
 
 // Bloc
 class SetupBloc extends Bloc<SetupEvent, SetupState> {
-  SetupBloc() : super(SetupInitial()) {
+  final SetupLocalDatasource localDatasource;
+  String _businessName = '';
+  String _businessBrand = '';
+  double _carHourCost = 0.0;
+  double _motorcycleHourCost = 0.0;
+  double _carMonthlyCost = 0.0;
+  double _motorcycleMonthlyCost = 0.0;
+
+  SetupBloc({required this.localDatasource}) : super(SetupInitial()) {
+    // Load initial data
+    on<SetupStarted>((event, emit) async {
+      emit(SetupLoading());
+      try {
+        final setup = await localDatasource.getSetup();
+        if (setup != null) {
+          _businessName = setup.businessName;
+          _businessBrand = setup.businessBrand;
+          _carHourCost = setup.carHourCost;
+          _motorcycleHourCost = setup.motorcycleHourCost;
+          _carMonthlyCost = setup.carMonthlyCost;
+          _motorcycleMonthlyCost = setup.motorcycleMonthlyCost;
+          emit(SetupSuccess(setup));
+        } else {
+          emit(SetupSuccess());
+        }
+      } catch (e) {
+        emit(SetupError(e.toString()));
+      }
+    });
+
     on<BusinessNameChanged>((event, emit) {
-      // Handle business name change
+      _businessName = event.name;
     });
+
     on<BusinessBrandChanged>((event, emit) {
-      // Handle business brand change
+      _businessBrand = event.brand;
     });
+
     on<CarHourCostChanged>((event, emit) {
-      // Handle car hour cost change
+      _carHourCost = double.tryParse(event.cost) ?? 0.0;
     });
+
     on<MotorcycleHourCostChanged>((event, emit) {
-      // Handle motorcycle hour cost change
+      _motorcycleHourCost = double.tryParse(event.cost) ?? 0.0;
     });
+
     on<CarMonthlyCostChanged>((event, emit) {
-      // Handle car monthly cost change
+      _carMonthlyCost = double.tryParse(event.cost) ?? 0.0;
     });
+
     on<MotorcycleMonthlyCostChanged>((event, emit) {
-      // Handle motorcycle monthly cost change
+      _motorcycleMonthlyCost = double.tryParse(event.cost) ?? 0.0;
     });
+
     on<SetupSubmitted>((event, emit) async {
       emit(SetupLoading());
       try {
-        // TODO: Implement setup save logic
-        emit(SetupSuccess());
+        final setup = BusinessSetupModel(
+          businessName: _businessName,
+          businessBrand: _businessBrand,
+          carHourCost: _carHourCost,
+          motorcycleHourCost: _motorcycleHourCost,
+          carMonthlyCost: _carMonthlyCost,
+          motorcycleMonthlyCost: _motorcycleMonthlyCost
+        );
+        await localDatasource.saveSetup(setup);
+        emit(SetupSuccess(setup));
       } catch (e) {
         emit(SetupError(e.toString()));
       }

@@ -28,6 +28,33 @@ class MainPage extends StatelessWidget {
           ),
         ],
       ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text(
+                'Quantum Parking',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text('Setup'),
+              onTap: () {
+                AutoRouter.of(context).push(const SetupRoute());
+                Navigator.pop(context); // Close the drawer
+              },
+            ),
+          ],
+        ),
+      ),
       body: BlocConsumer<MainBloc, MainState>(
         listener: (context, state) {
           if (state is MainError) {
