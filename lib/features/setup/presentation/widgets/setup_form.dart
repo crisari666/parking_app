@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/bloc/setup_bloc.dart';
+import 'package:quantum_parking_flutter/features/setup/presentation/bloc/setup_state.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/widgets/setup_submit_button.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/widgets/business_name_field.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/widgets/business_brand_field.dart';
@@ -22,8 +23,11 @@ class SetupForm extends StatelessWidget {
         if (state is SetupSuccess) {
           final setup = state.setup;
           // Pre-fill the form fields if setup data exists
-          return Form(
-            child: Column(
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 BusinessNameField(
                   initialValue: setup?.businessName ?? '',
@@ -33,16 +37,25 @@ class SetupForm extends StatelessWidget {
                   initialValue: setup?.businessBrand ?? '',
                 ),
                 const Gap(10),
-                const CarHourCostField(),
+                CarHourCostField(
+                  initialValue: setup?.carHourCost.toString() ?? '',
+                ),
                 const Gap(10),
-                const MotorcycleHourCostField(),
+                MotorcycleHourCostField(
+                  initialValue: setup?.motorcycleHourCost.toString() ?? '',
+                ),
                 const Gap(10),
-                const CarMonthlyCostField(),
+                CarMonthlyCostField(
+                  initialValue: setup?.carMonthlyCost.toString() ?? '',
+                ),
                 const Gap(10),
-                const MotorcycleMonthlyCostField(),
+                MotorcycleMonthlyCostField(
+                  initialValue: setup?.motorcycleMonthlyCost.toString() ?? '',
+                ),
                 const Gap(24),
                 const SetupSubmitButton(),
               ],
+            ),
             ),
           );
         }

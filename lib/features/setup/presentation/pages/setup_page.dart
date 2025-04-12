@@ -4,6 +4,7 @@ import 'package:quantum_parking_flutter/features/setup/presentation/bloc/setup_b
 import 'package:quantum_parking_flutter/features/setup/presentation/bloc/setup_event.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:quantum_parking_flutter/features/setup/data/datasources/setup_local_datasource.dart';
+import 'package:quantum_parking_flutter/features/setup/presentation/bloc/setup_state.dart';
 import 'package:quantum_parking_flutter/injection/injection.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/widgets/setup_form.dart';
 
@@ -17,11 +18,32 @@ class SetupPage extends StatelessWidget {
       create: (context) => SetupBloc(
         localDatasource: getIt.get<SetupLocalDatasource>(),
       )..add(SetupStarted()),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Setup'),
+      child: BlocListener<SetupBloc, SetupState>(
+        listener: (context, state) {
+          if (state is SetupSuccess && state.setup != null) {
+            if (state.isFromSave) {
+              ScaffoldMessenger.of(context).showSnackBar(       
+                  const SnackBar(
+                    content: Text('Setup saved successfully!'),
+                    backgroundColor: Colors.green,
+                  ),
+              );
+            }
+          } else if (state is SetupError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Setup'),
+          ),
+          body: SetupForm(),
         ),
-        body: SetupForm(),
       ),
     );
   }

@@ -4,11 +4,13 @@ import 'package:quantum_parking_flutter/features/setup/presentation/bloc/setup_b
 import 'package:quantum_parking_flutter/features/setup/presentation/bloc/setup_event.dart';
 
 class CarMonthlyCostField extends StatelessWidget {
-  const CarMonthlyCostField({super.key});
+  final String initialValue;
+  const CarMonthlyCostField({super.key, required this.initialValue});
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: TextEditingController(text: initialValue),
       decoration: const InputDecoration(
         labelText: 'Car Monthly Cost',
         border: OutlineInputBorder(),

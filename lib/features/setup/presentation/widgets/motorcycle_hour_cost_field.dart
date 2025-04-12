@@ -4,11 +4,17 @@ import 'package:quantum_parking_flutter/features/setup/presentation/bloc/setup_b
 import 'package:quantum_parking_flutter/features/setup/presentation/bloc/setup_event.dart';
 
 class MotorcycleHourCostField extends StatelessWidget {
-  const MotorcycleHourCostField({super.key});
+  final String initialValue;
+  
+  const MotorcycleHourCostField({
+    super.key,
+    required this.initialValue,
+  });
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: TextEditingController(text: initialValue),
       decoration: const InputDecoration(
         labelText: 'Motorcycle Hour Cost',
         border: OutlineInputBorder(),

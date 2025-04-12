@@ -1,38 +1,9 @@
-import 'package:equatable/equatable.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/datasources/setup_local_datasource.dart';
 import '../../data/models/business_setup_model.dart';
 import 'setup_event.dart';
-
-// States
-abstract class SetupState extends Equatable {
-  const SetupState();
-
-  @override
-  List<Object> get props => [];
-}
-
-class SetupInitial extends SetupState {}
-
-class SetupLoading extends SetupState {}
-
-class SetupSuccess extends SetupState {
-  final BusinessSetupModel? setup;
-  
-  const SetupSuccess([this.setup]);
-
-  @override
-  List<Object> get props => [if (setup != null) setup!];
-}
-
-class SetupError extends SetupState {
-  final String message;
-
-  const SetupError(this.message);
-
-  @override
-  List<Object> get props => [message];
-}
+import 'setup_state.dart';  
 
 // Bloc
 class SetupBloc extends Bloc<SetupEvent, SetupState> {
@@ -57,9 +28,9 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
           _motorcycleHourCost = setup.motorcycleHourCost;
           _carMonthlyCost = setup.carMonthlyCost;
           _motorcycleMonthlyCost = setup.motorcycleMonthlyCost;
-          emit(SetupSuccess(setup));
+          emit(SetupSuccess(setup, isFromSave: false));
         } else {
-          emit(SetupSuccess());
+          emit(const SetupSuccess(null, isFromSave: false));
         }
       } catch (e) {
         emit(SetupError(e.toString()));
@@ -102,7 +73,7 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
           motorcycleMonthlyCost: _motorcycleMonthlyCost
         );
         await localDatasource.saveSetup(setup);
-        emit(SetupSuccess(setup));
+        emit(SetupSuccess(setup, isFromSave: true));
       } catch (e) {
         emit(SetupError(e.toString()));
       }
