@@ -23,8 +23,10 @@ void main() async {
   
   // Open the box
   final setupBox = await Hive.openBox<BusinessSetupModel>('setup_box');
-  
+  //Register SetupLocalDatasourceImpl with injection
   await configureDependencies();
+  getIt.registerSingleton<SetupLocalDatasource>(SetupLocalDatasourceImpl(setupBox));
+  
   runApp(MyApp(setupBox: setupBox));
 }
 
@@ -35,12 +37,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _appRouter = AppRouter();
+    final appRouter = AppRouter();
 
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => AuthBloc()),
-        BlocProvider(create: (_) => SetupBloc(localDatasource: SetupLocalDatasourceImpl(setupBox!))),
+        BlocProvider(create: (_) => SetupBloc(localDatasource: getIt.get<SetupLocalDatasource>())),
         BlocProvider(create: (_) => MainBloc()),
         BlocProvider(create: (_) => ClosureBloc()),
         BlocProvider(create: (_) => RecordsBloc()),
@@ -50,8 +52,7 @@ class MyApp extends StatelessWidget {
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
         themeMode: ThemeMode.system,
-        routerDelegate: _appRouter.delegate(),
-        routeInformationParser: _appRouter.defaultRouteParser(),
+        routerConfig: appRouter.config(),
       ),
     );
   }

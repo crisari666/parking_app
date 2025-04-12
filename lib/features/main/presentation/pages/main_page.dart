@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_bloc.dart';
+import 'package:quantum_parking_flutter/features/main/presentation/widgets/app_drawer.dart';
 import 'package:quantum_parking_flutter/routes/app_router.dart';
 import 'package:auto_route/auto_route.dart';
 
@@ -28,33 +29,7 @@ class MainPage extends StatelessWidget {
           ),
         ],
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text(
-                'Quantum Parking',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text('Setup'),
-              onTap: () {
-                AutoRouter.of(context).push(const SetupRoute());
-                Navigator.pop(context); // Close the drawer
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: const AppDrawer(),
       body: BlocConsumer<MainBloc, MainState>(
         listener: (context, state) {
           if (state is MainError) {
