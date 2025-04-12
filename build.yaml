@@ -1,0 +1,8 @@
+targets:
+  $default:
+    builders:
+      hive_generator|hive_generator:
+        generate_for:
+          include:
+            - lib/features/main/data/models/vehicle_model.dart
+            - lib/features/setup/data/models/business_setup_model.dart 
