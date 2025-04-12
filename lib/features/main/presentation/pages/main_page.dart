@@ -35,7 +35,7 @@ class MainPage extends StatelessWidget {
       drawer: const AppDrawer(),
       body: BlocConsumer<MainBloc, MainState>(
         listener: (context, state) {
-          if (state is MainError) {
+          if (state is MainError && !state.isCheckin && !state.isCheckout) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.message)),
             );
