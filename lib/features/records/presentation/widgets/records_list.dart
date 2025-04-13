@@ -16,7 +16,14 @@ class RecordsList extends StatelessWidget {
             itemCount: state.records.length,
             itemBuilder: (context, index) {
               final record = state.records[index];
-              return RecordItem(record: record);
+              // Get all records for this vehicle's plate number
+              final pastLogs = state.records
+                  .where((r) => r.plateNumber == record.plateNumber)
+                  .toList();
+              return RecordItem(
+                record: record,
+                pastLogs: pastLogs,
+              );
             },
           );
         }
