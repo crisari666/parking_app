@@ -7,6 +7,7 @@ import 'package:quantum_parking_flutter/features/setup/data/datasources/setup_lo
 import 'package:quantum_parking_flutter/features/setup/presentation/bloc/setup_state.dart';
 import 'package:quantum_parking_flutter/injection/injection.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/widgets/setup_form.dart';
+import 'package:quantum_parking_flutter/core/utils/custom_scroll_behaviour.dart';
 
 @RoutePage()
 class SetupPage extends StatelessWidget {
@@ -42,7 +43,15 @@ class SetupPage extends StatelessWidget {
           appBar: AppBar(
             title: const Text('Setup'),
           ),
-          body: SetupForm(),
+          body: ScrollConfiguration(
+            behavior: NoGlowScrollBehaviour(),
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: SetupForm(),
+              ),
+            ),
+          ),
         ),
       ),
     );
