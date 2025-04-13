@@ -29,15 +29,15 @@ class MainPage extends StatelessWidget {
         builder: (context, state) {
           return ScrollConfiguration(
             behavior: NoGlowScrollBehaviour(),
-            child: SingleChildScrollView(
+            child: const SingleChildScrollView(
               child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     CheckInVehicle(),
-                    const SizedBox(height: 16),
-                    const CheckOutVehicle(),
+                    SizedBox(height: 16),
+                    CheckOutVehicle(),
                   ],
                 ),
               ),
