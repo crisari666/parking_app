@@ -12,8 +12,7 @@ class RecordsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-      context.read<RecordsBloc>().add(LoadRecordsRequested());
+    context.read<RecordsBloc>().add(LoadRecordsRequested());
     return Scaffold(
       appBar: AppBar(
         title: const Text('Vehicle Records'),
@@ -70,6 +69,10 @@ class RecordsPage extends StatelessWidget {
                                   'Check Out: ${DateFormat('MMM dd, yyyy HH:mm').format(record.checkOut!)}',
                                   style: const TextStyle(fontSize: 14),
                                 ),
+                              Text(
+                                'Duration: ${record.duration}',
+                                style: const TextStyle(fontSize: 14),
+                              ),
                               if (record.totalCost != null)
                                 Text(
                                   'Total Cost: \$${record.totalCost!.toStringAsFixed(2)}',
