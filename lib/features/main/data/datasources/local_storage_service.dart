@@ -6,11 +6,11 @@ class LocalStorageService {
   static const String _parkingLogBoxName = 'parking_logs';
   
   late Box<VehicleModel> _vehicleBox;
-  late Box<Map<String, dynamic>> _parkingLogBox;
+  late Box _parkingLogBox;
 
   Future<void> init() async {
     _vehicleBox = await Hive.openBox<VehicleModel>(_vehicleBoxName);
-    _parkingLogBox = await Hive.openBox<Map<String, dynamic>>(_parkingLogBoxName);
+    _parkingLogBox = await Hive.openBox(_parkingLogBoxName);
   }
 
   Future<bool> saveVehicle(VehicleModel vehicle) async {
@@ -48,13 +48,18 @@ class LocalStorageService {
       await _vehicleBox.put(vehicle.plateNumber, vehicle);
       
       // Update parking log
-      final logs = _parkingLogBox.values.where((log) => 
-        log['plateNumber'] == vehicle.plateNumber && 
-        log['checkOut'] == null
-      ).toList();
+      final rawLogs = _parkingLogBox.values.toList();
+      final logs = rawLogs.map((dynamic log) => 
+        Map<String, dynamic>.from(log as Map)).toList();
       
-      if (logs.isNotEmpty) {
-        final log = logs.first;
+      final int index = logs.indexWhere((log) {
+        return log['plateNumber'] == vehicle.plateNumber && 
+               log['checkOut'] == null;
+      });
+      final matchingLogs = index != -1 ? [logs[index]] : [];
+      
+      if (matchingLogs.isNotEmpty) {
+        final log = matchingLogs.first;
         log['checkOut'] = vehicle.checkOut?.toIso8601String();
         log['totalCost'] = vehicle.totalCost;
         log['discount'] = vehicle.discount;
@@ -80,7 +85,9 @@ class LocalStorageService {
   }
 
   Future<List<Map<String, dynamic>>> getParkingLogs() async {
-    return _parkingLogBox.values.toList();
+    final rawLogs = _parkingLogBox.values.toList();
+    return rawLogs.map((dynamic log) => 
+      Map<String, dynamic>.from(log as Map)).toList();
   }
 
   Future<void> clearAllData() async {
