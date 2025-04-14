@@ -48,7 +48,7 @@ class CheckOutVehicleForm extends StatelessWidget {
                   border: OutlineInputBorder(),
                 ),
                 onChanged: (value) {
-                  context.read<MainBloc>().add(PlateNumberChanged(value));
+                  context.read<MainBloc>().add(CheckOutPlateNumberChanged(value));
                 },
               ),
               const SizedBox(height: 16),
