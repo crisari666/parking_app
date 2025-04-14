@@ -11,6 +11,7 @@ class RecordsBloc extends Bloc<RecordsEvent, RecordsState> {
   RecordsBloc(this._vehicleRepository) : super(RecordsInitial()) {
     on<SearchPlateNumberChanged>(_searchPlateNumberChanged);
     on<LoadRecordsRequested>(_loadRecords);
+    on<GetVehicleLogsRequested>(_getVehicleLogs);
   }
 
   Future<void> _searchPlateNumberChanged(SearchPlateNumberChanged event, Emitter<RecordsState> emit) async {
@@ -55,4 +56,27 @@ class RecordsBloc extends Bloc<RecordsEvent, RecordsState> {
       emit(RecordsError(e.toString()));
     }
   }
-} 
+
+  Future<void> _getVehicleLogs(GetVehicleLogsRequested event, Emitter<RecordsState> emit) async {
+    if (state is! RecordsSuccess) return;
+    
+    final currentState = state as RecordsSuccess;
+    emit(RecordsLoading());
+    
+    try {
+      final vehicleLogs = await _vehicleRepository.getVehicleParkingLogs    (event.plateNumber);
+      
+      final records = vehicleLogs.map((log) => VehicleRecord(
+            plateNumber: log.plateNumber,
+            vehicleType: log.vehicleType ?? "",
+            checkIn: log.checkIn,
+            checkOut: log.checkOut,
+            totalCost: log.totalCost,
+          )).toList();
+      
+      emit(RecordsSuccess(currentState.records, vehicleLogs: records));
+    } catch (e) {
+      emit(RecordsError(e.toString()));
+    }
+  }
+}   

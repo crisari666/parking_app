@@ -37,7 +37,7 @@ class VehicleLogsDialog extends StatelessWidget {
                   final record = logs[index];
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
-                    child: RecordItem(record: record),
+                    child: RecordItem(record: record, hidePlateNumber: true),
                   );
                 },
               ),

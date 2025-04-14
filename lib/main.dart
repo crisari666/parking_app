@@ -8,6 +8,7 @@ import 'package:quantum_parking_flutter/features/main/data/datasources/local_sto
 import 'package:quantum_parking_flutter/features/main/data/models/vehicle_model.dart';
 import 'package:quantum_parking_flutter/features/main/data/repositories/vehicle_repository_impl.dart'; 
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_bloc.dart';
+import 'package:quantum_parking_flutter/features/records/data/models/vehicle_log_model.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/bloc/records_bloc.dart';
 import 'package:quantum_parking_flutter/features/setup/data/datasources/setup_local_datasource.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/bloc/setup_bloc.dart';
@@ -24,6 +25,7 @@ void main() async {
   // Register the adapters
   Hive.registerAdapter(BusinessSetupModelAdapter());
   Hive.registerAdapter(VehicleModelAdapter());
+  Hive.registerAdapter(VehicleLogModelAdapter());
   
   // Open the boxes
   final setupBox = await Hive.openBox<BusinessSetupModel>('setup_box');

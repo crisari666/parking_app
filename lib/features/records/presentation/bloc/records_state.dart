@@ -5,7 +5,7 @@ abstract class RecordsState extends Equatable {
   const RecordsState();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class RecordsInitial extends RecordsState {}
@@ -14,11 +14,12 @@ class RecordsLoading extends RecordsState {}
 
 class RecordsSuccess extends RecordsState {
   final List<VehicleRecord> records;
+  final List<VehicleRecord>? vehicleLogs;
 
-  const RecordsSuccess(this.records);
+  const RecordsSuccess(this.records, {this.vehicleLogs});
 
   @override
-  List<Object> get props => [records];
+  List<Object?> get props => [records, vehicleLogs];
 }
 
 class RecordsError extends RecordsState {

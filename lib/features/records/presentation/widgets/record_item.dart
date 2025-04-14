@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quantum_parking_flutter/features/records/presentation/bloc/records_bloc.dart';
+import 'package:quantum_parking_flutter/features/records/presentation/bloc/records_event.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/bloc/models/vehicle_record.dart';
-import 'package:quantum_parking_flutter/features/records/presentation/widgets/vehicle_logs_dialog.dart';
 
 class RecordItem extends StatelessWidget {
   final VehicleRecord record;
-  final List<VehicleRecord>? pastLogs;
+  final bool hidePlateNumber;
 
   const RecordItem({
     super.key,
     required this.record,
-    this.pastLogs,
+    this.hidePlateNumber = false,
   });
 
   @override
@@ -21,22 +23,18 @@ class RecordItem extends StatelessWidget {
         vertical: 8.0,
       ),
       child: InkWell(
-        onTap: pastLogs != null
-            ? () {
-                showDialog(
-                  context: context,
-                  builder: (context) => VehicleLogsDialog(
-                    logs: pastLogs!,
-                    plateNumber: record.plateNumber,
-                  ),
-                );
-              }
-            : null,
+        onTap: () {
+          context.read<RecordsBloc>().add(GetVehicleLogsRequested(record.plateNumber));
+        },
         child: ListTile(
-          title: Text(record.plateNumber),
+          title: !hidePlateNumber ? Text(record.plateNumber) : null,
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (!hidePlateNumber) Text(
+                'Plate Number: ${record.plateNumber}',
+                style: const TextStyle(fontSize: 14),
+              ),
               Text(
                 'Type: ${record.vehicleType}',
                 style: const TextStyle(fontSize: 14),

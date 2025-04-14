@@ -16,7 +16,6 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   MainBloc() : _localStorageService = getIt<LocalStorageService>(), super(MainInitial()) {
     on<PlateNumberChanged>((event, emit) {
       _plateNumber = event.plateNumber;
-
     });
     on<VehicleTypeChanged>((event, emit) {
       _vehicleType = event.vehicleType;

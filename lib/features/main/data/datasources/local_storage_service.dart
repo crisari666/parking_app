@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:quantum_parking_flutter/features/records/data/models/vehicle_log_model.dart';
 import '../models/vehicle_model.dart';
 
 class LocalStorageService {
@@ -6,11 +7,11 @@ class LocalStorageService {
   static const String _parkingLogBoxName = 'parking_logs';
   
   late Box<VehicleModel> _vehicleBox;
-  late Box _parkingLogBox;
+  late Box<VehicleLogModel> _parkingLogBox;
 
   Future<void> init() async {
     _vehicleBox = await Hive.openBox<VehicleModel>(_vehicleBoxName);
-    _parkingLogBox = await Hive.openBox(_parkingLogBoxName);
+    _parkingLogBox = await Hive.openBox<VehicleLogModel>(_parkingLogBoxName);
   }
 
   Future<bool> saveVehicle(VehicleModel vehicle) async {
@@ -24,13 +25,14 @@ class LocalStorageService {
       await _vehicleBox.put(vehicle.plateNumber, vehicle);
       
       // Save parking log
-      final log = {
-        'plateNumber': vehicle.plateNumber,
-        'checkIn': vehicle.checkIn.toIso8601String(),
-        'checkOut': vehicle.checkOut?.toIso8601String(),
-        'totalCost': vehicle.totalCost,
-        'discount': vehicle.discount,
-      };
+      final log = VehicleLogModel(
+        plateNumber: vehicle.plateNumber,
+        vehicleType: vehicle.vehicleType,
+        checkIn: vehicle.checkIn,
+        checkOut: vehicle.checkOut,
+        totalCost: vehicle.totalCost,
+        discount: vehicle.discount,
+      );
       
       await _parkingLogBox.add(log);
       return true;
@@ -48,30 +50,23 @@ class LocalStorageService {
       await _vehicleBox.put(vehicle.plateNumber, vehicle);
       
       // Update parking log
-      final rawLogs = _parkingLogBox.values.toList();
-      final logs = rawLogs.map((dynamic log) => 
-        Map<String, dynamic>.from(log as Map)).toList();
+      final logs = _parkingLogBox.values.toList();
+      final index = logs.indexWhere((log) => 
+        log.plateNumber == vehicle.plateNumber && log.checkOut == null
+      );
       
-      final int index = logs.indexWhere((log) {
-        return log['plateNumber'] == vehicle.plateNumber && 
-               log['checkOut'] == null;
-      });
-      final matchingLogs = index != -1 ? [logs[index]] : [];
-      
-      if (matchingLogs.isNotEmpty) {
-        final log = matchingLogs.first;
-        log['checkOut'] = vehicle.checkOut?.toIso8601String();
-        log['totalCost'] = vehicle.totalCost;
-        log['discount'] = vehicle.discount;
-        
-        final key = _parkingLogBox.keys.firstWhere(
-          (k) => _parkingLogBox.get(k) == log,
-          orElse: () => -1,
+      if (index != -1) {
+        final log = logs[index];
+        final updatedLog = VehicleLogModel(
+          plateNumber: log.plateNumber,
+          vehicleType: vehicle.vehicleType,
+          checkIn: log.checkIn,
+          checkOut: vehicle.checkOut,
+          totalCost: vehicle.totalCost,
+          discount: vehicle.discount,
         );
         
-        if (key != -1) {
-          await _parkingLogBox.put(key, log);
-        }
+        await _parkingLogBox.putAt(index, updatedLog);
       }
       
       return true;
@@ -84,10 +79,14 @@ class LocalStorageService {
     return _vehicleBox.values.toList();
   }
 
-  Future<List<Map<String, dynamic>>> getParkingLogs() async {
-    final rawLogs = _parkingLogBox.values.toList();
-    return rawLogs.map((dynamic log) => 
-      Map<String, dynamic>.from(log as Map)).toList();
+  Future<List<VehicleLogModel>> getParkingLogs() async {
+    return _parkingLogBox.values.toList();
+  }
+
+  Future<List<VehicleLogModel>> getVehicleParkingLogs(String plateNumber) async {
+    return _parkingLogBox.values
+        .where((log) => log.plateNumber == plateNumber)
+        .toList();
   }
 
   Future<void> clearAllData() async {

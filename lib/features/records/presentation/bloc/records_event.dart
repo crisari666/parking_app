@@ -1,4 +1,3 @@
-
 // Events
 import 'package:equatable/equatable.dart';
 
@@ -19,3 +18,12 @@ class SearchPlateNumberChanged extends RecordsEvent {
 }
 
 class LoadRecordsRequested extends RecordsEvent {}
+
+class GetVehicleLogsRequested extends RecordsEvent {
+  final String plateNumber;
+
+  const GetVehicleLogsRequested(this.plateNumber);
+
+  @override
+  List<Object> get props => [plateNumber];
+}

@@ -66,7 +66,8 @@ alwaysApply: false
     - Implement @JsonKey(includeFromJson: true, includeToJson: false) for read-only fields.
     
     Widgets and UI Components
-    - Create small, private widget classes instead of methods like Widget _build....
+    - Create small, private widget classes wiht own files instead of methods like Widget _build....
+    - Create small files with the widget inside
     - Implement RefreshIndicator for pull-to-refresh functionality.
     - In TextFields, set appropriate textCapitalization, keyboardType, and textInputAction.
     - Always include an errorBuilder when using Image.network.

@@ -1,3 +1,5 @@
+import 'package:quantum_parking_flutter/features/records/data/models/vehicle_log_model.dart';
+
 import '../../domain/repositories/vehicle_repository.dart';
 import '../datasources/local_storage_service.dart';
 import '../models/vehicle_model.dart';
@@ -42,8 +44,13 @@ class VehicleRepositoryImpl implements VehicleRepository {
   }
 
   @override
-  Future<List<Map<String, dynamic>>> getParkingLogs() async {
+  Future<List<VehicleLogModel>> getParkingLogs() async {
     return await _localStorageService.getParkingLogs();
+  }
+
+  @override
+  Future<List<VehicleLogModel>> getVehicleParkingLogs(String plateNumber) async {
+    return await _localStorageService.getVehicleParkingLogs(plateNumber);
   }
 
   @override

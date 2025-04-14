@@ -1,5 +1,6 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:quantum_parking_flutter/features/main/data/models/vehicle_model.dart';
+import 'package:quantum_parking_flutter/features/records/data/models/vehicle_log_model.dart';
 import 'package:quantum_parking_flutter/features/setup/data/models/business_setup_model.dart';
 
 class HiveAdapter {
@@ -10,10 +11,14 @@ class HiveAdapter {
     if (!Hive.isAdapterRegistered(1)) {
       Hive.registerAdapter(BusinessSetupModelAdapter());
     }
+    if (!Hive.isAdapterRegistered(2)) {
+      Hive.registerAdapter(VehicleLogModelAdapter());
+    }
   }
 
   static Future<void> openBoxes() async {
     await Hive.openBox<VehicleModel>('vehicles');
     await Hive.openBox<BusinessSetupModel>('business_setup');
+    await Hive.openBox<VehicleLogModel>('parking_logs');
   }
 } 
