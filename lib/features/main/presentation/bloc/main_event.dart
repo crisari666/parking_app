@@ -47,3 +47,5 @@ class DiscountChanged extends MainEvent {
 }
 
 class CheckOutRequested extends MainEvent {}
+
+class VerifySetupRequested extends MainEvent {}

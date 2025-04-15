@@ -39,3 +39,7 @@ class MainError extends MainState {
   @override
   List<Object> get props => [message, isCheckin, isCheckout];
 }
+
+class SetupRequired extends MainState {}
+
+class SetupVerified extends MainState {}

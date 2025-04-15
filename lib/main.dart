@@ -38,6 +38,12 @@ void main() async {
   await configureDependencies();
   getIt.registerSingleton<SetupLocalDatasource>(SetupLocalDatasourceImpl(setupBox));
   getIt.registerSingleton<LocalStorageService>(localStorageService);
+
+   getIt.registerSingleton<MainBloc>(MainBloc(
+      localStorageService: getIt(),
+      setupLocalDatasource: getIt(),
+    ),
+  );
   
   runApp(MyApp(setupBox: setupBox));
 }
@@ -55,7 +61,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => AuthBloc()),
         BlocProvider(create: (_) => SetupBloc(localDatasource: getIt.get<SetupLocalDatasource>())),
-        BlocProvider(create: (_) => MainBloc()),
+        BlocProvider(create: (_) => getIt.get<MainBloc>()),
         BlocProvider(create: (_) => ClosureBloc()),
         BlocProvider(create: (_) => RecordsBloc(VehicleRepositoryImpl(getIt.get<LocalStorageService>()))),
       ],

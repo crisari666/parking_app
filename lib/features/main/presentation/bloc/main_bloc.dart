@@ -3,17 +3,23 @@ import 'package:quantum_parking_flutter/features/main/data/datasources/local_sto
 import 'package:quantum_parking_flutter/features/main/data/models/vehicle_model.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_event.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_state.dart';
-import 'package:quantum_parking_flutter/injection/injection.dart';
+import 'package:quantum_parking_flutter/features/setup/data/datasources/setup_local_datasource.dart';
 
 // Bloc
 class MainBloc extends Bloc<MainEvent, MainState> {
   final LocalStorageService _localStorageService;
+  final SetupLocalDatasource _setupLocalDatasource;
   String _plateNumber = '';
   String _vehicleType = '';
   String _checkOutPlateNumber = '';
   String _discount = '0';
 
-  MainBloc() : _localStorageService = getIt<LocalStorageService>(), super(MainInitial()) {
+  MainBloc({
+    required LocalStorageService localStorageService,
+    required SetupLocalDatasource setupLocalDatasource,
+  }) : _localStorageService = localStorageService,
+       _setupLocalDatasource = setupLocalDatasource,
+       super(MainInitial()) {
     on<PlateNumberChanged>((event, emit) {
       _plateNumber = event.plateNumber;
     });
@@ -28,6 +34,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       _discount = event.discount;
     });
     on<CheckOutRequested>(_checkOutRequested);
+    on<VerifySetupRequested>(_verifySetup);
   }
 
   void _checkOutRequested(CheckOutRequested event, Emitter<MainState> emit) async {
@@ -105,6 +112,23 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       }
 
       emit(CheckInSuccess());
+    } catch (e) {
+      emit(MainError(e.toString()));
+    }
+  }
+
+  Future<void> _verifySetup(
+    VerifySetupRequested event,
+    Emitter<MainState> emit,
+  ) async {
+    emit(MainLoading());
+    try {
+      final setup = await _setupLocalDatasource.getSetup();
+      if (setup == null) {
+        emit(SetupRequired());
+      } else {
+        emit(SetupVerified());
+      }
     } catch (e) {
       emit(MainError(e.toString()));
     }
