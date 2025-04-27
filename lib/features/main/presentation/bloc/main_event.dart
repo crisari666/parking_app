@@ -46,6 +46,47 @@ class DiscountChanged extends MainEvent {
   List<Object> get props => [discount];
 }
 
-class CheckOutRequested extends MainEvent {}
+class FindVehicleInParkingRequested extends MainEvent {
+  final String plateNumber;
+
+  const FindVehicleInParkingRequested(this.plateNumber);
+
+  @override
+  List<Object> get props => [plateNumber];
+}
+
+class VehicleFoundSuccessEvent extends MainEvent {
+  final String parkingTime;
+  final double paymentValue;
+
+  const VehicleFoundSuccessEvent({
+    required this.parkingTime,
+    required this.paymentValue,
+  });
+
+  @override
+  List<Object> get props => [parkingTime, paymentValue];
+}
+
+class CheckOutRequested extends MainEvent {
+  final String plate;
+  final String paymentMethod;
+  final double? paymentValue;
+
+  const CheckOutRequested({
+    required this.plate,
+    required this.paymentMethod,
+    this.paymentValue,
+  });
+
+  @override
+  List<Object> get props => [plate, paymentMethod];
+}
+
+class PaymentMethodChanged extends MainEvent {
+  final String method;
+
+  const PaymentMethodChanged(this.method);
+}
 
 class VerifySetupRequested extends MainEvent {}

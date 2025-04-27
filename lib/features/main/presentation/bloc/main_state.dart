@@ -43,3 +43,22 @@ class MainError extends MainState {
 class SetupRequired extends MainState {}
 
 class SetupVerified extends MainState {}
+
+class VehicleFoundSuccess extends MainState {
+  final String parkingTime;
+  final double paymentValue;
+  final String paymentMethod;
+
+  const VehicleFoundSuccess({
+    required this.parkingTime,
+    required this.paymentValue,
+    this.paymentMethod = 'cash',
+  });
+
+  @override
+  List<Object> get props => [parkingTime, paymentValue, paymentMethod];
+}
+
+// Grace time 10 min
+// Metodo de pago
+// Mostrar

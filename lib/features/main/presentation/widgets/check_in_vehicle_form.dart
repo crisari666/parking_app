@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_bloc.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_event.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_state.dart';
+import 'package:quantum_parking_flutter/features/main/presentation/widgets/check_out_vehicel_form/payment_method_selector.dart';
 
 class CheckInVehicleForm extends StatelessWidget {
   final TextEditingController _textEditingController = TextEditingController();
@@ -52,24 +53,8 @@ class CheckInVehicleForm extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  labelText: 'Vehicle Type',
-                  border: OutlineInputBorder(),
-                ),
-                items: const [
-                  DropdownMenuItem(
-                    value: 'car',
-                    child: Text('Car'),
-                  ),
-                  DropdownMenuItem(
-                    value: 'motorcycle',
-                    child: Text('Motorcycle'),
-                  ),
-                ],
-                onChanged: (value) {
-                  context.read<MainBloc>().add(VehicleTypeChanged(value!));
-                },
+              const Flexible( 
+                child: PaymentMethodSelector(),
               ),
               const SizedBox(height: 16),
               ElevatedButton(

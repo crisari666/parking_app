@@ -22,6 +22,10 @@ class VehicleLogModel {
   @HiveField(5)
   final String? vehicleType;
 
+  @HiveField(6)
+  final String? paymentMethod;
+
+
   VehicleLogModel({
     required this.plateNumber,
     required this.checkIn,
@@ -29,23 +33,26 @@ class VehicleLogModel {
     this.checkOut,
     this.totalCost,
     this.discount,
+    this.paymentMethod,
   });
 
-  // factory VehicleParkingLog.fromJson(Map<String, dynamic> json) {
-  //   return VehicleParkingLog(
-  //     plateNumber: json['plateNumber'] as String,
-  //     checkIn: DateTime.parse(json['checkIn'] as String),
-  //     checkOut: json['checkOut'] != null ? DateTime.parse(json['checkOut'] as String) : null,
-  //     totalCost: json['totalCost'] as double?,
-  //     discount: json['discount'] as double?,
-  //   );
-  // }
+  factory VehicleLogModel.fromJson(Map<String, dynamic> json) {
+    return VehicleLogModel(
+      plateNumber: json['plateNumber'] as String,
+      checkIn: DateTime.parse(json['checkIn'] as String),
+      checkOut: json['checkOut'] != null ? DateTime.parse(json['checkOut'] as String) : null,
+      totalCost: json['totalCost'] as double?,
+      discount: json['discount'] as double?,
+      vehicleType: json['vehicleType'] as String,
+      paymentMethod: json['paymentMethod'] as String,
+    );
+  }
 
-  // Map<String, dynamic> toJson() => {
-  //   'plateNumber': plateNumber,
-  //   'checkIn': checkIn.toIso8601String(),
-  //   'checkOut': checkOut?.toIso8601String(),
-  //   'totalCost': totalCost,
-  //   'discount': discount,
-  // };
+  Map<String, dynamic> toJson() => {
+    'plateNumber': plateNumber,
+    'checkIn': checkIn.toIso8601String(),
+    'checkOut': checkOut?.toIso8601String(),
+    'totalCost': totalCost,
+    'discount': discount,
+  };
 }

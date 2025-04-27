@@ -13,6 +13,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   String _vehicleType = '';
   String _checkOutPlateNumber = '';
   String _discount = '0';
+  String _paymentMethod = 'cash';
+  String? _selectedPaymentMethod = 'cash';
 
   MainBloc({
     required LocalStorageService localStorageService,
@@ -35,6 +37,10 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     });
     on<CheckOutRequested>(_checkOutRequested);
     on<VerifySetupRequested>(_verifySetup);
+    on<PaymentMethodChanged>((event, emit) {
+      _paymentMethod = event.method;
+    });
+    on<FindVehicleInParkingRequested>(_findVehicleInParking);
   }
 
   void _checkOutRequested(CheckOutRequested event, Emitter<MainState> emit) async {
@@ -58,11 +64,16 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
       final checkOutTime = DateTime.now();
       final duration = checkOutTime.difference(vehicle.checkIn);
-      final hours = duration.inHours + (duration.inMinutes % 60 > 0 ? 1 : 0);
+      final totalMinutes = duration.inMinutes;
+      final hours = totalMinutes ~/ 60;
+      final extraMinutes = totalMinutes % 60;
+      
+      // Grace period: if extraMinutes <= 10, do not charge for next hour
+      final billableHours = extraMinutes > 10 ? hours + 1 : hours;
       
       // TODO: Get rate from business setup
       const ratePerHour = 10.0;
-      final totalCost = hours * ratePerHour;
+      final totalCost = billableHours * ratePerHour;
       final discount = double.tryParse(_discount) ?? 0.0;
       final finalCost = totalCost - discount;
 
@@ -73,6 +84,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         checkOut: checkOutTime,
         totalCost: totalCost,
         discount: discount,
+        //paymentMethod: _paymentMethod,
       );
 
       final success = await _localStorageService.updateVehicle(updatedVehicle);
@@ -85,6 +97,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         totalCost: totalCost,
         discount: discount,
         finalCost: finalCost,
+        //duration: duration,
+        //paymentMethod: _paymentMethod,
       ));
     } catch (e) {
       emit(MainError(e.toString()));
@@ -131,6 +145,57 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       }
     } catch (e) {
       emit(MainError(e.toString()));
+    }
+  }
+
+  Future<void> _findVehicleInParking(FindVehicleInParkingRequested event, Emitter<MainState> emit) async {
+    emit(MainLoading());
+    try {
+      final vehicle = await _localStorageService.getVehicle(event.plateNumber);
+      if (vehicle == null) {
+        emit(const MainError('Vehicle not found', isCheckout: true));
+        return;
+      }
+
+      if (vehicle.checkOut != null) {
+        emit(const MainError('Vehicle is already checked out', isCheckout: true));
+        return;
+      }
+
+      final currentTime = DateTime.now();
+      final duration = currentTime.difference(vehicle.checkIn);
+      final totalMinutes = duration.inMinutes;
+      final hours = totalMinutes ~/ 60;
+      final extraMinutes = totalMinutes % 60;
+      
+      // Grace period: if extraMinutes <= 10, do not charge for next hour
+      final billableHours = extraMinutes > 10 ? hours + 1 : hours;
+      
+      // TODO: Get rate from business setup
+      const ratePerHour = 10.0;
+      final paymentValue = billableHours * ratePerHour;
+
+      final parkingTime = '${hours}h ${extraMinutes}m';
+
+      emit(VehicleFoundSuccess(
+        parkingTime: parkingTime,
+        paymentValue: paymentValue,
+        paymentMethod: _paymentMethod,
+      ));
+    } catch (e) {
+      emit(MainError(e.toString()));
+    }
+  }
+
+  void _handlePaymentMethodChanged(PaymentMethodChanged event, Emitter<MainState> emit) {
+    _paymentMethod = event.method;
+    if (state is VehicleFoundSuccess) {
+      final currentState = state as VehicleFoundSuccess;
+      emit(VehicleFoundSuccess(
+        parkingTime: currentState.parkingTime,
+        paymentValue: currentState.paymentValue,
+        paymentMethod: event.method,
+      ));
     }
   }
 } 
