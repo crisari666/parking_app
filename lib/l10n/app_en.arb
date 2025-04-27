@@ -44,5 +44,6 @@
   "yes": "Yes",
   "no": "No",
   "ok": "OK",
-  "dontHaveAccountRegister": "Don't have an account? Register"
+  "dontHaveAccountRegister": "Don't have an account? Register",
+  "language": "Language"
 }

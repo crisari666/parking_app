@@ -44,5 +44,6 @@
   "yes": "Sí",
   "no": "No",
   "ok": "OK",
-  "dontHaveAccountRegister": "No tienes una cuenta? Regístrate"
+  "dontHaveAccountRegister": "No tienes una cuenta? Regístrate",
+  "language": "Idioma"
 }

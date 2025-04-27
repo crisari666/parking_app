@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quantum_parking_flutter/routes/app_router.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:quantum_parking_flutter/features/main/presentation/widgets/app_drawer/language_selector.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
@@ -23,6 +24,7 @@ class AppDrawer extends StatelessWidget {
               ),
             ),
           ),
+          const LanguageSelector(),
           ListTile(
             leading: const Icon(Icons.settings),
             title: const Text('Setup'),
