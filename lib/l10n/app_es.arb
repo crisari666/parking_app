@@ -45,5 +45,14 @@
   "no": "No",
   "ok": "OK",
   "dontHaveAccountRegister": "No tienes una cuenta? Regístrate",
-  "language": "Idioma"
+  "language": "Idioma",
+  "checkOutVehicle": "Salida de Vehículo",
+  "findVehicle": "Buscar Vehículo",
+  "parkingTime": "Tiempo de Estacionamiento",
+  "estimatedPayment": "Pago Estimado",
+  "paymentMethod": "Método de Pago",
+  "checkOut": "Salida",
+  "cash": "Efectivo",
+  "transaction": "Transacción",
+  "licensePlate": "Placa"
 }

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_bloc.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_event.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_state.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CheckOutVehicleForm extends StatefulWidget {
   const CheckOutVehicleForm({super.key});
@@ -16,6 +17,8 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return BlocBuilder<MainBloc, MainState>(
       builder: (context, state) {
         return BlocListener<MainBloc, MainState>(
@@ -28,7 +31,7 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
             if (state is CheckOutSuccess) {
               _plateController.clear();
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Vehicle checked out successfully')),
+                SnackBar(content: Text(l10n.success)),
               );
               Navigator.of(context).pop(); // Close dialog on success
             }
@@ -40,9 +43,9 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text(
-                    'Check Out Vehicle',
-                    style: TextStyle(
+                  Text(
+                    l10n.checkOutVehicle,
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -50,9 +53,9 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
                   const SizedBox(height: 16),
                   TextField(
                     controller: _plateController,
-                    decoration: const InputDecoration(
-                      labelText: 'License Plate',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: l10n.licensePlate,
+                      border: const OutlineInputBorder(),
                     ),
                     onChanged: (value) {
                       context.read<MainBloc>().add(CheckOutPlateNumberChanged(value));
@@ -65,43 +68,43 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
                       onPressed: () {
                         context.read<MainBloc>().add(FindVehicleInParkingRequested(_plateController.text));
                       },
-                      child: const Text('Find Vehicle'),
+                      child: Text(l10n.findVehicle),
                     ),
                   if (state is VehicleFoundSuccess) ...[
                     TextField(
                       readOnly: true,
-                      decoration: const InputDecoration(
-                        labelText: 'Parking Time',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: l10n.parkingTime,
+                        border: const OutlineInputBorder(),
                       ),
                       controller: TextEditingController(text: state.parkingTime),
                     ),
                     const SizedBox(height: 16),
                     TextField(
                       readOnly: true,
-                      decoration: const InputDecoration(
-                        labelText: 'Estimated Payment',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: l10n.estimatedPayment,
+                        border: const OutlineInputBorder(),
                         prefixText: '\$',
                       ),
                       controller: TextEditingController(
-                        text: state.paymentValue.toStringAsFixed(2),
+                        text: state.paymentValue.toString(),
                       ),
                     ),
                     const SizedBox(height: 16),
                     Flexible(
                       child: DropdownButtonFormField<String>(
                         value: state.paymentMethod,
-                        decoration: const InputDecoration(
-                        labelText: 'Payment Method',
-                        border: OutlineInputBorder(),
-                      ),
-                      items: const [
-                        DropdownMenuItem(value: 'cash', child: Text('Cash')),
-                        DropdownMenuItem(value: 'transaction', child: Text('Transaction')),
-                      ],
-                      onChanged: (value) {
-                        context.read<MainBloc>().add(PaymentMethodChanged(value!));
+                        decoration: InputDecoration(
+                          labelText: l10n.paymentMethod,
+                          border: const OutlineInputBorder(),
+                        ),
+                        items: [
+                          DropdownMenuItem(value: 'cash', child: Text(l10n.cash)),
+                          DropdownMenuItem(value: 'transaction', child: Text(l10n.transaction)),
+                        ],
+                        onChanged: (value) {
+                          context.read<MainBloc>().add(PaymentMethodChanged(value!));
                         },
                       ),
                     ),
@@ -114,7 +117,7 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
                           paymentValue: state.paymentValue,
                         ));
                       },
-                      child: const Text('Check Out'),
+                      child: Text(l10n.checkOut),
                     ),
                   ],
                 ],
