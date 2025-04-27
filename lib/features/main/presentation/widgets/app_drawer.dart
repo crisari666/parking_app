@@ -2,23 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:quantum_parking_flutter/routes/app_router.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/app_drawer/language_selector.dart';
+import 'package:quantum_parking_flutter/l10n/app_localizations_context.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.loc;
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(
+          DrawerHeader(
+            decoration: const BoxDecoration(
               color: Colors.blue,
             ),
             child: Text(
-              'Quantum Parking',
-              style: TextStyle(
+              l10n.appTitle,
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 24,
               ),
@@ -27,7 +29,7 @@ class AppDrawer extends StatelessWidget {
           const LanguageSelector(),
           ListTile(
             leading: const Icon(Icons.settings),
-            title: const Text('Setup'),
+            title: Text(l10n.setup),
             onTap: () {
               AutoRouter.of(context).push(const SetupRoute());
               Navigator.pop(context); // Close the drawer
