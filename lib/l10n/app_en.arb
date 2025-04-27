@@ -54,5 +54,8 @@
   "checkOut": "Check Out",
   "cash": "Cash",
   "transaction": "Transaction",
-  "licensePlate": "License Plate"
+  "licensePlate": "License Plate",
+  "setupRequired": "Setup Required",
+  "completeInitialSetup": "Please complete the initial setup before using the app.",
+  "goToSetup": "Go to Setup"
 }

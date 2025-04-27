@@ -9,6 +9,7 @@ import 'package:quantum_parking_flutter/features/main/presentation/widgets/app_d
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/check_in_vehicle.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/check_out_vehicle.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/main_page_app_bar.dart';
+import 'package:quantum_parking_flutter/l10n/app_localizations_context.dart';
 import 'package:quantum_parking_flutter/routes/app_router.dart';
 
 @RoutePage()
@@ -34,11 +35,11 @@ class MainPage extends StatelessWidget {
             barrierDismissible: false,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: const Text('Setup Required'),
-                content: const Text('Please complete the initial setup before using the app.'),
+                title: Text(context.loc.setupRequired),
+                content: Text(context.loc.completeInitialSetup),
                 actions: <Widget>[
                   TextButton(
-                    child: const Text('Go to Setup'),
+                    child: Text(context.loc.goToSetup),
                     onPressed: () {
                       context.router.canPop(); // Close dialog
                       context.router.push(const SetupRoute()); // Navigate to setup
