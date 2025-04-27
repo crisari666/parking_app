@@ -37,9 +37,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     });
     on<CheckOutRequested>(_checkOutRequested);
     on<VerifySetupRequested>(_verifySetup);
-    on<PaymentMethodChanged>((event, emit) {
-      _paymentMethod = event.method;
-    });
+    on<PaymentMethodChanged>(_handlePaymentMethodChanged);
     on<FindVehicleInParkingRequested>(_findVehicleInParking);
   }
 
@@ -62,6 +60,12 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         return;
       }
 
+      final setup = await _setupLocalDatasource.getSetup();
+      if (setup == null) {
+        emit(const MainError('Business setup not found', isCheckout: true));
+        return;
+      }
+
       final checkOutTime = DateTime.now();
       final duration = checkOutTime.difference(vehicle.checkIn);
       final totalMinutes = duration.inMinutes;
@@ -71,8 +75,11 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       // Grace period: if extraMinutes <= 10, do not charge for next hour
       final billableHours = extraMinutes > 10 ? hours + 1 : hours;
       
-      // TODO: Get rate from business setup
-      const ratePerHour = 10.0;
+      // Get rate from business setup based on vehicle type
+      final ratePerHour = vehicle.vehicleType.toLowerCase() == 'car' 
+          ? setup.carHourCost 
+          : setup.motorcycleHourCost;
+      
       final totalCost = billableHours * ratePerHour;
       final discount = double.tryParse(_discount) ?? 0.0;
       final finalCost = totalCost - discount;
@@ -84,12 +91,11 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         checkOut: checkOutTime,
         totalCost: totalCost,
         discount: discount,
-        //paymentMethod: _paymentMethod,
       );
 
       final success = await _localStorageService.updateVehicle(updatedVehicle);
       if (!success) {
-        emit(const MainError('Failed to update vehicle', isCheckout: true ));
+        emit(const MainError('Failed to update vehicle', isCheckout: true));
         return;
       }
 
@@ -97,8 +103,6 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         totalCost: totalCost,
         discount: discount,
         finalCost: finalCost,
-        //duration: duration,
-        //paymentMethod: _paymentMethod,
       ));
     } catch (e) {
       emit(MainError(e.toString()));
@@ -162,6 +166,12 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         return;
       }
 
+      final setup = await _setupLocalDatasource.getSetup();
+      if (setup == null) {
+        emit(const MainError('Business setup not found', isCheckout: true));
+        return;
+      }
+
       final currentTime = DateTime.now();
       final duration = currentTime.difference(vehicle.checkIn);
       final totalMinutes = duration.inMinutes;
@@ -171,8 +181,11 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       // Grace period: if extraMinutes <= 10, do not charge for next hour
       final billableHours = extraMinutes > 10 ? hours + 1 : hours;
       
-      // TODO: Get rate from business setup
-      const ratePerHour = 10.0;
+      // Get rate from business setup based on vehicle type
+      final ratePerHour = vehicle.vehicleType.toLowerCase() == 'car' 
+          ? setup.carHourCost 
+          : setup.motorcycleHourCost;
+      
       final paymentValue = billableHours * ratePerHour;
 
       final parkingTime = '${hours}h ${extraMinutes}m';
