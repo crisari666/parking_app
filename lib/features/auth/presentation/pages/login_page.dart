@@ -2,6 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:quantum_parking_flutter/features/auth/presentation/widgets/email_input.dart';
+import 'package:quantum_parking_flutter/features/auth/presentation/widgets/password_input.dart';
 import 'package:quantum_parking_flutter/l10n/app_localizations_context.dart';
 import 'package:quantum_parking_flutter/routes/app_router.dart';
 
@@ -32,26 +34,9 @@ class LoginPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: l10n.email,
-                    border: const OutlineInputBorder(),
-                  ),
-                  onChanged: (value) {
-                    context.read<AuthBloc>().add(EmailChanged(value));
-                  },
-                ),
+                const EmailInput(),
                 const SizedBox(height: 16),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: l10n.password,
-                    border: const OutlineInputBorder(),
-                  ),
-                  obscureText: true,
-                  onChanged: (value) {
-                    context.read<AuthBloc>().add(PasswordChanged(value));
-                  },
-                ),
+                const PasswordInput(),
                 const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: () {
