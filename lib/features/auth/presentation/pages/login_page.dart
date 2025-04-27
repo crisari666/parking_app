@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:quantum_parking_flutter/l10n/app_localizations_context.dart';
 import 'package:quantum_parking_flutter/routes/app_router.dart';
 
 @RoutePage()
@@ -10,9 +11,10 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.loc;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
+        title: Text(l10n.login),
       ),
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
@@ -31,9 +33,9 @@ class LoginPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextField(
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: l10n.email,
+                    border: const OutlineInputBorder(),
                   ),
                   onChanged: (value) {
                     context.read<AuthBloc>().add(EmailChanged(value));
@@ -41,9 +43,9 @@ class LoginPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 TextField(
-                  decoration: const InputDecoration(
-                    labelText: 'Password',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: l10n.password,
+                    border: const OutlineInputBorder(),
                   ),
                   obscureText: true,
                   onChanged: (value) {
@@ -55,14 +57,14 @@ class LoginPage extends StatelessWidget {
                   onPressed: () {
                     context.read<AuthBloc>().add(LoginRequested());
                   },
-                  child: const Text('Login'),
+                  child: Text(l10n.login),
                 ),
                 const SizedBox(height: 16),
                 TextButton(
                   onPressed: () {
                     AutoRouter.of(context).push(const RegisterRoute());
                   },
-                  child: const Text('Don\'t have an account? Register'),
+                  child: Text(l10n.dontHaveAccountRegister),
                 ),
               ],
             ),
