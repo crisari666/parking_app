@@ -16,10 +16,7 @@ class LoginPage extends StatelessWidget {
     final l10n = context.loc;
     
     // Check for existing user on first render
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<AuthBloc>().add(CheckAuthStatus());
-    });
-
+    context.read<AuthBloc>().add(CheckAuthStatus());
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.login),
@@ -27,7 +24,7 @@ class LoginPage extends StatelessWidget {
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthSuccess) {
-            AutoRouter.of(context).push(const MainRoute());
+            AutoRouter.of(context).replace(const MainRoute());
           } else if (state is AuthError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.message)),
@@ -35,6 +32,9 @@ class LoginPage extends StatelessWidget {
           }
         },
         builder: (context, state) {
+          if (state is AuthSuccess) {
+            AutoRouter.of(context).replace(const MainRoute());
+          }
           if (state is AuthLoading) {
             return const Center(child: CircularProgressIndicator());
           }

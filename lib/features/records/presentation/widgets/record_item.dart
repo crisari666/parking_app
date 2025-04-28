@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/bloc/records_bloc.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/bloc/records_event.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/bloc/models/vehicle_record.dart';
+import 'package:quantum_parking_flutter/l10n/app_localizations_context.dart';
 
 class RecordItem extends StatelessWidget {
   final VehicleRecord record;
@@ -17,7 +18,7 @@ class RecordItem extends StatelessWidget {
   });
 
   String _getLocalizedVehicleType(BuildContext context, String type) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     switch (type.toLowerCase()) {
       case 'car':
         return l10n.vehicleTypeCar;
@@ -128,7 +129,9 @@ class RecordItem extends StatelessWidget {
                   const Icon(Icons.timer, size: 18, color: Colors.orange),
                   const SizedBox(width: 4),
                   Text(
-                    record.duration,
+                    record.checkOut == null 
+                        ? context.loc.stillParking
+                        : record.duration,
                     style: const TextStyle(fontSize: 14),
                   ),
                 ],

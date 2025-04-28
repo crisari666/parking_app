@@ -4,6 +4,7 @@ import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_blo
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_event.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_state.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/check_out_vehicel_form/payment_method_selector.dart';
+import 'package:quantum_parking_flutter/l10n/app_localizations_context.dart';
 
 class CheckInVehicleForm extends StatelessWidget {
   final TextEditingController _textEditingController = TextEditingController();
@@ -22,7 +23,7 @@ class CheckInVehicleForm extends StatelessWidget {
         if (state is CheckInSuccess) {
           _textEditingController.clear();
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Vehicle checked in successfully')),
+            SnackBar(content: Text(context.loc.vehicleCheckedInSuccess)),
           );
           Navigator.of(context).pop(); // Close dialog on success
         }
@@ -34,9 +35,9 @@ class CheckInVehicleForm extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                'Check In Vehicle',
-                style: TextStyle(
+              Text(
+                context.loc.checkInVehicle,
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -44,9 +45,9 @@ class CheckInVehicleForm extends StatelessWidget {
               const SizedBox(height: 16),
               TextField(
                 controller: _textEditingController,
-                decoration: const InputDecoration(
-                  labelText: 'License Plate',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: context.loc.licensePlate,
+                  border: const OutlineInputBorder(),
                 ),
                 onChanged: (value) {
                   context.read<MainBloc>().add(PlateNumberChanged(value));
@@ -61,7 +62,7 @@ class CheckInVehicleForm extends StatelessWidget {
                 onPressed: () {
                   context.read<MainBloc>().add(CheckInRequested());
                 },
-                child: const Text('Check In'),
+                child: Text(context.loc.checkIn),
               ),
             ],
           ),

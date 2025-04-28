@@ -76,5 +76,7 @@
   "vehicleTypeCar": "Car",
   "vehicleTypeMotorcycle": "Motorcycle",
   "vehicleTypeTruck": "Truck",
-  "vehicleTypeVan": "Van"
+  "vehicleTypeVan": "Van",
+  "stillParking": "Still Parking",
+  "vehicleCheckedInSuccess": "Vehicle checked in successfully"
 }

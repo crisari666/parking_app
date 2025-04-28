@@ -76,5 +76,7 @@
   "vehicleTypeCar": "Automóvil",
   "vehicleTypeMotorcycle": "Motocicleta",
   "vehicleTypeTruck": "Camión",
-  "vehicleTypeVan": "Camioneta"
+  "vehicleTypeVan": "Camioneta",
+  "stillParking": "Aún en Estacionamiento",
+  "vehicleCheckedInSuccess": "Vehículo ingresado exitosamente"
 }
