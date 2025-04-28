@@ -17,7 +17,7 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return BlocBuilder<MainBloc, MainState>(
       builder: (context, state) {

@@ -14,6 +14,12 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.loc;
+    
+    // Check for existing user on first render
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<AuthBloc>().add(CheckAuthStatus());
+    });
+
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.login),
@@ -29,6 +35,10 @@ class LoginPage extends StatelessWidget {
           }
         },
         builder: (context, state) {
+          if (state is AuthLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(

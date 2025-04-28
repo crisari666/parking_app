@@ -12,6 +12,8 @@ import 'package:quantum_parking_flutter/features/setup/presentation/widgets/car_
 import 'package:quantum_parking_flutter/features/setup/presentation/widgets/motorcycle_monthly_cost_field.dart';
 
 class SetupForm extends StatelessWidget {
+  const SetupForm({super.key});
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SetupBloc, SetupState>(

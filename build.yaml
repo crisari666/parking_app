@@ -7,3 +7,4 @@ targets:
             - lib/features/main/data/models/vehicle_model.dart
             - lib/features/setup/data/models/business_setup_model.dart 
             - lib/features/records/data/models/vehicle_log_model.dart 
+            - lib/features/auth/domain/models/user.dart

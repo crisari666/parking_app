@@ -45,9 +45,9 @@ class SetupPage extends StatelessWidget {
           ),
           body: ScrollConfiguration(
             behavior: NoGlowScrollBehaviour(),
-            child: SingleChildScrollView(
+            child: const SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(16.0),
                 child: SetupForm(),
               ),
             ),

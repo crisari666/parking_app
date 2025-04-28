@@ -4,6 +4,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quantum_parking_flutter/core/theme/app_theme.dart';
 import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:quantum_parking_flutter/features/auth/data/repositories/auth_repository.dart';
+import 'package:quantum_parking_flutter/features/auth/domain/models/user.dart';
 import 'package:quantum_parking_flutter/features/closure/presentation/bloc/closure_bloc.dart';
 import 'package:quantum_parking_flutter/features/main/data/datasources/local_storage_service.dart';
 import 'package:quantum_parking_flutter/features/main/data/models/vehicle_model.dart';
@@ -27,6 +29,7 @@ void main() async {
   Hive.registerAdapter(BusinessSetupModelAdapter());
   Hive.registerAdapter(VehicleModelAdapter());
   Hive.registerAdapter(VehicleLogModelAdapter());
+  Hive.registerAdapter(UserAdapter());
   
   // Open the boxes
   final setupBox = await Hive.openBox<BusinessSetupModel>('setup_box');
@@ -35,10 +38,14 @@ void main() async {
   final localStorageService = LocalStorageService();
   await localStorageService.init();
   
+  // Create AuthRepository
+  final authRepository = AuthRepository();
+  
   //Register dependencies
   await configureDependencies();
   getIt.registerSingleton<SetupLocalDatasource>(SetupLocalDatasourceImpl(setupBox));
   getIt.registerSingleton<LocalStorageService>(localStorageService);
+  getIt.registerSingleton<AuthRepository>(authRepository);
 
    getIt.registerSingleton<MainBloc>(MainBloc(
       localStorageService: getIt(),
@@ -60,7 +67,7 @@ class MyApp extends StatelessWidget {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => AuthBloc()),
+        BlocProvider(create: (_) => AuthBloc(authRepository: getIt.get<AuthRepository>())),
         BlocProvider(create: (_) => SetupBloc(localDatasource: getIt.get<SetupLocalDatasource>())),
         BlocProvider(create: (_) => getIt.get<MainBloc>()),
         BlocProvider(create: (_) => ClosureBloc()),

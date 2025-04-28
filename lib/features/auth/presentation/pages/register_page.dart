@@ -18,7 +18,7 @@ class RegisterPage extends StatelessWidget {
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthSuccess) {
-            AutoRouter.of(context).push(const SetupRoute());
+            AutoRouter.of(context).push(const MainRoute());
           } else if (state is AuthError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.message)),
@@ -26,6 +26,10 @@ class RegisterPage extends StatelessWidget {
           }
         },
         builder: (context, state) {
+          if (state is AuthLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(

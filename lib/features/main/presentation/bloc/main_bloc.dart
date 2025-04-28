@@ -14,7 +14,6 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   String _checkOutPlateNumber = '';
   String _discount = '0';
   String _paymentMethod = 'cash';
-  String? _selectedPaymentMethod = 'cash';
 
   MainBloc({
     required LocalStorageService localStorageService,

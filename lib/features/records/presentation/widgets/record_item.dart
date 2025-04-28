@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/bloc/records_bloc.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/bloc/records_event.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/bloc/models/vehicle_record.dart';
-import 'package:quantum_parking_flutter/l10n/app_localizations_context.dart';
 
 class RecordItem extends StatelessWidget {
   final VehicleRecord record;
