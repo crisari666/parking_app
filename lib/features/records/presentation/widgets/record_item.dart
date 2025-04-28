@@ -51,7 +51,7 @@ class RecordItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.symmetric(
-        horizontal: 16.0,
+        horizontal: 8.0,
         vertical: 8.0,
       ),
       child: InkWell(

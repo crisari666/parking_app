@@ -1,9 +1,12 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/material.dart';
 import 'package:quantum_parking_flutter/features/auth/presentation/pages/login_page.dart';
 import 'package:quantum_parking_flutter/features/auth/presentation/pages/register_page.dart';
 import 'package:quantum_parking_flutter/features/closure/presentation/pages/closure_page.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/pages/main_page.dart';
+import 'package:quantum_parking_flutter/features/records/presentation/bloc/models/vehicle_record.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/pages/records_page.dart';
+import 'package:quantum_parking_flutter/features/records/presentation/pages/vehicle_logs_page.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/pages/setup_page.dart';
 
 part 'app_router.gr.dart';
@@ -19,7 +22,7 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: MainRoute.page, path: '/main'),
     AutoRoute(page: ClosureRoute.page, path: '/closure'),
     AutoRoute(page: RecordsRoute.page, path: '/records'),
-    
+    AutoRoute(page: VehicleLogsRoute.page, path: '/vehicle-logs'),
   ];
 
   @override

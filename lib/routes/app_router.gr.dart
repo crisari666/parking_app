@@ -122,3 +122,49 @@ class SetupRoute extends PageRouteInfo<void> {
     },
   );
 }
+
+/// generated route for
+/// [VehicleLogsPage]
+class VehicleLogsRoute extends PageRouteInfo<VehicleLogsRouteArgs> {
+  VehicleLogsRoute({
+    Key? key,
+    required List<VehicleRecord> records,
+    List<PageRouteInfo>? children,
+  }) : super(
+          VehicleLogsRoute.name,
+          args: VehicleLogsRouteArgs(
+            key: key,
+            records: records,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'VehicleLogsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<VehicleLogsRouteArgs>();
+      return VehicleLogsPage(
+        key: args.key,
+        records: args.records,
+      );
+    },
+  );
+}
+
+class VehicleLogsRouteArgs {
+  const VehicleLogsRouteArgs({
+    this.key,
+    required this.records,
+  });
+
+  final Key? key;
+
+  final List<VehicleRecord> records;
+
+  @override
+  String toString() {
+    return 'VehicleLogsRouteArgs{key: $key, records: $records}';
+  }
+}
