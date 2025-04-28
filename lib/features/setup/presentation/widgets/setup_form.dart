@@ -27,52 +27,86 @@ class SetupForm extends StatelessWidget {
         
         if (state is SetupSuccess) {
           final setup = state.setup;
-          // Pre-fill the form fields if setup data exists
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Form(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                BusinessNameField(
-                  initialValue: setup?.businessName ?? '',
-                  label: l10n.businessName,
+          return SingleChildScrollView(
+            child: Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
                 ),
-                const Gap(10),
-                BusinessBrandField(
-                  initialValue: setup?.businessBrand ?? '',
-                  label: l10n.businessBrand,
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Form(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const Gap(32),
+                        BusinessNameField(
+                          initialValue: setup?.businessName ?? '',
+                          label: l10n.businessName,
+                        ),
+                        const Gap(16),
+                        BusinessBrandField(
+                          initialValue: setup?.businessBrand ?? '',
+                          label: l10n.businessBrand,
+                        ),
+                        const Gap(24),
+                        Text(
+                          'Hourly Rates',
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const Gap(16),
+                        CarHourCostField(
+                          initialValue: setup?.carHourCost.toString() ?? '',
+                          label: l10n.carHourCost,
+                        ),
+                        const Gap(16),
+                        MotorcycleHourCostField(
+                          initialValue: setup?.motorcycleHourCost.toString() ?? '',
+                          label: l10n.motorcycleHourCost,
+                        ),
+                        const Gap(24),
+                        Text(
+                          'Monthly Rates',
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const Gap(16),
+                        CarMonthlyCostField(
+                          initialValue: setup?.carMonthlyCost.toString() ?? '',
+                          label: l10n.carMonthlyCost,
+                        ),
+                        const Gap(16),
+                        MotorcycleMonthlyCostField(
+                          initialValue: setup?.motorcycleMonthlyCost.toString() ?? '',
+                          label: l10n.motorcycleMonthlyCost,
+                        ),
+                        const Gap(32),
+                        const SetupSubmitButton(),
+                      ],
+                    ),
+                  ),
                 ),
-                const Gap(10),
-                CarHourCostField(
-                  initialValue: setup?.carHourCost.toString() ?? '',
-                  label: l10n.carHourCost,
-                ),
-                const Gap(10),
-                MotorcycleHourCostField(
-                  initialValue: setup?.motorcycleHourCost.toString() ?? '',
-                  label: l10n.motorcycleHourCost,
-                ),
-                const Gap(10),
-                CarMonthlyCostField(
-                  initialValue: setup?.carMonthlyCost.toString() ?? '',
-                  label: l10n.carMonthlyCost,
-                ),
-                const Gap(10),
-                MotorcycleMonthlyCostField(
-                  initialValue: setup?.motorcycleMonthlyCost.toString() ?? '',
-                  label: l10n.motorcycleMonthlyCost,
-                ),
-                const Gap(24),
-                const SetupSubmitButton(),
-              ],
-            ),
-            ),
+              ),
           );
         }
         
         if (state is SetupError) {
-          return Center(child: Text('Error: ${state.message}'));
+          return Center(
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  'Error: ${state.message}',
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ),
+            ),
+          );
         }
         
         return Container(); // Initial state
