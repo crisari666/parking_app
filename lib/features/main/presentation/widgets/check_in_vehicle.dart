@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/check_in_vehicle_form.dart';
+import 'package:quantum_parking_flutter/l10n/app_localizations_context.dart';
 
 class CheckInVehicle extends StatelessWidget {
   const CheckInVehicle({super.key});
@@ -26,14 +27,14 @@ class CheckInVehicle extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
         ),
       ),
-      child: const Row(
+      child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-            Icon(Icons.add_circle_outline, size: 28),
-            SizedBox(width: 12),
-            Text(
-            'Check In Vehicle',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          const Icon(Icons.add_circle_outline, size: 28),
+          const SizedBox(width: 12),
+          Text(
+            context.loc.checkInVehicle,
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
         ],
       ),

@@ -57,5 +57,6 @@
   "licensePlate": "License Plate",
   "setupRequired": "Setup Required",
   "completeInitialSetup": "Please complete the initial setup before using the app.",
-  "goToSetup": "Go to Setup"
+  "goToSetup": "Go to Setup",
+  "checkInVehicle": "Check In Vehicle"
 }

@@ -54,5 +54,9 @@
   "checkOut": "Salida",
   "cash": "Efectivo",
   "transaction": "Transacción",
-  "licensePlate": "Placa"
+  "licensePlate": "Placa",
+  "setupRequired": "Configuración Requerida",
+  "completeInitialSetup": "Por favor, complete la configuración inicial antes de usar la aplicación.",
+  "goToSetup": "Ir a Configuración",
+  "checkInVehicle": "Ingreso de Vehículo"
 }
