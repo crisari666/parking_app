@@ -68,7 +68,7 @@
   "checkIn": "Check In",
   "duration": "Duration",
   "totalCost": "Total Cost",
-  "alreadyHaveAccountLogin": "¿Ya tienes una cuenta? Inicia sesión",
+  "alreadyHaveAccountLogin": "Already have an account? Login",
   "register": "Register",
   "paymentMethodCash": "Cash",
   "paymentMethodCard": "Card",
