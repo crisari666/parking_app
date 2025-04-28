@@ -58,5 +58,14 @@
   "setupRequired": "Configuración Requerida",
   "completeInitialSetup": "Por favor, complete la configuración inicial antes de usar la aplicación.",
   "goToSetup": "Ir a Configuración",
-  "checkInVehicle": "Ingreso de Vehículo"
+  "checkInVehicle": "Ingreso de Vehículo",
+  "vehicleRecords": "Registros de Vehículos",
+  "searchByPlateNumber": "Buscar por Número de Placa",
+  "noRecordsAvailable": "No hay registros disponibles",
+  "pastLogsFor": "Registros anteriores de {plateNumber}",
+  "plateNumber": "Número de Placa",
+  "type": "Tipo",
+  "checkIn": "Entrada",
+  "duration": "Duración",
+  "totalCost": "Costo Total"
 }

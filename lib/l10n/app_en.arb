@@ -58,5 +58,14 @@
   "setupRequired": "Setup Required",
   "completeInitialSetup": "Please complete the initial setup before using the app.",
   "goToSetup": "Go to Setup",
-  "checkInVehicle": "Check In Vehicle"
+  "checkInVehicle": "Check In Vehicle",
+  "vehicleRecords": "Vehicle Records",
+  "searchByPlateNumber": "Search by Plate Number",
+  "noRecordsAvailable": "No records available",
+  "pastLogsFor": "Past Logs for {plateNumber}",
+  "plateNumber": "Plate Number",
+  "type": "Type",
+  "checkIn": "Check In",
+  "duration": "Duration",
+  "totalCost": "Total Cost"
 }

@@ -11,9 +11,9 @@ class CheckOutVehicle extends StatelessWidget {
       onPressed: () {
         showDialog(
           context: context,
-          builder: (context) => Dialog(
+          builder: (context) => const Dialog(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(16.0),
               child: CheckOutVehicleForm(),
             ),
           ),

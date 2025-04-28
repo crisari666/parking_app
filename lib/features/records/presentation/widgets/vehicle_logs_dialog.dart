@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/bloc/models/vehicle_record.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/widgets/record_item.dart';
+import 'package:quantum_parking_flutter/l10n/app_localizations_context.dart';
 
 class VehicleLogsDialog extends StatelessWidget {
   final List<VehicleRecord> logs;
@@ -22,7 +23,7 @@ class VehicleLogsDialog extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Past Logs for $plateNumber',
+              context.loc.pastLogsFor(plateNumber)  ,
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -45,7 +46,7 @@ class VehicleLogsDialog extends StatelessWidget {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Close'),
+              child: Text(context.loc.close),
             ),
           ],
         ),

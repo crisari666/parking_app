@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/bloc/records_bloc.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/bloc/records_event.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/bloc/models/vehicle_record.dart';
+import 'package:quantum_parking_flutter/l10n/app_localizations_context.dart';
 
 class RecordItem extends StatelessWidget {
   final VehicleRecord record;
@@ -32,29 +33,29 @@ class RecordItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (!hidePlateNumber) Text(
-                'Plate Number: ${record.plateNumber}',
+                '${context.loc.plateNumber}: ${record.plateNumber}',
                 style: const TextStyle(fontSize: 14),
               ),
               Text(
-                'Type: ${record.vehicleType}',
+                '${context.loc.type}: ${record.vehicleType}',
                 style: const TextStyle(fontSize: 14),
               ),
               Text(
-                'Check In: ${DateFormat('MMM dd, yyyy HH:mm').format(record.checkIn)}',
+                '${context.loc.checkIn}: ${DateFormat('MMM dd, yyyy HH:mm').format(record.checkIn)}',
                 style: const TextStyle(fontSize: 14),
               ),
               if (record.checkOut != null)
                 Text(
-                  'Check Out: ${DateFormat('MMM dd, yyyy HH:mm').format(record.checkOut!)}',
+                  '${context.loc.checkOut}: ${DateFormat('MMM dd, yyyy HH:mm').format(record.checkOut!)}',
                   style: const TextStyle(fontSize: 14),
                 ),
               Text(
-                'Duration: ${record.duration}',
+                '${context.loc.duration}: ${record.duration}',
                 style: const TextStyle(fontSize: 14),
               ),
               if (record.totalCost != null)
                 Text(
-                  'Total Cost: \$${record.totalCost!.toStringAsFixed(2)}',
+                  '${context.loc.totalCost}: \$${record.totalCost!.toStringAsFixed(2)}',
                   style: const TextStyle(fontSize: 14),
                 ),
             ],

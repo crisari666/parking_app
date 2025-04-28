@@ -5,6 +5,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/bloc/records_event.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/bloc/records_state.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/widgets/records_list.dart';
+import 'package:quantum_parking_flutter/l10n/app_localizations_context.dart';
 
 @RoutePage()
 class RecordsPage extends StatelessWidget {
@@ -15,7 +16,7 @@ class RecordsPage extends StatelessWidget {
     context.read<RecordsBloc>().add(LoadRecordsRequested());
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Vehicle Records'),
+        title: Text(context.loc.vehicleRecords),
       ),
       body: BlocConsumer<RecordsBloc, RecordsState>(
         listener: (context, state) {
@@ -31,10 +32,10 @@ class RecordsPage extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: TextField(
-                    decoration: const InputDecoration(
-                      labelText: 'Search by Plate Number',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.search),
+                    decoration: InputDecoration(
+                      labelText: context.loc.searchByPlateNumber,
+                      border: const OutlineInputBorder(),
+                      prefixIcon: const Icon(Icons.search),
                     ),
                     onChanged: (value) {
                       context.read<RecordsBloc>().add(SearchPlateNumberChanged(value));
@@ -54,8 +55,8 @@ class RecordsPage extends StatelessWidget {
               ),
             );
           }
-          return const Center(
-            child: Text('No records available'),
+          return Center(
+            child: Text(context.loc.noRecordsAvailable),
           );
         },
       ),
