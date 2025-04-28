@@ -8,3 +8,4 @@ targets:
             - lib/features/setup/data/models/business_setup_model.dart 
             - lib/features/records/data/models/vehicle_log_model.dart 
             - lib/features/auth/domain/models/user.dart
+            - lib/features/records/data/models/daily_closure_model.dart

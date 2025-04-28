@@ -14,7 +14,7 @@ class VehicleLogsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     
     // If there are records, get the first record's plate and type for the header
     final String? headerPlate = records.isNotEmpty ? records.first.plateNumber : null;

@@ -1,87 +1,49 @@
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-// Events
-abstract class ClosureEvent extends Equatable {
-  const ClosureEvent();
-
-  @override
-  List<Object> get props => [];
-}
-
-class LoadClosureRequested extends ClosureEvent {}
-
-// States
-abstract class ClosureState extends Equatable {
-  const ClosureState();
-
-  @override
-  List<Object> get props => [];
-}
-
-class ClosureInitial extends ClosureState {}
-
-class ClosureLoading extends ClosureState {}
-
-class ClosureSuccess extends ClosureState {
-  final DateTime date;
-  final int totalVehicles;
-  final int totalCars;
-  final int totalMotorcycles;
-  final double totalSales;
-  final double totalDiscounts;
-  final double netSales;
-
-  const ClosureSuccess({
-    required this.date,
-    required this.totalVehicles,
-    required this.totalCars,
-    required this.totalMotorcycles,
-    required this.totalSales,
-    required this.totalDiscounts,
-    required this.netSales,
-  });
-
-  @override
-  List<Object> get props => [
-        date,
-        totalVehicles,
-        totalCars,
-        totalMotorcycles,
-        totalSales,
-        totalDiscounts,
-        netSales,
-      ];
-}
-
-class ClosureError extends ClosureState {
-  final String message;
-
-  const ClosureError(this.message);
-
-  @override
-  List<Object> get props => [message];
-}
+import 'package:quantum_parking_flutter/features/main/domain/repositories/vehicle_repository.dart';
+import 'package:quantum_parking_flutter/features/closure/presentation/bloc/closure_event.dart';
+import 'package:quantum_parking_flutter/features/closure/presentation/bloc/closure_state.dart';
 
 // Bloc
 class ClosureBloc extends Bloc<ClosureEvent, ClosureState> {
-  ClosureBloc() : super(ClosureInitial()) {
-    on<LoadClosureRequested>((event, emit) async {
-      emit(ClosureLoading());
-      try {
-        // TODO: Implement closure loading logic
-        emit(ClosureSuccess(
-          date: DateTime.now(),
-          totalVehicles: 0,
-          totalCars: 0,
-          totalMotorcycles: 0,
-          totalSales: 0.0,
-          totalDiscounts: 0.0,
-          netSales: 0.0,
-        ));
-      } catch (e) {
-        emit(ClosureError(e.toString()));
+  final VehicleRepository _vehicleRepository;
+
+  ClosureBloc({required VehicleRepository vehicleRepository})
+      : _vehicleRepository = vehicleRepository,
+        super(ClosureInitial()) {
+    on<GenerateDailyClosureRequested>(_onGenerateDailyClosure);
+    on<LoadDailyClosuresRequested>(_onLoadDailyClosures);
+  }
+
+  Future<void> _onGenerateDailyClosure(GenerateDailyClosureRequested event, Emitter<ClosureState> emit) async {
+    emit(ClosureLoading());
+    try {
+      final date = DateTime.now();
+      final startDate = DateTime(date.year, date.month, date.day);
+      final closure = await _vehicleRepository.getDailyClosure(startDate);
+      final success = await _vehicleRepository.saveDailyClosure(closure);
+      if (success) {
+        emit(ClosureSuccess(closure));
+      } else {
+        emit(const ClosureError('Failed to save daily closure'));
       }
-    });
+    } catch (e) {
+      emit(ClosureError(e.toString()));
+    }
+  }
+
+  Future<void> _onLoadDailyClosures(LoadDailyClosuresRequested event, Emitter<ClosureState> emit) async {
+    emit(ClosureLoading());
+    try {
+      final date = DateTime.now();
+      final startDate = DateTime(date.year, date.month, date.day);
+      final endDate = startDate.add(const Duration(days: 1));
+      final closures = await _vehicleRepository.getDailyClosures(
+        startDate,
+        endDate,
+      );
+      emit(ClosuresLoaded(closures));
+    } catch (e) {
+      emit(ClosureError(e.toString()));
+    }
   }
 } 

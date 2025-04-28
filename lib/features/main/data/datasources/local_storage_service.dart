@@ -1,17 +1,21 @@
 import 'package:hive/hive.dart';
 import 'package:quantum_parking_flutter/features/records/data/models/vehicle_log_model.dart';
+import 'package:quantum_parking_flutter/features/records/data/models/daily_closure_model.dart';
 import '../models/vehicle_model.dart';
 
 class LocalStorageService {
   static const String _vehicleBoxName = 'vehicles';
   static const String _parkingLogBoxName = 'parking_logs';
+  static const String _dailyClosureBoxName = 'daily_closures';
   
   late Box<VehicleModel> _vehicleBox;
   late Box<VehicleLogModel> _parkingLogBox;
+  late Box<DailyClosureModel> _dailyClosureBox;
 
   Future<void> init() async {
     _vehicleBox = await Hive.openBox<VehicleModel>(_vehicleBoxName);
     _parkingLogBox = await Hive.openBox<VehicleLogModel>(_parkingLogBoxName);
+    _dailyClosureBox = await Hive.openBox<DailyClosureModel>(_dailyClosureBoxName);
   }
 
   Future<bool> saveVehicle(VehicleModel vehicle) async {
@@ -91,8 +95,35 @@ class LocalStorageService {
         .toList();
   }
 
+  Future<bool> saveDailyClosure(DailyClosureModel closure) async {
+    try {
+      final key = '${closure.date.year}-${closure.date.month}-${closure.date.day}';
+      await _dailyClosureBox.put(key, closure);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<List<DailyClosureModel>> getDailyClosures(DateTime startDate, DateTime endDate) async {
+    final closures = <DailyClosureModel>[];
+    final currentDate = startDate;
+    
+    while (currentDate.isBefore(endDate) || currentDate.isAtSameMomentAs(endDate)) {
+      final key = '${currentDate.year}-${currentDate.month}-${currentDate.day}';
+      final closure = _dailyClosureBox.get(key);
+      if (closure != null) {
+        closures.add(closure);
+      }
+      currentDate.add(const Duration(days: 1));
+    }
+    
+    return closures;
+  }
+
   Future<void> clearAllData() async {
     await _vehicleBox.clear();
     await _parkingLogBox.clear();
+    await _dailyClosureBox.clear();
   }
 } 

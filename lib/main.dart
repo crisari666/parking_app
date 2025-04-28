@@ -12,6 +12,7 @@ import 'package:quantum_parking_flutter/features/main/data/models/vehicle_model.
 import 'package:quantum_parking_flutter/features/main/data/repositories/vehicle_repository_impl.dart'; 
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_bloc.dart';
 import 'package:quantum_parking_flutter/features/records/data/models/vehicle_log_model.dart';
+import 'package:quantum_parking_flutter/features/records/data/models/daily_closure_model.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/bloc/records_bloc.dart';
 import 'package:quantum_parking_flutter/features/setup/data/datasources/setup_local_datasource.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/bloc/setup_bloc.dart';
@@ -29,6 +30,7 @@ void main() async {
   Hive.registerAdapter(BusinessSetupModelAdapter());
   Hive.registerAdapter(VehicleModelAdapter());
   Hive.registerAdapter(VehicleLogModelAdapter());
+  Hive.registerAdapter(DailyClosureModelAdapter());
   Hive.registerAdapter(UserAdapter());
   
   // Open the boxes
@@ -47,11 +49,10 @@ void main() async {
   getIt.registerSingleton<LocalStorageService>(localStorageService);
   getIt.registerSingleton<AuthRepository>(authRepository);
 
-   getIt.registerSingleton<MainBloc>(MainBloc(
-      localStorageService: getIt(),
-      setupLocalDatasource: getIt(),
-    ),
-  );
+  getIt.registerSingleton<MainBloc>(MainBloc(
+    localStorageService: getIt(),
+    setupLocalDatasource: getIt(),
+  ));
   
   runApp(MyApp(setupBox: setupBox));
 }
@@ -70,7 +71,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => AuthBloc(authRepository: getIt.get<AuthRepository>())),
         BlocProvider(create: (_) => SetupBloc(localDatasource: getIt.get<SetupLocalDatasource>())),
         BlocProvider(create: (_) => getIt.get<MainBloc>()),
-        BlocProvider(create: (_) => ClosureBloc()),
+        BlocProvider(create: (_) => ClosureBloc(vehicleRepository: VehicleRepositoryImpl(getIt.get<LocalStorageService>()))),
         BlocProvider(create: (_) => RecordsBloc(VehicleRepositoryImpl(getIt.get<LocalStorageService>()))),
       ],
       child: MaterialApp.router(

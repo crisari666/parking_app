@@ -34,7 +34,7 @@ class RecordItem extends StatelessWidget {
   }
 
   String _getLocalizedPaymentMethod(BuildContext context, String method) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     switch (method.toLowerCase()) {
       case 'cash':
         return l10n.paymentMethodCash;

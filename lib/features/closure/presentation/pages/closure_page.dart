@@ -4,6 +4,8 @@ import 'package:quantum_parking_flutter/features/closure/presentation/bloc/closu
 import 'package:intl/intl.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:quantum_parking_flutter/features/closure/presentation/bloc/closure_event.dart';
+import 'package:quantum_parking_flutter/features/closure/presentation/bloc/closure_state.dart';
 
 @RoutePage()
 class ClosurePage extends StatelessWidget {
@@ -11,8 +13,8 @@ class ClosurePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    
+    final l10n = AppLocalizations.of(context);
+    context.read<ClosureBloc>().add(GenerateDailyClosureRequested());
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.dailyClosure),
@@ -42,22 +44,22 @@ class ClosurePage extends StatelessWidget {
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            '${l10n.date}: ${DateFormat('MMM dd, yyyy').format(state.date)}',
+                            '${l10n.date}: ${DateFormat('MMM dd, yyyy').format(state.closure.date)}',
                             style: const TextStyle(fontSize: 16),
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            '${l10n.totalVehicles}: ${state.totalVehicles}',
+                            '${l10n.totalVehicles}: ${state.closure.totalVehicles}',
                             style: const TextStyle(fontSize: 16),
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            '${l10n.totalCars}: ${state.totalCars}',
+                            '${l10n.totalCars}: ${state.closure.vehiclesByType['car'] ?? 0}',
                             style: const TextStyle(fontSize: 16),
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            '${l10n.totalMotorcycles}: ${state.totalMotorcycles}',
+                            '${l10n.totalMotorcycles}: ${state.closure.vehiclesByType['motorcycle'] ?? 0}',
                             style: const TextStyle(fontSize: 16),
                           ),
                         ],
@@ -80,17 +82,17 @@ class ClosurePage extends StatelessWidget {
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            '${l10n.totalSales}: \$${state.totalSales.toStringAsFixed(2)}',
+                            '${l10n.totalSales}: \$${state.closure.totalIncome.toStringAsFixed(2)}',
                             style: const TextStyle(fontSize: 16),
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            '${l10n.totalDiscounts}: \$${state.totalDiscounts.toStringAsFixed(2)}',
+                            '${l10n.totalDiscounts}: \$0.00',
                             style: const TextStyle(fontSize: 16),
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            '${l10n.netSales}: \$${state.netSales.toStringAsFixed(2)}',
+                            '${l10n.netSales}: \$${state.closure.totalIncome.toStringAsFixed(2)}',
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -118,7 +120,7 @@ class ClosurePage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          context.read<ClosureBloc>().add(LoadClosureRequested());
+          context.read<ClosureBloc>().add(GenerateDailyClosureRequested());
         },
         child: const Icon(Icons.refresh),
       ),
