@@ -78,5 +78,14 @@
   "vehicleTypeTruck": "Camión",
   "vehicleTypeVan": "Camioneta",
   "stillParking": "Aún en Estacionamiento",
-  "vehicleCheckedInSuccess": "Vehículo ingresado exitosamente"
+  "vehicleCheckedInSuccess": "Vehículo ingresado exitosamente",
+  "dailyClosure": "Cierre Diario",
+  "dailySummary": "Resumen Diario",
+  "totalVehicles": "Total de Vehículos",
+  "totalCars": "Total de Autos",
+  "totalMotorcycles": "Total de Motocicletas",
+  "financialSummary": "Resumen Financiero",
+  "totalSales": "Ventas Totales",
+  "totalDiscounts": "Descuentos Totales",
+  "netSales": "Ventas Netas"
 }

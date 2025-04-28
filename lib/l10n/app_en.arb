@@ -78,5 +78,14 @@
   "vehicleTypeTruck": "Truck",
   "vehicleTypeVan": "Van",
   "stillParking": "Still Parking",
-  "vehicleCheckedInSuccess": "Vehicle checked in successfully"
+  "vehicleCheckedInSuccess": "Vehicle checked in successfully",
+  "dailyClosure": "Daily Closure",
+  "dailySummary": "Daily Summary",
+  "totalVehicles": "Total Vehicles",
+  "totalCars": "Total Cars",
+  "totalMotorcycles": "Total Motorcycles",
+  "financialSummary": "Financial Summary",
+  "totalSales": "Total Sales",
+  "totalDiscounts": "Total Discounts",
+  "netSales": "Net Sales"
 }

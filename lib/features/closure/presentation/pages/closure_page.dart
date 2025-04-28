@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quantum_parking_flutter/features/closure/presentation/bloc/closure_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 @RoutePage()
 class ClosurePage extends StatelessWidget {
@@ -10,9 +11,11 @@ class ClosurePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Daily Closure'),
+        title: Text(l10n.dailyClosure),
       ),
       body: BlocBuilder<ClosureBloc, ClosureState>(
         builder: (context, state) {
@@ -30,31 +33,31 @@ class ClosurePage extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          const Text(
-                            'Daily Summary',
-                            style: TextStyle(
+                          Text(
+                            l10n.dailySummary,
+                            style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            'Date: ${DateFormat('MMM dd, yyyy').format(state.date)}',
+                            '${l10n.date}: ${DateFormat('MMM dd, yyyy').format(state.date)}',
                             style: const TextStyle(fontSize: 16),
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Total Vehicles: ${state.totalVehicles}',
+                            '${l10n.totalVehicles}: ${state.totalVehicles}',
                             style: const TextStyle(fontSize: 16),
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Total Cars: ${state.totalCars}',
+                            '${l10n.totalCars}: ${state.totalCars}',
                             style: const TextStyle(fontSize: 16),
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Total Motorcycles: ${state.totalMotorcycles}',
+                            '${l10n.totalMotorcycles}: ${state.totalMotorcycles}',
                             style: const TextStyle(fontSize: 16),
                           ),
                         ],
@@ -68,26 +71,26 @@ class ClosurePage extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          const Text(
-                            'Financial Summary',
-                            style: TextStyle(
+                          Text(
+                            l10n.financialSummary,
+                            style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            'Total Sales: \$${state.totalSales.toStringAsFixed(2)}',
+                            '${l10n.totalSales}: \$${state.totalSales.toStringAsFixed(2)}',
                             style: const TextStyle(fontSize: 16),
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Total Discounts: \$${state.totalDiscounts.toStringAsFixed(2)}',
+                            '${l10n.totalDiscounts}: \$${state.totalDiscounts.toStringAsFixed(2)}',
                             style: const TextStyle(fontSize: 16),
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Net Sales: \$${state.netSales.toStringAsFixed(2)}',
+                            '${l10n.netSales}: \$${state.netSales.toStringAsFixed(2)}',
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -108,8 +111,8 @@ class ClosurePage extends StatelessWidget {
               ),
             );
           }
-          return const Center(
-            child: Text('No data available'),
+          return Center(
+            child: Text(l10n.noData),
           );
         },
       ),
