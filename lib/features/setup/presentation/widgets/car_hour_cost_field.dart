@@ -5,24 +5,25 @@ import 'package:quantum_parking_flutter/features/setup/presentation/bloc/setup_e
 
 class CarHourCostField extends StatelessWidget {
   final String initialValue;
-  
+  final String label;
+
   const CarHourCostField({
     super.key,
     required this.initialValue,
+    required this.label,
   });
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: TextEditingController(text: initialValue),
-      decoration: const InputDecoration(
-        labelText: 'Car Hour Cost',
-        border: OutlineInputBorder(),
-        prefixText: '\$',
-      ),
+    return TextFormField(
+      initialValue: initialValue,
       keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(),
+      ),
       onChanged: (value) {
-        context.read<SetupBloc>().add(CarHourCostChanged(value));
+        context.read<SetupBloc>().add(SetupCarHourCostChanged(value));
       },
     );
   }

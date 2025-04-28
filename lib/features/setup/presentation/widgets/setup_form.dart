@@ -10,12 +10,15 @@ import 'package:quantum_parking_flutter/features/setup/presentation/widgets/car_
 import 'package:quantum_parking_flutter/features/setup/presentation/widgets/motorcycle_hour_cost_field.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/widgets/car_monthly_cost_field.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/widgets/motorcycle_monthly_cost_field.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SetupForm extends StatelessWidget {
   const SetupForm({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return BlocBuilder<SetupBloc, SetupState>(
       builder: (context, state) {
         if (state is SetupLoading) {
@@ -33,26 +36,32 @@ class SetupForm extends StatelessWidget {
               children: [
                 BusinessNameField(
                   initialValue: setup?.businessName ?? '',
+                  label: l10n.businessName,
                 ),
-                const Gap(  10),
+                const Gap(10),
                 BusinessBrandField(
                   initialValue: setup?.businessBrand ?? '',
+                  label: l10n.businessBrand,
                 ),
                 const Gap(10),
                 CarHourCostField(
                   initialValue: setup?.carHourCost.toString() ?? '',
+                  label: l10n.carHourCost,
                 ),
                 const Gap(10),
                 MotorcycleHourCostField(
                   initialValue: setup?.motorcycleHourCost.toString() ?? '',
+                  label: l10n.motorcycleHourCost,
                 ),
                 const Gap(10),
                 CarMonthlyCostField(
                   initialValue: setup?.carMonthlyCost.toString() ?? '',
+                  label: l10n.carMonthlyCost,
                 ),
                 const Gap(10),
                 MotorcycleMonthlyCostField(
                   initialValue: setup?.motorcycleMonthlyCost.toString() ?? '',
+                  label: l10n.motorcycleMonthlyCost,
                 ),
                 const Gap(24),
                 const SetupSubmitButton(),

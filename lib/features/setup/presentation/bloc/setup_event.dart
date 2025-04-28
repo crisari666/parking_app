@@ -9,55 +9,55 @@ abstract class SetupEvent extends Equatable {
 
 class SetupStarted extends SetupEvent {}
 
-class BusinessNameChanged extends SetupEvent {
+class SetupBusinessNameChanged extends SetupEvent {
   final String name;
 
-  const BusinessNameChanged(this.name);
+  const SetupBusinessNameChanged(this.name);
 
   @override
   List<Object> get props => [name];
 }
 
-class BusinessBrandChanged extends SetupEvent {
+class SetupBusinessBrandChanged extends SetupEvent {
   final String brand;
 
-  const BusinessBrandChanged(this.brand);
+  const SetupBusinessBrandChanged(this.brand);
 
   @override
   List<Object> get props => [brand];
 }
 
-class CarHourCostChanged extends SetupEvent {
+class SetupCarHourCostChanged extends SetupEvent {
   final String cost;
 
-  const CarHourCostChanged(this.cost);
+  const SetupCarHourCostChanged(this.cost);
 
   @override
   List<Object> get props => [cost];
 }
 
-class MotorcycleHourCostChanged extends SetupEvent {
+class SetupMotorcycleHourCostChanged extends SetupEvent {
   final String cost;
 
-  const MotorcycleHourCostChanged(this.cost);
+  const SetupMotorcycleHourCostChanged(this.cost);
 
   @override
   List<Object> get props => [cost];
 }
 
-class CarMonthlyCostChanged extends SetupEvent {
+class SetupCarMonthlyCostChanged extends SetupEvent {
   final String cost;
 
-  const CarMonthlyCostChanged(this.cost);
+  const SetupCarMonthlyCostChanged(this.cost);
 
   @override
   List<Object> get props => [cost];
 }
 
-class MotorcycleMonthlyCostChanged extends SetupEvent {
+class SetupMotorcycleMonthlyCostChanged extends SetupEvent {
   final String cost;
 
-  const MotorcycleMonthlyCostChanged(this.cost);
+  const SetupMotorcycleMonthlyCostChanged(this.cost);
 
   @override
   List<Object> get props => [cost];

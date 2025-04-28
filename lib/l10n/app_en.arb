@@ -92,5 +92,12 @@
   "currentClosureDetails": "Current Closure Details",
   "vehiclePlate": "Vehicle Plate",
   "paymentValue": "Payment Value",
-  "vehicleType": "Vehicle Type"
+  "vehicleType": "Vehicle Type",
+  "businessName": "Business Name",
+  "businessBrand": "Business Brand",
+  "carHourCost": "Car Hourly Cost",
+  "motorcycleHourCost": "Motorcycle Hourly Cost",
+  "carMonthlyCost": "Car Monthly Cost",
+  "motorcycleMonthlyCost": "Motorcycle Monthly Cost",
+  "setupSavedSuccess": "Setup saved successfully!"
 }

@@ -8,6 +8,7 @@ import 'package:quantum_parking_flutter/features/setup/presentation/bloc/setup_s
 import 'package:quantum_parking_flutter/injection/injection.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/widgets/setup_form.dart';
 import 'package:quantum_parking_flutter/core/utils/custom_scroll_behaviour.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 @RoutePage()
 class SetupPage extends StatelessWidget {
@@ -15,6 +16,8 @@ class SetupPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return BlocProvider(
       create: (context) => SetupBloc(
         localDatasource: getIt.get<SetupLocalDatasource>(),
@@ -24,8 +27,8 @@ class SetupPage extends StatelessWidget {
           if (state is SetupSuccess && state.setup != null) {
             if (state.isFromSave) {
               ScaffoldMessenger.of(context).showSnackBar(       
-                  const SnackBar(
-                    content: Text('Setup saved successfully!'),
+                  SnackBar(
+                    content: Text(l10n.setupSavedSuccess),
                     backgroundColor: Colors.green,
                   ),
               );
@@ -41,7 +44,7 @@ class SetupPage extends StatelessWidget {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: const Text('Setup'),
+            title: Text(l10n.setup),
           ),
           body: ScrollConfiguration(
             behavior: NoGlowScrollBehaviour(),

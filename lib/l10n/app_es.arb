@@ -92,5 +92,12 @@
   "currentClosureDetails": "Detalles del Cierre Actual",
   "vehiclePlate": "Placa del Vehículo",
   "paymentValue": "Valor del Pago",
-  "vehicleType": "Tipo de Vehículo"
+  "vehicleType": "Tipo de Vehículo",
+  "businessName": "Nombre del Negocio",
+  "businessBrand": "Marca del Negocio",
+  "carHourCost": "Costo por Hora de Auto",
+  "motorcycleHourCost": "Costo por Hora de Motocicleta",
+  "carMonthlyCost": "Costo Mensual de Auto",
+  "motorcycleMonthlyCost": "Costo Mensual de Motocicleta",
+  "setupSavedSuccess": "¡Configuración guardada exitosamente!"
 }

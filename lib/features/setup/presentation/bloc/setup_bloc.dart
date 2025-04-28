@@ -37,27 +37,27 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
       }
     });
 
-    on<BusinessNameChanged>((event, emit) {
+    on<SetupBusinessNameChanged>((event, emit) {
       _businessName = event.name;
     });
 
-    on<BusinessBrandChanged>((event, emit) {
+    on<SetupBusinessBrandChanged>((event, emit) {
       _businessBrand = event.brand;
     });
 
-    on<CarHourCostChanged>((event, emit) {
+    on<SetupCarHourCostChanged>((event, emit) {
       _carHourCost = double.tryParse(event.cost) ?? 0.0;
     });
 
-    on<MotorcycleHourCostChanged>((event, emit) {
+    on<SetupMotorcycleHourCostChanged>((event, emit) {
       _motorcycleHourCost = double.tryParse(event.cost) ?? 0.0;
     });
 
-    on<CarMonthlyCostChanged>((event, emit) {
+    on<SetupCarMonthlyCostChanged>((event, emit) {
       _carMonthlyCost = double.tryParse(event.cost) ?? 0.0;
     });
 
-    on<MotorcycleMonthlyCostChanged>((event, emit) {
+    on<SetupMotorcycleMonthlyCostChanged>((event, emit) {
       _motorcycleMonthlyCost = double.tryParse(event.cost) ?? 0.0;
     });
 

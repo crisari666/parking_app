@@ -5,20 +5,25 @@ import 'package:quantum_parking_flutter/features/setup/presentation/bloc/setup_e
 
 class MotorcycleMonthlyCostField extends StatelessWidget {
   final String initialValue;
-  const MotorcycleMonthlyCostField({super.key, required this.initialValue});
+  final String label;
+
+  const MotorcycleMonthlyCostField({
+    super.key,
+    required this.initialValue,
+    required this.label,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: TextEditingController(text: initialValue),
-      decoration: const InputDecoration(
-        labelText: 'Motorcycle Monthly Cost',
-        border: OutlineInputBorder(),
-        prefixText: '\$',
-      ),
+    return TextFormField(
+      initialValue: initialValue,
       keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(),
+      ),
       onChanged: (value) {
-        context.read<SetupBloc>().add(MotorcycleMonthlyCostChanged(value));
+        context.read<SetupBloc>().add(SetupMotorcycleMonthlyCostChanged(value));
       },
     );
   }
