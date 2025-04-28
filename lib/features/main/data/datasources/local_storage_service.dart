@@ -32,6 +32,7 @@ class LocalStorageService {
         checkOut: vehicle.checkOut,
         totalCost: vehicle.totalCost,
         discount: vehicle.discount,
+        paymentMethod: vehicle.paymentMethod,
       );
       
       await _parkingLogBox.add(log);
@@ -64,6 +65,7 @@ class LocalStorageService {
           checkOut: vehicle.checkOut,
           totalCost: vehicle.totalCost,
           discount: vehicle.discount,
+          paymentMethod: vehicle.paymentMethod,
         );
         
         await _parkingLogBox.putAt(index, updatedLog);

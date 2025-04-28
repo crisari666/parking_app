@@ -40,6 +40,10 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<FindVehicleInParkingRequested>(_findVehicleInParking);
   }
 
+  void _handlePaymentMethodChanged(PaymentMethodChanged event, Emitter<MainState> emit) {
+    _paymentMethod = event.method;
+  }
+
   void _checkOutRequested(CheckOutRequested event, Emitter<MainState> emit) async {
     emit(MainLoading());
     try {
@@ -90,21 +94,17 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         checkOut: checkOutTime,
         totalCost: totalCost,
         discount: discount,
+        paymentMethod: _paymentMethod,
       );
 
       final success = await _localStorageService.updateVehicle(updatedVehicle);
-      if (!success) {
-        emit(const MainError('Failed to update vehicle', isCheckout: true));
-        return;
+      if (success) {
+        emit(MainSuccess('Vehicle checked out successfully'));
+      } else {
+        emit(const MainError('Failed to check out vehicle', isCheckout: true));
       }
-
-      emit(CheckOutSuccess(
-        totalCost: totalCost,
-        discount: discount,
-        finalCost: finalCost,
-      ));
     } catch (e) {
-      emit(MainError(e.toString()));
+      emit(MainError(e.toString(), isCheckout: true));
     }
   }
 
@@ -196,18 +196,6 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       ));
     } catch (e) {
       emit(MainError(e.toString()));
-    }
-  }
-
-  void _handlePaymentMethodChanged(PaymentMethodChanged event, Emitter<MainState> emit) {
-    _paymentMethod = event.method;
-    if (state is VehicleFoundSuccess) {
-      final currentState = state as VehicleFoundSuccess;
-      emit(VehicleFoundSuccess(
-        parkingTime: currentState.parkingTime,
-        paymentValue: currentState.paymentValue,
-        paymentMethod: event.method,
-      ));
     }
   }
 } 

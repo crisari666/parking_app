@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/bloc/records_bloc.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/bloc/records_event.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/bloc/models/vehicle_record.dart';
@@ -14,6 +15,36 @@ class RecordItem extends StatelessWidget {
     required this.record,
     this.hidePlateNumber = false,
   });
+
+  String _getLocalizedVehicleType(BuildContext context, String type) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (type.toLowerCase()) {
+      case 'car':
+        return l10n.vehicleTypeCar;
+      case 'motorcycle':
+        return l10n.vehicleTypeMotorcycle;
+      case 'truck':
+        return l10n.vehicleTypeTruck;
+      case 'van':
+        return l10n.vehicleTypeVan;
+      default:
+        return type;
+    }
+  }
+
+  String _getLocalizedPaymentMethod(BuildContext context, String method) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (method.toLowerCase()) {
+      case 'cash':
+        return l10n.paymentMethodCash;
+      case 'card':
+        return l10n.paymentMethodCard;
+      case 'transfer':
+        return l10n.paymentMethodTransfer;
+      default:
+        return method;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +72,7 @@ class RecordItem extends StatelessWidget {
                         const Icon(Icons.directions_car, size: 20, color: Colors.blueGrey),
                         const SizedBox(width: 6),
                         Text(
-                      record.plateNumber,
+                          record.plateNumber,
                           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                         ),
                       ],
@@ -52,8 +83,8 @@ class RecordItem extends StatelessWidget {
                     children: [
                       const Icon(Icons.category, size: 20, color: Colors.teal),
                       const SizedBox(width: 6),
-                  Text(
-                    record.vehicleType,
+                      Text(
+                        _getLocalizedVehicleType(context, record.vehicleType),
                         style: const TextStyle(fontSize: 15, color: Colors.black87),
                       ),
                     ],
@@ -70,7 +101,7 @@ class RecordItem extends StatelessWidget {
                       const Icon(Icons.login, size: 18, color: Colors.green),
                       const SizedBox(width: 4),
                       Text(
-                    DateFormat('MMM dd, yyyy HH:mm').format(record.checkIn),
+                        DateFormat('MMM dd, yyyy HH:mm').format(record.checkIn),
                         style: const TextStyle(fontSize: 14),
                       ),
                     ],
@@ -102,7 +133,7 @@ class RecordItem extends StatelessWidget {
                   ),
                 ],
               ),
-              // Total cost with icon (if available)
+              // Total cost and payment method with icons (if available)
               if (record.totalCost != null) ...[
                 const SizedBox(height: 8),
                 Row(
@@ -113,6 +144,15 @@ class RecordItem extends StatelessWidget {
                       record.totalCost!.toStringAsFixed(2),
                       style: const TextStyle(fontSize: 14),
                     ),
+                    if (record.paymentMethod != null) ...[
+                      const SizedBox(width: 16),
+                      const Icon(Icons.payment, size: 18, color: Colors.blue),
+                      const SizedBox(width: 4),
+                      Text(
+                        _getLocalizedPaymentMethod(context, record.paymentMethod!),
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                    ],
                   ],
                 ),
               ],

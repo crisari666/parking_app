@@ -22,6 +22,9 @@ class VehicleModel extends HiveObject {
   @HiveField(5)
   double? discount;
 
+  @HiveField(6)
+  String? paymentMethod;
+
   VehicleModel({
     required this.plateNumber,
     required this.vehicleType,
@@ -29,5 +32,6 @@ class VehicleModel extends HiveObject {
     this.checkOut,
     this.totalCost,
     this.discount,
+    this.paymentMethod,
   });
 } 

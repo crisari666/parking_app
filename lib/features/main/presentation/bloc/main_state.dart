@@ -5,12 +5,21 @@ abstract class MainState extends Equatable {
   const MainState();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class MainInitial extends MainState {}
 
 class MainLoading extends MainState {}
+
+class MainSuccess extends MainState {
+  final String message;
+
+  const MainSuccess(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
 
 class CheckInSuccess extends MainState {}
 
@@ -26,7 +35,7 @@ class CheckOutSuccess extends MainState {
   });
 
   @override
-  List<Object> get props => [totalCost, discount, finalCost];
+  List<Object?> get props => [totalCost, discount, finalCost];
 }
 
 class MainError extends MainState {
@@ -37,7 +46,7 @@ class MainError extends MainState {
   const MainError(this.message, {this.isCheckin = false, this.isCheckout = false});
 
   @override
-  List<Object> get props => [message, isCheckin, isCheckout];
+  List<Object?> get props => [message, isCheckin, isCheckout];
 }
 
 class SetupRequired extends MainState {}
@@ -52,11 +61,11 @@ class VehicleFoundSuccess extends MainState {
   const VehicleFoundSuccess({
     required this.parkingTime,
     required this.paymentValue,
-    this.paymentMethod = 'cash',
+    required this.paymentMethod,
   });
 
   @override
-  List<Object> get props => [parkingTime, paymentValue, paymentMethod];
+  List<Object?> get props => [parkingTime, paymentValue, paymentMethod];
 }
 
 // Grace time 10 min

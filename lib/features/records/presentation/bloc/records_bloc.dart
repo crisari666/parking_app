@@ -30,6 +30,7 @@ class RecordsBloc extends Bloc<RecordsEvent, RecordsState> {
           checkIn: vehicle.checkIn,
           checkOut: vehicle.checkOut,
           totalCost: vehicle.totalCost,
+          paymentMethod: vehicle.paymentMethod,
         );
         emit(RecordsSuccess([record]));
       } else {
@@ -50,6 +51,7 @@ class RecordsBloc extends Bloc<RecordsEvent, RecordsState> {
         checkIn: vehicle.checkIn,
         checkOut: vehicle.checkOut,
         totalCost: vehicle.totalCost,
+        paymentMethod: vehicle.paymentMethod,
       )).toList();
       emit(RecordsSuccess(records));
     } catch (e) {
@@ -64,7 +66,7 @@ class RecordsBloc extends Bloc<RecordsEvent, RecordsState> {
     emit(RecordsLoading());
     
     try {
-      final vehicleLogs = await _vehicleRepository.getVehicleParkingLogs    (event.plateNumber);
+      final vehicleLogs = await _vehicleRepository.getVehicleParkingLogs(event.plateNumber);
       
       final records = vehicleLogs.map((log) => VehicleRecord(
             plateNumber: log.plateNumber,
@@ -72,6 +74,7 @@ class RecordsBloc extends Bloc<RecordsEvent, RecordsState> {
             checkIn: log.checkIn,
             checkOut: log.checkOut,
             totalCost: log.totalCost,
+            paymentMethod: log.paymentMethod,
           )).toList();
       
       emit(RecordsSuccess(currentState.records, vehicleLogs: records));

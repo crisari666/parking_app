@@ -6,6 +6,7 @@ class VehicleRecord extends Equatable {
   final DateTime checkIn;
   final DateTime? checkOut;
   final double? totalCost;
+  final String? paymentMethod;
 
   const VehicleRecord({
     required this.plateNumber,
@@ -13,6 +14,7 @@ class VehicleRecord extends Equatable {
     required this.checkIn,
     this.checkOut,
     this.totalCost,
+    this.paymentMethod,
   });
 
   String get duration {
@@ -36,5 +38,6 @@ class VehicleRecord extends Equatable {
         checkIn,
         checkOut,
         totalCost,
+        paymentMethod,
       ];
 }

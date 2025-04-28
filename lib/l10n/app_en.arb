@@ -69,5 +69,12 @@
   "duration": "Duration",
   "totalCost": "Total Cost",
   "alreadyHaveAccountLogin": "¿Ya tienes una cuenta? Inicia sesión",
-  "register": "Register"
+  "register": "Register",
+  "paymentMethodCash": "Cash",
+  "paymentMethodCard": "Card",
+  "paymentMethodTransfer": "Transfer",
+  "vehicleTypeCar": "Car",
+  "vehicleTypeMotorcycle": "Motorcycle",
+  "vehicleTypeTruck": "Truck",
+  "vehicleTypeVan": "Van"
 }

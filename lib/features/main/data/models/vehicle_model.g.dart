@@ -23,13 +23,14 @@ class VehicleModelAdapter extends TypeAdapter<VehicleModel> {
       checkOut: fields[3] as DateTime?,
       totalCost: fields[4] as double?,
       discount: fields[5] as double?,
+      paymentMethod: fields[6] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, VehicleModel obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.plateNumber)
       ..writeByte(1)
@@ -41,7 +42,9 @@ class VehicleModelAdapter extends TypeAdapter<VehicleModel> {
       ..writeByte(4)
       ..write(obj.totalCost)
       ..writeByte(5)
-      ..write(obj.discount);
+      ..write(obj.discount)
+      ..writeByte(6)
+      ..write(obj.paymentMethod);
   }
 
   @override
