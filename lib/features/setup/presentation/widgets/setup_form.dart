@@ -51,7 +51,7 @@ class SetupForm extends StatelessWidget {
                         ),
                         const Gap(24),
                         Text(
-                          'Hourly Rates',
+                          l10n.hourlyRates,
                           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             color: Colors.blue,
                             fontWeight: FontWeight.bold,
@@ -69,7 +69,7 @@ class SetupForm extends StatelessWidget {
                         ),
                         const Gap(24),
                         Text(
-                          'Monthly Rates',
+                          l10n.monthlyRates,
                           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             color: Colors.blue,
                             fontWeight: FontWeight.bold,

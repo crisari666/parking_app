@@ -21,6 +21,7 @@ class CarHourCostField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: label,
         border: const OutlineInputBorder(),
+        prefixIcon: const Icon(Icons.directions_car),
       ),
       onChanged: (value) {
         context.read<SetupBloc>().add(SetupCarHourCostChanged(value));
