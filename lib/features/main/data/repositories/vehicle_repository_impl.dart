@@ -99,6 +99,7 @@ class VehicleRepositoryImpl implements VehicleRepository {
       totalVehicles: dailyLogs.length,
       vehiclesByType: vehiclesByType,
       incomeByPaymentMethod: incomeByPaymentMethod,
+      vehicleLogs: dailyLogs,
     );
   }
 

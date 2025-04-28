@@ -22,13 +22,14 @@ class DailyClosureModelAdapter extends TypeAdapter<DailyClosureModel> {
       totalVehicles: fields[2] as int,
       vehiclesByType: (fields[3] as Map).cast<String, int>(),
       incomeByPaymentMethod: (fields[4] as Map).cast<String, double>(),
+      vehicleLogs: (fields[5] as List).cast<VehicleLogModel>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, DailyClosureModel obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.date)
       ..writeByte(1)
@@ -38,7 +39,9 @@ class DailyClosureModelAdapter extends TypeAdapter<DailyClosureModel> {
       ..writeByte(3)
       ..write(obj.vehiclesByType)
       ..writeByte(4)
-      ..write(obj.incomeByPaymentMethod);
+      ..write(obj.incomeByPaymentMethod)
+      ..writeByte(5)
+      ..write(obj.vehicleLogs);
   }
 
   @override

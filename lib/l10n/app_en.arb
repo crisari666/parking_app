@@ -87,5 +87,10 @@
   "financialSummary": "Financial Summary",
   "totalSales": "Total Sales",
   "totalDiscounts": "Total Discounts",
-  "netSales": "Net Sales"
+  "netSales": "Net Sales",
+  "summary": "Summary",
+  "currentClosureDetails": "Current Closure Details",
+  "vehiclePlate": "Vehicle Plate",
+  "paymentValue": "Payment Value",
+  "vehicleType": "Vehicle Type"
 }
