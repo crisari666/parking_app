@@ -67,5 +67,7 @@
   "type": "Type",
   "checkIn": "Check In",
   "duration": "Duration",
-  "totalCost": "Total Cost"
+  "totalCost": "Total Cost",
+  "alreadyHaveAccountLogin": "¿Ya tienes una cuenta? Inicia sesión",
+  "register": "Register"
 }

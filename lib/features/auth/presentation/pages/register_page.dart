@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:quantum_parking_flutter/routes/app_router.dart';
+import 'package:quantum_parking_flutter/l10n/app_localizations_context.dart';
 
 @RoutePage()
 class RegisterPage extends StatelessWidget {
@@ -12,7 +13,7 @@ class RegisterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Register'),
+        title: Text(context.loc.register),
       ),
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
@@ -31,9 +32,9 @@ class RegisterPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextField(
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: context.loc.email,
+                    border: const OutlineInputBorder(),
                   ),
                   onChanged: (value) {
                     context.read<AuthBloc>().add(EmailChanged(value));
@@ -41,9 +42,9 @@ class RegisterPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 TextField(
-                  decoration: const InputDecoration(
-                    labelText: 'Password',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: context.loc.password,
+                    border: const OutlineInputBorder(),
                   ),
                   obscureText: true,
                   onChanged: (value) {
@@ -55,14 +56,14 @@ class RegisterPage extends StatelessWidget {
                   onPressed: () {
                     context.read<AuthBloc>().add(RegisterRequested());
                   },
-                  child: const Text('Register'),
+                  child: Text(context.loc.register),
                 ),
                 const SizedBox(height: 16),
                 TextButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: const Text('Already have an account? Login'),
+                  child: Text(context.loc.alreadyHaveAccountLogin),
                 ),
               ],
             ),
