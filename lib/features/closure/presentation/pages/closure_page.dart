@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quantum_parking_flutter/features/closure/presentation/bloc/closure_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quantum_parking_flutter/features/closure/presentation/bloc/closure_event.dart';
 import 'package:quantum_parking_flutter/features/closure/presentation/bloc/closure_state.dart';
+import 'package:quantum_parking_flutter/features/closure/presentation/widgets/daily_summary_card.dart';
+import 'package:quantum_parking_flutter/features/closure/presentation/widgets/financial_summary_card.dart';
 
 @RoutePage()
 class ClosurePage extends StatelessWidget {
@@ -29,79 +30,9 @@ class ClosurePage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            l10n.dailySummary,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            '${l10n.date}: ${DateFormat('MMM dd, yyyy').format(state.closure.date)}',
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            '${l10n.totalVehicles}: ${state.closure.totalVehicles}',
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            '${l10n.totalCars}: ${state.closure.vehiclesByType['car'] ?? 0}',
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            '${l10n.totalMotorcycles}: ${state.closure.vehiclesByType['motorcycle'] ?? 0}',
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  DailySummaryCard(closure: state.closure, l10n: l10n),
                   const SizedBox(height: 16),
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            l10n.financialSummary,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            '${l10n.totalSales}: \$${state.closure.totalIncome.toStringAsFixed(2)}',
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            '${l10n.totalDiscounts}: \$0.00',
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            '${l10n.netSales}: \$${state.closure.totalIncome.toStringAsFixed(2)}',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  FinancialSummaryCard(closure: state.closure, l10n: l10n),
                 ],
               ),
             );
