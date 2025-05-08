@@ -48,6 +48,25 @@ class LoginRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [LogoutPage]
+class LogoutRoute extends PageRouteInfo<void> {
+  const LogoutRoute({List<PageRouteInfo>? children})
+      : super(
+          LogoutRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'LogoutRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const LogoutPage();
+    },
+  );
+}
+
+/// generated route for
 /// [MainPage]
 class MainRoute extends PageRouteInfo<void> {
   const MainRoute({List<PageRouteInfo>? children})

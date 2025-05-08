@@ -1,64 +1,9 @@
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quantum_parking_flutter/features/auth/data/repositories/auth_repository.dart';
 import 'package:quantum_parking_flutter/features/auth/domain/models/user.dart';
+import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_event.dart';
+import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_state.dart';
 
-// Events
-abstract class AuthEvent extends Equatable {
-  const AuthEvent();
-
-  @override
-  List<Object> get props => [];
-}
-
-class EmailChanged extends AuthEvent {
-  final String email;
-
-  const EmailChanged(this.email);
-
-  @override
-  List<Object> get props => [email];
-}
-
-class PasswordChanged extends AuthEvent {
-  final String password;
-
-  const PasswordChanged(this.password);
-
-  @override
-  List<Object> get props => [password];
-}
-
-class LoginRequested extends AuthEvent {}
-
-class RegisterRequested extends AuthEvent {}
-
-class CheckAuthStatus extends AuthEvent {}
-
-class LogoutRequested extends AuthEvent {}
-
-// States
-abstract class AuthState extends Equatable {
-  const AuthState();
-
-  @override
-  List<Object> get props => [];
-}
-
-class AuthInitial extends AuthState {}
-
-class AuthLoading extends AuthState {}
-
-class AuthSuccess extends AuthState {}
-
-class AuthError extends AuthState {
-  final String message;
-
-  const AuthError(this.message);
-
-  @override
-  List<Object> get props => [message];
-}
 
 // Bloc
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
