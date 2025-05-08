@@ -22,6 +22,12 @@ class BusinessSetupModel extends HiveObject {
   @HiveField(5)
   final double motorcycleMonthlyCost;
 
+  @HiveField(6)
+  final double carDayCost;
+
+  @HiveField(7)
+  final double motorcycleDayCost;
+
   BusinessSetupModel({
     required this.businessName,
     required this.businessBrand,
@@ -29,5 +35,7 @@ class BusinessSetupModel extends HiveObject {
     required this.motorcycleHourCost,
     required this.carMonthlyCost,
     required this.motorcycleMonthlyCost,
+    required this.carDayCost,
+    required this.motorcycleDayCost,
   });
 } 

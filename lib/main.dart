@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:quantum_parking_flutter/core/network/api_client.dart';
 import 'package:quantum_parking_flutter/core/theme/app_theme.dart';
+import 'package:quantum_parking_flutter/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:quantum_parking_flutter/features/auth/data/repositories/auth_repository.dart';
 import 'package:quantum_parking_flutter/features/auth/domain/models/user.dart';
@@ -41,7 +43,9 @@ void main() async {
   await localStorageService.init();
   
   // Create AuthRepository
-  final authRepository = AuthRepositoryImpl();
+  final authRepository = AuthRepositoryImpl(
+    AuthRemoteDataSourceImpl(ApiClient()),
+  );
   
   //Register dependencies
   await configureDependencies();

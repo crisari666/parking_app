@@ -63,4 +63,22 @@ class SetupMotorcycleMonthlyCostChanged extends SetupEvent {
   List<Object> get props => [cost];
 }
 
+class SetupCarDayCostChanged extends SetupEvent {
+  final String cost;
+
+  const SetupCarDayCostChanged(this.cost);
+
+  @override
+  List<Object> get props => [cost];
+}
+
+class SetupMotorcycleDayCostChanged extends SetupEvent {
+  final String cost;
+
+  const SetupMotorcycleDayCostChanged(this.cost);
+
+  @override
+  List<Object> get props => [cost];
+}
+
 class SetupSubmitted extends SetupEvent {} 

@@ -101,5 +101,7 @@
   "motorcycleMonthlyCost": "Motorcycle Monthly Cost",
   "setupSavedSuccess": "Setup saved successfully!",
   "hourlyRates": "Tarifas por Hora",
-  "monthlyRates": "Tarifas Mensuales"
+  "monthlyRates": "Tarifas Mensuales",
+  "carDayCost": "Car Daily Cost",
+  "motorcycleDayCost": "Motorcycle Daily Cost"
 }

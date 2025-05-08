@@ -10,6 +10,8 @@ import 'package:quantum_parking_flutter/features/setup/presentation/widgets/car_
 import 'package:quantum_parking_flutter/features/setup/presentation/widgets/motorcycle_hour_cost_field.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/widgets/car_monthly_cost_field.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/widgets/motorcycle_monthly_cost_field.dart';
+import 'package:quantum_parking_flutter/features/setup/presentation/widgets/car_day_cost_field.dart';
+import 'package:quantum_parking_flutter/features/setup/presentation/widgets/motorcycle_day_cost_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SetupForm extends StatelessWidget {
@@ -66,6 +68,16 @@ class SetupForm extends StatelessWidget {
                         MotorcycleHourCostField(
                           initialValue: setup?.motorcycleHourCost.toString() ?? '',
                           label: l10n.motorcycleHourCost,
+                        ),
+                        const Gap(16),
+                        CarDayCostField(
+                          initialValue: setup?.carDayCost.toString() ?? '',
+                          label: l10n.carDayCost,
+                        ),
+                        const Gap(16),
+                        MotorcycleDayCostField(
+                          initialValue: setup?.motorcycleDayCost.toString() ?? '',
+                          label: l10n.motorcycleDayCost,
                         ),
                         const Gap(24),
                         Text(

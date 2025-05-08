@@ -33,7 +33,7 @@ class MainPage extends StatelessWidget {
           showDialog(
             context: context,
             barrierDismissible: false,
-            builder: (BuildContext context) {
+            builder: (BuildContext dialogContext) {
               return AlertDialog(
                 title: Text(context.loc.setupRequired),
                 content: Text(context.loc.completeInitialSetup),
@@ -41,7 +41,7 @@ class MainPage extends StatelessWidget {
                   TextButton(
                     child: Text(context.loc.goToSetup),
                     onPressed: () {
-                      context.router.canPop(); // Close dialog
+                      Navigator.of(dialogContext).pop(); // Close dialog
                       context.router.push(const SetupRoute()); // Navigate to setup
                     },
                   ),

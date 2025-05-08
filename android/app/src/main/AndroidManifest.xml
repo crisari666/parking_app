@@ -3,6 +3,8 @@
         android:label="quantum_parking_flutter"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
+        <uses-permission android:name= "android.permission.BLUETOOTH_CONNECT"/>
+        <uses-permission android:name= "android.permission.BLUETOOTH_SCAN"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

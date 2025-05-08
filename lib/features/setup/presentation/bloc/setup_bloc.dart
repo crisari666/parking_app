@@ -1,4 +1,3 @@
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/datasources/setup_local_datasource.dart';
 import '../../data/models/business_setup_model.dart';
@@ -14,6 +13,8 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
   double _motorcycleHourCost = 0.0;
   double _carMonthlyCost = 0.0;
   double _motorcycleMonthlyCost = 0.0;
+  double _carDayCost = 0.0;
+  double _motorcycleDayCost = 0.0;
 
   SetupBloc({required this.localDatasource}) : super(SetupInitial()) {
     // Load initial data
@@ -28,6 +29,8 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
           _motorcycleHourCost = setup.motorcycleHourCost;
           _carMonthlyCost = setup.carMonthlyCost;
           _motorcycleMonthlyCost = setup.motorcycleMonthlyCost;
+          _carDayCost = setup.carDayCost;
+          _motorcycleDayCost = setup.motorcycleDayCost;
           emit(SetupSuccess(setup, isFromSave: false));
         } else {
           emit(const SetupSuccess(null, isFromSave: false));
@@ -61,6 +64,14 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
       _motorcycleMonthlyCost = double.tryParse(event.cost) ?? 0.0;
     });
 
+    on<SetupCarDayCostChanged>((event, emit) {
+      _carDayCost = double.tryParse(event.cost) ?? 0.0;
+    });
+
+    on<SetupMotorcycleDayCostChanged>((event, emit) {
+      _motorcycleDayCost = double.tryParse(event.cost) ?? 0.0;
+    });
+
     on<SetupSubmitted>((event, emit) async {
       emit(SetupLoading());
       try {
@@ -70,7 +81,9 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
           carHourCost: _carHourCost,
           motorcycleHourCost: _motorcycleHourCost,
           carMonthlyCost: _carMonthlyCost,
-          motorcycleMonthlyCost: _motorcycleMonthlyCost
+          motorcycleMonthlyCost: _motorcycleMonthlyCost,
+          carDayCost: _carDayCost,
+          motorcycleDayCost: _motorcycleDayCost
         );
         await localDatasource.saveSetup(setup);
         emit(SetupSuccess(setup, isFromSave: true));
