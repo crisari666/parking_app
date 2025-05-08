@@ -14,7 +14,7 @@ class ApiClient {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
-      ),
+      ), 
     );
 
     _dio.interceptors.add(LogInterceptor(

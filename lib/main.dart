@@ -41,7 +41,7 @@ void main() async {
   await localStorageService.init();
   
   // Create AuthRepository
-  final authRepository = AuthRepository();
+  final authRepository = AuthRepositoryImpl();
   
   //Register dependencies
   await configureDependencies();

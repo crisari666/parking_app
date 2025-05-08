@@ -33,12 +33,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> _onLoginRequested(LoginRequested event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
-      final user = await _authRepository.getCurrentUser();
-      if (user != null && user.email == _email && user.password == _password) {
-        emit(AuthSuccess());
-      } else {
-        emit(const AuthError('Invalid credentials'));
-      }
+      final loginResponse = await _authRepository.login(_email, _password);
+      emit(AuthSuccess());
     } catch (e) {
       emit(AuthError(e.toString()));
     }
