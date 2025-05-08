@@ -68,6 +68,19 @@ class VehicleFoundSuccess extends MainState {
   List<Object?> get props => [parkingTime, paymentValue, paymentMethod];
 }
 
+class PrinterSetupSuccess extends MainState {
+  final String? printerName;
+  final bool isConnected;
+
+  const PrinterSetupSuccess({
+    this.printerName,
+    this.isConnected = false,
+  });
+
+  @override
+  List<Object?> get props => [printerName, isConnected];
+}
+
 // Grace time 10 min
 // Metodo de pago
 // Mostrar

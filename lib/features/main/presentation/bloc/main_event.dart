@@ -5,7 +5,7 @@ abstract class MainEvent extends Equatable {
   const MainEvent();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class PlateNumberChanged extends MainEvent {
@@ -87,6 +87,22 @@ class PaymentMethodChanged extends MainEvent {
   final String method;
 
   const PaymentMethodChanged(this.method);
+
+  @override
+  List<Object> get props => [method];
 }
 
 class VerifySetupRequested extends MainEvent {}
+
+class PrinterSetupRequested extends MainEvent {
+  final String? printerName;
+  final bool isConnected;
+
+  const PrinterSetupRequested({
+    this.printerName,
+    this.isConnected = false,
+  });
+
+  @override
+  List<Object?> get props => [printerName, isConnected];
+}

@@ -36,6 +36,14 @@ class AppDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            leading: const Icon(Icons.print),
+            title: const Text('Printer Setup'),
+            onTap: () {
+              AutoRouter.of(context).push(const PrinterSetupRoute());
+              Navigator.pop(context); // Close the drawer
+            },
+          ),
+          ListTile(
             leading: const Icon(Icons.logout),
             title: Text(l10n.logout),
             onTap: () {

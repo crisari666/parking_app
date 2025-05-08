@@ -86,6 +86,25 @@ class MainRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [PrinterSetupPage]
+class PrinterSetupRoute extends PageRouteInfo<void> {
+  const PrinterSetupRoute({List<PageRouteInfo>? children})
+      : super(
+          PrinterSetupRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'PrinterSetupRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const PrinterSetupPage();
+    },
+  );
+}
+
+/// generated route for
 /// [RecordsPage]
 class RecordsRoute extends PageRouteInfo<void> {
   const RecordsRoute({List<PageRouteInfo>? children})

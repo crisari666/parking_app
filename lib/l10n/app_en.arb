@@ -103,5 +103,11 @@
   "hourlyRates": "Tarifas por Hora",
   "monthlyRates": "Tarifas Mensuales",
   "carDayCost": "Car Daily Cost",
-  "motorcycleDayCost": "Motorcycle Daily Cost"
+  "motorcycleDayCost": "Motorcycle Daily Cost",
+  "printerSetup": "Printer Setup",
+  "noPairedDevices": "No paired devices found",
+  "selectPrinter": "Select Printer",
+  "refreshDevices": "Refresh Devices",
+  "disconnectPrinter": "Disconnect Printer",
+  "pressRefreshToScan": "Press refresh to scan for devices"
 }

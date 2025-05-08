@@ -9,6 +9,7 @@ import 'package:quantum_parking_flutter/features/main/presentation/widgets/app_d
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/check_in_vehicle.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/check_out_vehicle.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/main_page_app_bar.dart';
+import 'package:quantum_parking_flutter/features/main/presentation/widgets/print/print_button.dart';
 import 'package:quantum_parking_flutter/l10n/app_localizations_context.dart';
 import 'package:quantum_parking_flutter/routes/app_router.dart';
 
@@ -70,6 +71,10 @@ class MainPage extends StatelessWidget {
                     CheckInVehicle(),
                     SizedBox(height: 16),
                     CheckOutVehicle(),
+                    // PrintButton(
+                    //   text: 'Hello, World!',
+                    //   qrCodeData: '1234567890',
+                    // ),
                   ],
                 ),
               ),

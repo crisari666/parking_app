@@ -14,6 +14,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   String _checkOutPlateNumber = '';
   String _discount = '0';
   String _paymentMethod = 'cash';
+  String? _printerName;
+  bool _isPrinterConnected = false;
 
   MainBloc({
     required LocalStorageService localStorageService,
@@ -38,6 +40,16 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<VerifySetupRequested>(_verifySetup);
     on<PaymentMethodChanged>(_handlePaymentMethodChanged);
     on<FindVehicleInParkingRequested>(_findVehicleInParking);
+    on<PrinterSetupRequested>(_handlePrinterSetup);
+  }
+
+  void _handlePrinterSetup(PrinterSetupRequested event, Emitter<MainState> emit) {
+    _printerName = event.printerName;
+    _isPrinterConnected = event.isConnected;
+    emit(PrinterSetupSuccess(
+      printerName: _printerName,
+      isConnected: _isPrinterConnected,
+    ));
   }
 
   void _handlePaymentMethodChanged(PaymentMethodChanged event, Emitter<MainState> emit) {

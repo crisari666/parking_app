@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:quantum_parking_flutter/core/network/api_client.dart';
 import 'package:quantum_parking_flutter/core/theme/app_theme.dart';
 import 'package:quantum_parking_flutter/features/auth/data/datasources/auth_remote_data_source.dart';
@@ -27,6 +28,12 @@ void main() async {
   
   // Initialize Hive
   await Hive.initFlutter();
+  
+  // Initialize permissions
+  await Permission.bluetooth.request();
+  await Permission.bluetoothConnect.request();
+  await Permission.bluetoothScan.request();
+  await Permission.location.request();
   
   // Register the adapters
   Hive.registerAdapter(BusinessSetupModelAdapter());

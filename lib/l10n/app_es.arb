@@ -103,5 +103,11 @@
   "hourlyRates": "Tarifas por Hora",
   "monthlyRates": "Tarifas Mensuales",
   "carDayCost": "Costo por Día de Auto",
-  "motorcycleDayCost": "Costo por Día de Motocicleta"
+  "motorcycleDayCost": "Costo por Día de Motocicleta",
+  "printerSetup": "Configuración de Impresora",
+  "noPairedDevices": "No se encontraron dispositivos emparejados",
+  "selectPrinter": "Seleccionar Impresora",
+  "refreshDevices": "Actualizar Dispositivos",
+  "disconnectPrinter": "Desconectar Impresora",
+  "pressRefreshToScan": "Presione actualizar para buscar dispositivos"
 }
