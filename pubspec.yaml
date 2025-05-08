@@ -57,6 +57,7 @@ dependencies:
   auto_route: ^9.3.0+1
   gap: ^3.0.1
   envied: ^0.5.4
+  dio: ^5.4.0
 
 dev_dependencies:
   flutter_launcher_icons: ^0.14.3
