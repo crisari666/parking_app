@@ -109,5 +109,10 @@
   "selectPrinter": "Select Printer",
   "refreshDevices": "Refresh Devices",
   "disconnectPrinter": "Disconnect Printer",
-  "pressRefreshToScan": "Press refresh to scan for devices"
+  "pressRefreshToScan": "Press refresh to scan for devices",
+  "carNightCost": "Car Night Cost",
+  "motorcycleNightCost": "Motorcycle Night Cost",
+  "studentMotorcycleHourCost": "Student Motorcycle Hourly Cost",
+  "dailyRates": "Daily Rates",
+  "nightRates": "Night Rates"
 }

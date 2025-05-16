@@ -109,5 +109,10 @@
   "selectPrinter": "Seleccionar Impresora",
   "refreshDevices": "Actualizar Dispositivos",
   "disconnectPrinter": "Desconectar Impresora",
-  "pressRefreshToScan": "Presione actualizar para buscar dispositivos"
+  "pressRefreshToScan": "Presione actualizar para buscar dispositivos",
+  "carNightCost": "Costo Nocturno de Auto",
+  "motorcycleNightCost": "Costo Nocturno de Motocicleta",
+  "studentMotorcycleHourCost": "Costo por Hora de Motocicleta Estudiantil",
+  "dailyRates": "Tarifas Diarias",
+  "nightRates": "Tarifas Nocturnas"
 }
