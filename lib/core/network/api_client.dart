@@ -28,7 +28,7 @@ class ApiClient {
 
     _dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) {
-        _logger.i('REQUEST[${options.method}] => PATH: ${options.path}');
+        _logger.i('REQUEST[${options.method}] => PATH: ${options.uri}');
         _logger.d('REQUEST HEADERS: ${options.headers}');
         _logger.d('REQUEST DATA: ${options.data}');
         return handler.next(options);
