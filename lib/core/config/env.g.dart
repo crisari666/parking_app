@@ -10,4 +10,6 @@ part of 'env.dart';
 // ignore_for_file: type=lint
 final class _Env {
   static const String apiUrl = 'http://localhost:3001/';
+
+  static const bool isLocalhost = true;
 }
