@@ -30,6 +30,9 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
     on<SetupCarDayCostChanged>(_onCarDayCostChanged);
     on<SetupMotorcycleDayCostChanged>(_onMotorcycleDayCostChanged);
     on<SetupSubmitted>(_onSetupSubmitted);
+    on<SetupStudentMotorcycleHourCostChanged>(_onStudentMotorcycleHourCostChanged);
+    on<SetupCarNightCostChanged>(_onCarNightCostChanged);
+    on<SetupMotorcycleNightCostChanged>(_onMotorcycleNightCostChanged);
   }
 
   Future<void> _onSetupStarted(SetupStarted event, Emitter<SetupState> emit) async {
@@ -107,5 +110,17 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
     } catch (e) {
       emit(SetupError(e.toString()));
     }
+  }
+
+  void _onStudentMotorcycleHourCostChanged(SetupStudentMotorcycleHourCostChanged event, Emitter<SetupState> emit) {
+    _studentMotorcycleHourCost = double.tryParse(event.cost) ?? 0.0;
+  }
+
+  void _onCarNightCostChanged(SetupCarNightCostChanged event, Emitter<SetupState> emit) {
+    _carNightCost = double.tryParse(event.cost) ?? 0.0;
+  }
+
+  void _onMotorcycleNightCostChanged(SetupMotorcycleNightCostChanged event, Emitter<SetupState> emit) {
+    _motorcycleNightCost = double.tryParse(event.cost) ?? 0.0;
   }
 } 
