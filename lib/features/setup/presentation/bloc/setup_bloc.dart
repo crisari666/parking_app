@@ -15,6 +15,9 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
   double _motorcycleMonthlyCost = 0.0;
   double _carDayCost = 0.0;
   double _motorcycleDayCost = 0.0;
+  double _carNightCost = 0.0;
+  double _motorcycleNightCost = 0.0;
+  double _studentMotorcycleHourCost = 0.0;
 
   SetupBloc({required this.localDatasource}) : super(SetupInitial()) {
     // Load initial data
@@ -83,7 +86,10 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
           carMonthlyCost: _carMonthlyCost,
           motorcycleMonthlyCost: _motorcycleMonthlyCost,
           carDayCost: _carDayCost,
-          motorcycleDayCost: _motorcycleDayCost
+          motorcycleDayCost: _motorcycleDayCost,
+          carNightCost: _carNightCost,
+          motorcycleNightCost: _motorcycleNightCost,
+          studentMotorcycleHourCost: _studentMotorcycleHourCost
         );
         await localDatasource.saveSetup(setup);
         emit(SetupSuccess(setup, isFromSave: true));
