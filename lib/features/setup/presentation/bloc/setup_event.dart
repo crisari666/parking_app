@@ -81,4 +81,31 @@ class SetupMotorcycleDayCostChanged extends SetupEvent {
   List<Object> get props => [cost];
 }
 
-class SetupSubmitted extends SetupEvent {} 
+class SetupSubmitted extends SetupEvent {}
+
+class SetupCarNightCostChanged extends SetupEvent {
+  final String cost;
+
+  const SetupCarNightCostChanged({required this.cost});
+
+  @override
+  List<Object> get props => [cost];
+}
+
+class SetupMotorcycleNightCostChanged extends SetupEvent {
+  final String cost;
+
+  SetupMotorcycleNightCostChanged({required this.cost});
+
+  @override
+  List<Object> get props => [cost];
+}
+
+class SetupStudentMotorcycleHourCostChanged extends SetupEvent {
+  final String cost;
+
+  SetupStudentMotorcycleHourCostChanged({required this.cost});
+
+  @override
+  List<Object> get props => [cost];
+} 
