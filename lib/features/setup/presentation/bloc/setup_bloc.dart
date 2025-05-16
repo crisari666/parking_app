@@ -20,82 +20,92 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
   double _studentMotorcycleHourCost = 0.0;
 
   SetupBloc({required this.localDatasource}) : super(SetupInitial()) {
-    // Load initial data
-    on<SetupStarted>((event, emit) async {
-      emit(SetupLoading());
-      try {
-        final setup = await localDatasource.getSetup();
-        if (setup != null) {
-          _businessName = setup.businessName;
-          _businessBrand = setup.businessBrand;
-          _carHourCost = setup.carHourCost;
-          _motorcycleHourCost = setup.motorcycleHourCost;
-          _carMonthlyCost = setup.carMonthlyCost;
-          _motorcycleMonthlyCost = setup.motorcycleMonthlyCost;
-          _carDayCost = setup.carDayCost;
-          _motorcycleDayCost = setup.motorcycleDayCost;
-          emit(SetupSuccess(setup, isFromSave: false));
-        } else {
-          emit(const SetupSuccess(null, isFromSave: false));
-        }
-      } catch (e) {
-        emit(SetupError(e.toString()));
+    on<SetupStarted>(_onSetupStarted);
+    on<SetupBusinessNameChanged>(_onBusinessNameChanged);
+    on<SetupBusinessBrandChanged>(_onBusinessBrandChanged);
+    on<SetupCarHourCostChanged>(_onCarHourCostChanged);
+    on<SetupMotorcycleHourCostChanged>(_onMotorcycleHourCostChanged);
+    on<SetupCarMonthlyCostChanged>(_onCarMonthlyCostChanged);
+    on<SetupMotorcycleMonthlyCostChanged>(_onMotorcycleMonthlyCostChanged);
+    on<SetupCarDayCostChanged>(_onCarDayCostChanged);
+    on<SetupMotorcycleDayCostChanged>(_onMotorcycleDayCostChanged);
+    on<SetupSubmitted>(_onSetupSubmitted);
+  }
+
+  Future<void> _onSetupStarted(SetupStarted event, Emitter<SetupState> emit) async {
+    emit(SetupLoading());
+    try {
+      final setup = await localDatasource.getSetup();
+      if (setup != null) {
+        _businessName = setup.businessName;
+        _businessBrand = setup.businessBrand;
+        _carHourCost = setup.carHourCost;
+        _motorcycleHourCost = setup.motorcycleHourCost;
+        _carMonthlyCost = setup.carMonthlyCost;
+        _motorcycleMonthlyCost = setup.motorcycleMonthlyCost;
+        _carDayCost = setup.carDayCost;
+        _motorcycleDayCost = setup.motorcycleDayCost;
+        emit(SetupSuccess(setup, isFromSave: false));
+      } else {
+        emit(const SetupSuccess(null, isFromSave: false));
       }
-    });
+    } catch (e) {
+      emit(SetupError(e.toString()));
+    }
+  }
 
-    on<SetupBusinessNameChanged>((event, emit) {
-      _businessName = event.name;
-    });
+  void _onBusinessNameChanged(SetupBusinessNameChanged event, Emitter<SetupState> emit) {
+    _businessName = event.name;
+  }
 
-    on<SetupBusinessBrandChanged>((event, emit) {
-      _businessBrand = event.brand;
-    });
+  void _onBusinessBrandChanged(SetupBusinessBrandChanged event, Emitter<SetupState> emit) {
+    _businessBrand = event.brand;
+  }
 
-    on<SetupCarHourCostChanged>((event, emit) {
-      _carHourCost = double.tryParse(event.cost) ?? 0.0;
-    });
+  void _onCarHourCostChanged(SetupCarHourCostChanged event, Emitter<SetupState> emit) {
+    _carHourCost = double.tryParse(event.cost) ?? 0.0;
+  }
 
-    on<SetupMotorcycleHourCostChanged>((event, emit) {
-      _motorcycleHourCost = double.tryParse(event.cost) ?? 0.0;
-    });
+  void _onMotorcycleHourCostChanged(SetupMotorcycleHourCostChanged event, Emitter<SetupState> emit) {
+    _motorcycleHourCost = double.tryParse(event.cost) ?? 0.0;
+  }
 
-    on<SetupCarMonthlyCostChanged>((event, emit) {
-      _carMonthlyCost = double.tryParse(event.cost) ?? 0.0;
-    });
+  void _onCarMonthlyCostChanged(SetupCarMonthlyCostChanged event, Emitter<SetupState> emit) {
+    _carMonthlyCost = double.tryParse(event.cost) ?? 0.0;
+  }
 
-    on<SetupMotorcycleMonthlyCostChanged>((event, emit) {
-      _motorcycleMonthlyCost = double.tryParse(event.cost) ?? 0.0;
-    });
+  void _onMotorcycleMonthlyCostChanged(SetupMotorcycleMonthlyCostChanged event, Emitter<SetupState> emit) {
+    _motorcycleMonthlyCost = double.tryParse(event.cost) ?? 0.0;
+  }
 
-    on<SetupCarDayCostChanged>((event, emit) {
-      _carDayCost = double.tryParse(event.cost) ?? 0.0;
-    });
+  void _onCarDayCostChanged(SetupCarDayCostChanged event, Emitter<SetupState> emit) {
+    _carDayCost = double.tryParse(event.cost) ?? 0.0;
+  }
 
-    on<SetupMotorcycleDayCostChanged>((event, emit) {
-      _motorcycleDayCost = double.tryParse(event.cost) ?? 0.0;
-    });
+  void _onMotorcycleDayCostChanged(SetupMotorcycleDayCostChanged event, Emitter<SetupState> emit) {
+    _motorcycleDayCost = double.tryParse(event.cost) ?? 0.0;
+  }
 
-    on<SetupSubmitted>((event, emit) async {
-      emit(SetupLoading());
-      try {
-        final setup = BusinessSetupModel(
-          businessName: _businessName,
-          businessBrand: _businessBrand,
-          carHourCost: _carHourCost,
-          motorcycleHourCost: _motorcycleHourCost,
-          carMonthlyCost: _carMonthlyCost,
-          motorcycleMonthlyCost: _motorcycleMonthlyCost,
-          carDayCost: _carDayCost,
-          motorcycleDayCost: _motorcycleDayCost,
-          carNightCost: _carNightCost,
-          motorcycleNightCost: _motorcycleNightCost,
-          studentMotorcycleHourCost: _studentMotorcycleHourCost
-        );
-        await localDatasource.saveSetup(setup);
-        emit(SetupSuccess(setup, isFromSave: true));
-      } catch (e) {
-        emit(SetupError(e.toString()));
-      }
-    });
+  Future<void> _onSetupSubmitted(SetupSubmitted event, Emitter<SetupState> emit) async {
+    emit(SetupLoading());
+    try {
+      final setup = BusinessSetupModel(
+        businessName: _businessName,
+        businessBrand: _businessBrand,
+        carHourCost: _carHourCost,
+        motorcycleHourCost: _motorcycleHourCost,
+        carMonthlyCost: _carMonthlyCost,
+        motorcycleMonthlyCost: _motorcycleMonthlyCost,
+        carDayCost: _carDayCost,
+        motorcycleDayCost: _motorcycleDayCost,
+        carNightCost: _carNightCost,
+        motorcycleNightCost: _motorcycleNightCost,
+        studentMotorcycleHourCost: _studentMotorcycleHourCost
+      );
+      await localDatasource.saveSetup(setup);
+      emit(SetupSuccess(setup, isFromSave: true));
+    } catch (e) {
+      emit(SetupError(e.toString()));
+    }
   }
 } 

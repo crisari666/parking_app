@@ -95,7 +95,7 @@ class SetupCarNightCostChanged extends SetupEvent {
 class SetupMotorcycleNightCostChanged extends SetupEvent {
   final String cost;
 
-  SetupMotorcycleNightCostChanged({required this.cost});
+  const SetupMotorcycleNightCostChanged({required this.cost});
 
   @override
   List<Object> get props => [cost];
@@ -104,7 +104,7 @@ class SetupMotorcycleNightCostChanged extends SetupEvent {
 class SetupStudentMotorcycleHourCostChanged extends SetupEvent {
   final String cost;
 
-  SetupStudentMotorcycleHourCostChanged({required this.cost});
+  const SetupStudentMotorcycleHourCostChanged({required this.cost});
 
   @override
   List<Object> get props => [cost];
