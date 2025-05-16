@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
 
 class PrinterTestButton extends StatelessWidget {
   final _logger = Logger();
@@ -21,37 +22,35 @@ class PrinterTestButton extends StatelessWidget {
         return;
       }
 
-      // Print header
-      await PrintBluetoothThermal.writeString(
-        printText: PrintTextSize(
-          size: 2,
-          text: 'TEST QR CODE\n',
-        ),
-      );
+      // Create a generator with default profile
+      final profile = await CapabilityProfile.load();
+      final generator = Generator(PaperSize.mm80, profile);
+      List<int> bytes = [];
 
-      // Print QR code data
-      await PrintBluetoothThermal.writeString(
-        printText: PrintTextSize(
-          size: 1,
-          text: 'ABC123\n',
-        ),
-      );
+      // Print header
+      bytes += generator.text('TEST QR CODE',
+          styles: const PosStyles(
+            align: PosAlign.center,
+            height: PosTextSize.size2,
+            width: PosTextSize.size2,
+          ));
+      bytes += generator.hr();
+
+      // Print QR code
+      bytes += generator.qrcode('ABC123',
+          size: QRSize.size6,
+          cor: QRCorrection.M);
 
       // Print footer
-      await PrintBluetoothThermal.writeString(
-        printText: PrintTextSize(
-          size: 1,
-          text: '\nThank you!\n',
-        ),
-      );
+      bytes += generator.hr();
+      bytes += generator.text('Thank you!',
+          styles: const PosStyles(align: PosAlign.center));
 
       // Cut paper
-      await PrintBluetoothThermal.writeString(
-        printText: PrintTextSize(
-          size: 1,
-          text: '\n\n\n',
-        ),
-      );
+      bytes += generator.cut();
+
+      // Send to printer
+      await PrintBluetoothThermal.writeBytes(bytes);
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
