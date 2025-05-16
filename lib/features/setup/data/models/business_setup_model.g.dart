@@ -25,13 +25,16 @@ class BusinessSetupModelAdapter extends TypeAdapter<BusinessSetupModel> {
       motorcycleMonthlyCost: fields[5] as double,
       carDayCost: fields[6] as double,
       motorcycleDayCost: fields[7] as double,
+      carNightCost: fields[8] as double,
+      motorcycleNightCost: fields[9] as double,
+      studentMotorcycleHourCost: fields[10] as double,
     );
   }
 
   @override
   void write(BinaryWriter writer, BusinessSetupModel obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.businessName)
       ..writeByte(1)
@@ -47,7 +50,13 @@ class BusinessSetupModelAdapter extends TypeAdapter<BusinessSetupModel> {
       ..writeByte(6)
       ..write(obj.carDayCost)
       ..writeByte(7)
-      ..write(obj.motorcycleDayCost);
+      ..write(obj.motorcycleDayCost)
+      ..writeByte(8)
+      ..write(obj.carNightCost)
+      ..writeByte(9)
+      ..write(obj.motorcycleNightCost)
+      ..writeByte(10)
+      ..write(obj.studentMotorcycleHourCost);
   }
 
   @override
