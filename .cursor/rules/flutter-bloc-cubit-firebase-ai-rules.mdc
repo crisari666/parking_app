@@ -32,6 +32,7 @@ alwaysApply: false
     - Use descriptive and meaningful event names for Bloc.
     - Handle state transitions and side effects in Bloc's mapEventToState.
     - Prefer context.read() or context.watch() for accessing Cubit/Bloc states in widgets.
+    - If the Bloc State have more than 4 attributes dont user sealed clasess
     
     Firebase Integration Guidelines
     - Use Firebase Authentication for user sign-in, sign-up, and password management.
