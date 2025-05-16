@@ -111,7 +111,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
       final success = await _localStorageService.updateVehicle(updatedVehicle);
       if (success) {
-        emit(MainSuccess('Vehicle checked out successfully'));
+        emit(const MainSuccess('Vehicle checked out successfully'));
       } else {
         emit(const MainError('Failed to check out vehicle', isCheckout: true));
       }

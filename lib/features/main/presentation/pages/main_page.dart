@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:printing/printing.dart';
 import 'package:quantum_parking_flutter/core/utils/custom_scroll_behaviour.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_bloc.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_event.dart';
@@ -9,7 +10,7 @@ import 'package:quantum_parking_flutter/features/main/presentation/widgets/app_d
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/check_in_vehicle.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/check_out_vehicle.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/main_page_app_bar.dart';
-import 'package:quantum_parking_flutter/features/main/presentation/widgets/print/print_button.dart';
+import 'package:quantum_parking_flutter/features/main/presentation/widgets/printer_setup/printer_test_button_device.dart';
 import 'package:quantum_parking_flutter/l10n/app_localizations_context.dart';
 import 'package:quantum_parking_flutter/routes/app_router.dart';
 
@@ -62,15 +63,21 @@ class MainPage extends StatelessWidget {
           drawer: const AppDrawer(),
           body: ScrollConfiguration(
             behavior: NoGlowScrollBehaviour(),
-            child: const SingleChildScrollView(
+            child: SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    CheckInVehicle(),
-                    SizedBox(height: 16),
-                    CheckOutVehicle(),
+                    const CheckInVehicle(),
+                    const SizedBox(height: 16),
+                    const CheckOutVehicle(),
+                    PrinterTestButtonDevice(defaultPrinter: const Printer(
+                      url: 'bt://00:11:22:33:44:55',  // Bluetooth MAC address format
+                      name: 'POSPrinter',
+                      isDefault: true,
+                      model: 'POSPrinter',
+                    ),),
                     // PrintButton(
                     //   text: 'Hello, World!',
                     //   qrCodeData: '1234567890',
