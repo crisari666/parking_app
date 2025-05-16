@@ -12,6 +12,9 @@ import 'package:quantum_parking_flutter/features/setup/presentation/widgets/car_
 import 'package:quantum_parking_flutter/features/setup/presentation/widgets/motorcycle_monthly_cost_field.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/widgets/car_day_cost_field.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/widgets/motorcycle_day_cost_field.dart';
+import 'package:quantum_parking_flutter/features/setup/presentation/widgets/car_night_cost_field.dart';
+import 'package:quantum_parking_flutter/features/setup/presentation/widgets/motorcycle_night_cost_field.dart';
+import 'package:quantum_parking_flutter/features/setup/presentation/widgets/student_motorcycle_hour_cost_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SetupForm extends StatelessWidget {
@@ -19,7 +22,7 @@ class SetupForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     
     return BlocBuilder<SetupBloc, SetupState>(
       builder: (context, state) {
@@ -47,21 +50,18 @@ class SetupForm extends StatelessWidget {
                           label: l10n.businessName,
                         ),
                         const Gap(16),
-                        BusinessBrandField(
+                         BusinessBrandField(
                           initialValue: setup?.businessBrand ?? '',
                           label: l10n.businessBrand,
                         ),
                         const Gap(24),
                         Text(
                           l10n.hourlyRates,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            color: Colors.blue,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: Theme.of(context).textTheme.titleLarge,
                         ),
                         const Gap(16),
                         CarHourCostField(
-                          initialValue: setup?.carHourCost.toString() ?? '',
+                          initialValue: setup?.carHourCost.toString() ?? '',  
                           label: l10n.carHourCost,
                         ),
                         const Gap(16),
@@ -70,22 +70,14 @@ class SetupForm extends StatelessWidget {
                           label: l10n.motorcycleHourCost,
                         ),
                         const Gap(16),
-                        CarDayCostField(
-                          initialValue: setup?.carDayCost.toString() ?? '',
-                          label: l10n.carDayCost,
-                        ),
-                        const Gap(16),
-                        MotorcycleDayCostField(
-                          initialValue: setup?.motorcycleDayCost.toString() ?? '',
-                          label: l10n.motorcycleDayCost,
+                        StudentMotorcycleHourCostField(
+                          initialValue: setup?.studentMotorcycleHourCost.toString() ?? '',
+                          label: l10n.studentMotorcycleHourCost,
                         ),
                         const Gap(24),
                         Text(
                           l10n.monthlyRates,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            color: Colors.blue,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: Theme.of(context).textTheme.titleLarge,
                         ),
                         const Gap(16),
                         CarMonthlyCostField(
@@ -96,6 +88,36 @@ class SetupForm extends StatelessWidget {
                         MotorcycleMonthlyCostField(
                           initialValue: setup?.motorcycleMonthlyCost.toString() ?? '',
                           label: l10n.motorcycleMonthlyCost,
+                        ),
+                        const Gap(24),
+                        Text(
+                          l10n.dailyRates,
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        const Gap(16),
+                        CarDayCostField(
+                          initialValue: setup?.carDayCost.toString() ?? '',
+                          label: l10n.carDayCost,
+                        ), 
+                        const Gap(16),
+                        MotorcycleDayCostField(
+                          initialValue: setup?.motorcycleDayCost.toString() ?? '',
+                          label: l10n.motorcycleDayCost,
+                        ),
+                        const Gap(24),
+                        Text(
+                          l10n.nightRates,
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        const Gap(16),
+                        CarNightCostField(
+                          initialValue: setup?.carNightCost.toString() ?? '',
+                          label: l10n.carNightCost,
+                        ),
+                        const Gap(16),
+                        MotorcycleNightCostField(
+                          initialValue: setup?.motorcycleNightCost.toString() ?? '',
+                          label: l10n.motorcycleNightCost,
                         ),
                         const Gap(32),
                         const SetupSubmitButton(),
