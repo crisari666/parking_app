@@ -20,7 +20,20 @@ class MotorcycleNightCostField extends StatelessWidget {
       initialValue: initialValue,
       decoration: InputDecoration(
         labelText: label,
-        border: const OutlineInputBorder(),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.blue),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.blue),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.blue, width: 2),
+        ),
+        filled: true,
+        fillColor: Colors.blue.shade50,
       ),
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       inputFormatters: [

@@ -18,10 +18,25 @@ class CarHourCostField extends StatelessWidget {
     return TextFormField(
       initialValue: initialValue,
       keyboardType: TextInputType.number,
+      
       decoration: InputDecoration(
         labelText: label,
-        border: const OutlineInputBorder(),
-        prefixIcon: const Icon(Icons.directions_car),
+        prefixIcon: const Icon(Icons.directions_car, color: Colors.blue),
+        suffixIcon: const Icon(Icons.attach_money, color: Colors.blue),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.blue),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.blue),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.blue, width: 2),
+        ),
+        filled: true,
+        fillColor: Colors.blue.shade50,
       ),
       onChanged: (value) {
         context.read<SetupBloc>().add(SetupCarHourCostChanged(value));
