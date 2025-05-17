@@ -57,19 +57,12 @@ Future<void> registerMainDependencies() async {
     businessesBox: businessesBox,
   ));
 
-
-
   getIt.registerSingleton<AuthRepository>(authRepository);
 
   getIt.registerSingleton<AuthBloc>(AuthBloc(
     authRepository: getIt(),
     setupLocalDatasource: getIt(),
   ));
-
-  
-  
-  
-  
   
   // Initialize LocalStorageService
   final localStorageService = LocalStorageService();

@@ -158,9 +158,9 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     try {
       final setup = await _setupLocalDatasource.getSetup();
       if (setup == null) {
-        final businesses = await _businessRemoteDatasource.getBusiness();
-        if (businesses != null) {
-          final setup = businesses;
+        final business = await _businessRemoteDatasource.getBusiness();
+        if (business != null) {
+          final setup = business;
           await _setupLocalDatasource.saveSetup(setup);
           emit(SetupVerified());
         } else {

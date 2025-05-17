@@ -128,10 +128,12 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
   Future<void> _onSetupSubmitted(SetupSubmitted event, Emitter<SetupState> emit) async {
     emit(SetupLoading());
     try {
-      final setup = BusinessSetupModel(
+      final setup = await _localDatasource.getSetup();
+      final newSetup = BusinessSetupModel(
         businessName: _businessName,
         businessBrand: _businessBrand,
         carHourCost: _carHourCost,
+        businessId: setup?.businessId,
         motorcycleHourCost: _motorcycleHourCost,
         carMonthlyCost: _carMonthlyCost,
         motorcycleMonthlyCost: _motorcycleMonthlyCost,
@@ -141,7 +143,7 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
         motorcycleNightCost: _motorcycleNightCost,
         studentMotorcycleHourCost: _studentMotorcycleHourCost
       );
-      final savedSetup = await _localDatasource.saveSetup(setup);
+      final savedSetup = await _localDatasource.saveSetup(newSetup);
       if(savedSetup.businessId == null) {
         final createdBusiness = await _businessRemoteDatasource.createBusiness(savedSetup);
         final updatedSetup = BusinessSetupModel(
@@ -162,7 +164,24 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
         await _localDatasource.saveSetup(updatedSetup);
         emit(SetupSuccess(updatedSetup, isFromSave: true));
       } else {
-        
+        final BusinessSetupModel updatedBusiness = await _businessRemoteDatasource.updateBusiness(savedSetup.businessId!, savedSetup);
+        final updatedSetup = BusinessSetupModel(
+          name: savedSetup.name,
+          businessName: savedSetup.businessName,
+          businessBrand: savedSetup.businessBrand,
+          carHourCost: savedSetup.carHourCost,
+          motorcycleHourCost: savedSetup.motorcycleHourCost,
+          carMonthlyCost: savedSetup.carMonthlyCost,
+          motorcycleMonthlyCost: savedSetup.motorcycleMonthlyCost,
+          carDayCost: savedSetup.carDayCost,
+          motorcycleDayCost: savedSetup.motorcycleDayCost,
+          carNightCost: savedSetup.carNightCost,
+          motorcycleNightCost: savedSetup.motorcycleNightCost,
+          studentMotorcycleHourCost: savedSetup.studentMotorcycleHourCost,
+          businessId: updatedBusiness.businessId,
+        );
+        await _localDatasource.saveSetup(updatedSetup);
+        emit(SetupSuccess(updatedSetup, isFromSave: true));
       }
     } catch (e) {
       emit(SetupError(e.toString()));
