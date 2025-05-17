@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:injectable/injectable.dart';
+import 'package:quantum_parking_flutter/core/contants/hive_constants.dart';
 import 'package:quantum_parking_flutter/core/network/api_client.dart';
 import 'package:quantum_parking_flutter/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:quantum_parking_flutter/features/auth/data/repositories/auth_repository.dart';
@@ -29,20 +30,7 @@ Future<void> registerMainDependencies() async {
 
   await configureDependencies();
 
-  final apiClient = ApiClient();
-
-  getIt.registerSingleton<ApiClient>(apiClient);
-
-  final authRepository = AuthRepositoryImpl(
-    AuthRemoteDataSourceImpl(apiClient),
-  );
-
-
-
-  getIt.registerSingleton<AuthRepository>(authRepository);
-
-  getIt.registerSingleton<AuthBloc>(AuthBloc(authRepository: getIt()));
-
+  //Hive setup
   await Hive.initFlutter();
   // Register the adapters
   Hive.registerAdapter(BusinessSetupModelAdapter());
@@ -51,15 +39,45 @@ Future<void> registerMainDependencies() async {
   Hive.registerAdapter(DailyClosureModelAdapter());
   Hive.registerAdapter(UserAdapter());
   
+  //ApiClient
+  final apiClient = ApiClient();
+  getIt.registerSingleton<ApiClient>(apiClient);
+
   // Open the boxes
-  final setupBox = await Hive.openBox<BusinessSetupModel>('setup_box');
+  final setupBox = await Hive.openBox<BusinessSetupModel>(HiveConstants.setupBox);
+  final businessesBox = await Hive.openBox<List<BusinessSetupModel>>(HiveConstants.businessesBox);
+
+
+  final authRepository = AuthRepositoryImpl(
+    AuthRemoteDataSourceImpl(apiClient),
+  );
+
+  getIt.registerSingleton<SetupLocalDatasource>(SetupLocalDatasourceImpl(
+    setupBox: setupBox, 
+    businessesBox: businessesBox,
+  ));
+
+
+
+  getIt.registerSingleton<AuthRepository>(authRepository);
+
+  getIt.registerSingleton<AuthBloc>(AuthBloc(
+    authRepository: getIt(),
+    setupLocalDatasource: getIt(),
+  ));
+
+  
+  
+  
+  
   
   // Initialize LocalStorageService
   final localStorageService = LocalStorageService();
   await localStorageService.init();
   
   // Create AuthRepositor
-  getIt.registerSingleton<SetupLocalDatasource>(SetupLocalDatasourceImpl(setupBox));
+  
+  
   getIt.registerSingleton<LocalStorageService>(localStorageService);
   getIt.registerSingleton<BusinessRemoteDatasource>(BusinessRemoteDatasourceImpl(
     apiClient: getIt(),
@@ -68,5 +86,6 @@ Future<void> registerMainDependencies() async {
   getIt.registerSingleton<MainBloc>(MainBloc(
     localStorageService: getIt(),
     setupLocalDatasource: getIt(),
+    businessRemoteDatasource: getIt(),
   ));
 }

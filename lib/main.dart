@@ -8,6 +8,7 @@ import 'package:quantum_parking_flutter/core/theme/app_theme.dart';
 import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:quantum_parking_flutter/features/auth/data/repositories/auth_repository.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_bloc.dart';
+import 'package:quantum_parking_flutter/features/setup/data/datasources/setup_local_datasource.dart';
 import 'package:quantum_parking_flutter/injection/injection.dart';
 import 'package:quantum_parking_flutter/routes/app_router.dart';
 import 'features/setup/data/models/business_setup_model.dart';
@@ -39,7 +40,10 @@ class MyApp extends StatelessWidget {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => AuthBloc(authRepository: getIt.get<AuthRepository>())),
+        BlocProvider(create: (_) => AuthBloc(
+          authRepository: getIt.get<AuthRepository>(),
+          setupLocalDatasource: getIt.get<SetupLocalDatasource>(),
+        )),
         BlocProvider(create: (_) => getIt.get<MainBloc>()),
         // BlocProvider(create: (_) => ClosureBloc(vehicleRepository: VehicleRepositoryImpl(getIt.get<LocalStorageService>()))),
         // BlocProvider(create: (_) => RecordsBloc(VehicleRepositoryImpl(getIt.get<LocalStorageService>()))),

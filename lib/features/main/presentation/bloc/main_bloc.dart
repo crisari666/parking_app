@@ -3,12 +3,14 @@ import 'package:quantum_parking_flutter/features/main/data/datasources/local_sto
 import 'package:quantum_parking_flutter/features/main/data/models/vehicle_model.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_event.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_state.dart';
+import 'package:quantum_parking_flutter/features/setup/data/datasources/business_remote_datasource.dart';
 import 'package:quantum_parking_flutter/features/setup/data/datasources/setup_local_datasource.dart';
 
 // Bloc
 class MainBloc extends Bloc<MainEvent, MainState> {
   final LocalStorageService _localStorageService;
   final SetupLocalDatasource _setupLocalDatasource;
+  final BusinessRemoteDatasource _businessRemoteDatasource;
   String _plateNumber = '';
   String _vehicleType = '';
   String _checkOutPlateNumber = '';
@@ -20,8 +22,10 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   MainBloc({
     required LocalStorageService localStorageService,
     required SetupLocalDatasource setupLocalDatasource,
+    required BusinessRemoteDatasource businessRemoteDatasource,
   }) : _localStorageService = localStorageService,
        _setupLocalDatasource = setupLocalDatasource,
+       _businessRemoteDatasource = businessRemoteDatasource,
        super(MainInitial()) {
     on<PlateNumberChanged>((event, emit) {
       _plateNumber = event.plateNumber;

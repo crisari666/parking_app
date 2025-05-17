@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import 'package:logger/logger.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
 
 class PrinterTestButton extends StatelessWidget {

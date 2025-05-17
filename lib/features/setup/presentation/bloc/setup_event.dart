@@ -108,4 +108,6 @@ class SetupStudentMotorcycleHourCostChanged extends SetupEvent {
 
   @override
   List<Object> get props => [cost];
-} 
+}
+
+class SetupFetchBusinesses extends SetupEvent {} 

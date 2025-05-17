@@ -3,6 +3,7 @@ import '../models/business_setup_model.dart';
 
 abstract class BusinessRemoteDatasource {
   Future<BusinessSetupModel> createBusiness(BusinessSetupModel business);
+  Future<List<BusinessSetupModel>> getBusinesses();
 }
 
 class BusinessRemoteDatasourceImpl implements BusinessRemoteDatasource {
@@ -27,6 +28,22 @@ class BusinessRemoteDatasourceImpl implements BusinessRemoteDatasource {
       }
     } catch (e) {
       throw Exception('Failed to create business: $e');
+    }
+  }
+
+  @override
+  Future<List<BusinessSetupModel>> getBusinesses() async {
+    try {
+      final response = await _apiClient.dio.get('/business');
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data;
+        return data.map((json) => BusinessSetupModel.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to get businesses: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to get businesses: $e');
     }
   }
 }

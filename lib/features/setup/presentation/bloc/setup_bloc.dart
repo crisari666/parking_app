@@ -40,6 +40,7 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
     on<SetupStudentMotorcycleHourCostChanged>(_onStudentMotorcycleHourCostChanged);
     on<SetupCarNightCostChanged>(_onCarNightCostChanged);
     on<SetupMotorcycleNightCostChanged>(_onMotorcycleNightCostChanged);
+    on<SetupFetchBusinesses>(_onFetchBusinesses);
   }
 
   Future<void> _onSetupStarted(SetupStarted event, Emitter<SetupState> emit) async {
@@ -55,6 +56,34 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
         _motorcycleMonthlyCost = setup.motorcycleMonthlyCost;
         _carDayCost = setup.carDayCost;
         _motorcycleDayCost = setup.motorcycleDayCost;
+        emit(SetupSuccess(setup, isFromSave: false));
+      } else {
+        emit(const SetupSuccess(null, isFromSave: false));
+      }
+    } catch (e) {
+      emit(SetupError(e.toString()));
+    }
+  }
+
+  Future<void> _onFetchBusinesses(SetupFetchBusinesses event, Emitter<SetupState> emit) async {
+    emit(SetupLoading());
+    try {
+      final businesses = await _businessRemoteDatasource.getBusinesses();
+      await _localDatasource.saveBusinesses(businesses);
+      
+      if (businesses.isNotEmpty) {
+        final setup = businesses.first;
+        _businessName = setup.businessName;
+        _businessBrand = setup.businessBrand;
+        _carHourCost = setup.carHourCost;
+        _motorcycleHourCost = setup.motorcycleHourCost;
+        _carMonthlyCost = setup.carMonthlyCost;
+        _motorcycleMonthlyCost = setup.motorcycleMonthlyCost;
+        _carDayCost = setup.carDayCost;
+        _motorcycleDayCost = setup.motorcycleDayCost;
+        _carNightCost = setup.carNightCost;
+        _motorcycleNightCost = setup.motorcycleNightCost;
+        _studentMotorcycleHourCost = setup.studentMotorcycleHourCost;
         emit(SetupSuccess(setup, isFromSave: false));
       } else {
         emit(const SetupSuccess(null, isFromSave: false));
@@ -132,6 +161,8 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
         );
         await _localDatasource.saveSetup(updatedSetup);
         emit(SetupSuccess(updatedSetup, isFromSave: true));
+      } else {
+        
       }
     } catch (e) {
       emit(SetupError(e.toString()));

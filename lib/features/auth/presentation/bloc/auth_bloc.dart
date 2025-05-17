@@ -3,16 +3,21 @@ import 'package:quantum_parking_flutter/features/auth/data/repositories/auth_rep
 import 'package:quantum_parking_flutter/features/auth/domain/models/user.dart';
 import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_event.dart';
 import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_state.dart';
+import 'package:quantum_parking_flutter/features/setup/data/datasources/setup_local_datasource.dart';
 
 
 // Bloc
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository _authRepository;
+  final SetupLocalDatasource _setupLocalDatasource;
   String _email = '';
   String _password = '';
 
-  AuthBloc({required AuthRepository authRepository})
-      : _authRepository = authRepository,
+    AuthBloc({
+    required AuthRepository authRepository,
+    required SetupLocalDatasource setupLocalDatasource,
+  })  : _authRepository = authRepository,
+        _setupLocalDatasource = setupLocalDatasource,
         super(AuthInitial()) {
     on<EmailChanged>(_onEmailChanged);
     on<PasswordChanged>(_onPasswordChanged);
@@ -72,6 +77,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> _onLogoutRequested(LogoutRequested event, Emitter<AuthState> emit) async {
     try {
       await _authRepository.logout();
+      await _setupLocalDatasource.clear();
       emit(AuthInitial());
     } catch (e) {
       emit(AuthError(e.toString()));
