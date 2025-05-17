@@ -68,9 +68,7 @@ class PrinterTestButton extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    
+  Widget build(BuildContext context) {    
     return ElevatedButton.icon(
       onPressed: () => _printTestQRCode(context),
       icon: const Icon(Icons.qr_code),

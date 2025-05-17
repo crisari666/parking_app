@@ -40,7 +40,6 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => AuthBloc(authRepository: getIt.get<AuthRepository>())),
-        // BlocProvider(create: (_) => SetupBloc(localDatasource: getIt.get<SetupLocalDatasource>())),
         BlocProvider(create: (_) => getIt.get<MainBloc>()),
         // BlocProvider(create: (_) => ClosureBloc(vehicleRepository: VehicleRepositoryImpl(getIt.get<LocalStorageService>()))),
         // BlocProvider(create: (_) => RecordsBloc(VehicleRepositoryImpl(getIt.get<LocalStorageService>()))),

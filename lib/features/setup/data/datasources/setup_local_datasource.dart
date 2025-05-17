@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 import '../models/business_setup_model.dart';
 
 abstract class SetupLocalDatasource {
-  Future<void> saveSetup(BusinessSetupModel setup);
+  Future<BusinessSetupModel> saveSetup(BusinessSetupModel setup);
   Future<BusinessSetupModel?> getSetup();
 }
 
@@ -15,8 +15,10 @@ class SetupLocalDatasourceImpl implements SetupLocalDatasource {
   SetupLocalDatasourceImpl(this.box);
 
   @override
-  Future<void> saveSetup(BusinessSetupModel setup) async {
+  Future<BusinessSetupModel> saveSetup(BusinessSetupModel setup) async {
     await box.put(setupKey, setup);
+    
+    return setup;
   }
 
   @override

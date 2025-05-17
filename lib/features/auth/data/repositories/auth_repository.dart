@@ -45,9 +45,10 @@ class AuthRepositoryImpl implements AuthRepository {
     final response = await _remoteDataSource.login(email, password);
 
     // Save the token
-    final box = await _box;
-    await box.put(_tokenKey, response.token);
+    await _remoteDataSource.setAuthToken(response.token);
 
     return response;
   }
+
+  
 } 

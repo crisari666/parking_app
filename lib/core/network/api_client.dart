@@ -2,10 +2,14 @@ import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
 import 'package:quantum_parking_flutter/core/config/env.dart';
 import 'package:quantum_parking_flutter/core/utils/network_utils.dart';
+import 'package:hive/hive.dart';
 
 class ApiClient {
   late final Dio _dio;
   final _logger = Logger();
+  
+  static const String _boxName = 'authBox';
+  static const String _tokenKey = 'authToken';
   
   ApiClient() {
     _initializeDio();
@@ -57,11 +61,21 @@ class ApiClient {
 
   Dio get dio => _dio;
 
-  void setAuthToken(String token) {
+  Future<void> setAuthToken(String token) async {
+    // Set token in API headers
     _dio.options.headers['Authorization'] = 'Bearer $token';
+    
+    // Store token in local storage
+    final box = await Hive.openBox(_boxName);
+    await box.put(_tokenKey, token);
   }
 
-  void clearAuthToken() {
+  Future<void> clearAuthToken() async {
+    // Clear token from API headers
     _dio.options.headers.remove('Authorization');
+    
+    // Clear token from local storage
+    final box = await Hive.openBox(_boxName);
+    await box.delete(_tokenKey);
   }
 } 

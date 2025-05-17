@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quantum_parking_flutter/features/setup/data/datasources/business_remote_datasource.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/bloc/setup_bloc.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/bloc/setup_event.dart';
 import 'package:auto_route/auto_route.dart';
@@ -21,6 +22,7 @@ class SetupPage extends StatelessWidget {
     return BlocProvider(
       create: (context) => SetupBloc(
         localDatasource: getIt.get<SetupLocalDatasource>(),
+        businessRemoteDatasource: getIt.get<BusinessRemoteDatasource>(),
       )..add(SetupStarted()),
       child: BlocListener<SetupBloc, SetupState>(
         listener: (context, state) {

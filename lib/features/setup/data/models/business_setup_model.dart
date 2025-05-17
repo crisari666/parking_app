@@ -73,6 +73,7 @@ class BusinessSetupModel extends HiveObject {
       'carNightCost': carNightCost,
       'motorcycleNightCost': motorcycleNightCost,
       'studentMotorcycleHourCost': studentMotorcycleHourCost,
+      'businessId': businessId ?? '',
     };
   }
 
@@ -90,6 +91,7 @@ class BusinessSetupModel extends HiveObject {
       carNightCost: (json['carNightCost'] as num).toDouble(),
       motorcycleNightCost: (json['motorcycleNightCost'] as num).toDouble(),
       studentMotorcycleHourCost: (json['studentMotorcycleHourCost'] as num).toDouble(),
+      businessId: json['_id'],
     );
   }
 } 

@@ -1,5 +1,4 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:quantum_parking_flutter/core/network/api_client.dart';
 import '../models/business_setup_model.dart';
 
 abstract class BusinessRemoteDatasource {
@@ -7,27 +6,22 @@ abstract class BusinessRemoteDatasource {
 }
 
 class BusinessRemoteDatasourceImpl implements BusinessRemoteDatasource {
-  final http.Client client;
-  final String baseUrl;
+  final ApiClient _apiClient;
 
   BusinessRemoteDatasourceImpl({
-    required this.client,
-    required this.baseUrl,
-  });
+    required ApiClient apiClient,
+  }) : _apiClient = apiClient;
 
   @override
   Future<BusinessSetupModel> createBusiness(BusinessSetupModel business) async {
     try {
-      final response = await client.post(
-        Uri.parse('$baseUrl/business'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(business.toJson()),
+      final response = await _apiClient.dio.post(
+        '/business',
+        data: business.toJson(),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return BusinessSetupModel.fromJson(jsonDecode(response.body));
+        return BusinessSetupModel.fromJson(response.data);
       } else {
         throw Exception('Failed to create business: ${response.statusCode}');
       }

@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quantum_parking_flutter/features/setup/data/datasources/business_remote_datasource.dart';
 import '../../data/datasources/setup_local_datasource.dart';
 import '../../data/models/business_setup_model.dart';
 import 'setup_event.dart';
@@ -6,7 +7,9 @@ import 'setup_state.dart';
 
 // Bloc
 class SetupBloc extends Bloc<SetupEvent, SetupState> {
-  final SetupLocalDatasource localDatasource;
+  final SetupLocalDatasource _localDatasource;
+  final BusinessRemoteDatasource _businessRemoteDatasource;
+  
   String _businessName = '';
   String _businessBrand = '';
   double _carHourCost = 0.0;
@@ -18,8 +21,12 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
   double _carNightCost = 0.0;
   double _motorcycleNightCost = 0.0;
   double _studentMotorcycleHourCost = 0.0;
-
-  SetupBloc({required this.localDatasource}) : super(SetupInitial()) {
+  SetupBloc({
+    required SetupLocalDatasource localDatasource, 
+    required BusinessRemoteDatasource businessRemoteDatasource,
+  }) : _localDatasource = localDatasource, 
+    _businessRemoteDatasource = businessRemoteDatasource, 
+  super(SetupInitial()) {
     on<SetupStarted>(_onSetupStarted);
     on<SetupBusinessNameChanged>(_onBusinessNameChanged);
     on<SetupBusinessBrandChanged>(_onBusinessBrandChanged);
@@ -38,7 +45,7 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
   Future<void> _onSetupStarted(SetupStarted event, Emitter<SetupState> emit) async {
     emit(SetupLoading());
     try {
-      final setup = await localDatasource.getSetup();
+      final setup = await _localDatasource.getSetup();
       if (setup != null) {
         _businessName = setup.businessName;
         _businessBrand = setup.businessBrand;
@@ -105,8 +112,27 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
         motorcycleNightCost: _motorcycleNightCost,
         studentMotorcycleHourCost: _studentMotorcycleHourCost
       );
-      await localDatasource.saveSetup(setup);
-      emit(SetupSuccess(setup, isFromSave: true));
+      final savedSetup = await _localDatasource.saveSetup(setup);
+      if(savedSetup.businessId == null) {
+        final createdBusiness = await _businessRemoteDatasource.createBusiness(savedSetup);
+        final updatedSetup = BusinessSetupModel(
+          name: savedSetup.name,
+          businessName: savedSetup.businessName,
+          businessBrand: savedSetup.businessBrand,
+          carHourCost: savedSetup.carHourCost,
+          motorcycleHourCost: savedSetup.motorcycleHourCost,
+          carMonthlyCost: savedSetup.carMonthlyCost,
+          motorcycleMonthlyCost: savedSetup.motorcycleMonthlyCost,
+          carDayCost: savedSetup.carDayCost,
+          motorcycleDayCost: savedSetup.motorcycleDayCost,
+          carNightCost: savedSetup.carNightCost,
+          motorcycleNightCost: savedSetup.motorcycleNightCost,
+          studentMotorcycleHourCost: savedSetup.studentMotorcycleHourCost,
+          businessId: createdBusiness.businessId,
+        );
+        await _localDatasource.saveSetup(updatedSetup);
+        emit(SetupSuccess(updatedSetup, isFromSave: true));
+      }
     } catch (e) {
       emit(SetupError(e.toString()));
     }

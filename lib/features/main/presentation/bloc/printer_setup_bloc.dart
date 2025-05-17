@@ -91,7 +91,7 @@ class PrinterSetupBloc extends Bloc<PrinterSetupEvent, PrinterSetupState> {
       final bool isConnected = await PrintBluetoothThermal.connectionStatus;
       if (isConnected) {
         emit(PrinterSetupSuccess(
-          pairedDevices: [],
+          pairedDevices: const [],
           isConnected: isConnected,
         ));
       } else {

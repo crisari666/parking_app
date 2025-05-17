@@ -11,6 +11,7 @@ import 'package:quantum_parking_flutter/features/main/data/models/vehicle_model.
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_bloc.dart';
 import 'package:quantum_parking_flutter/features/records/data/models/daily_closure_model.dart';
 import 'package:quantum_parking_flutter/features/records/data/models/vehicle_log_model.dart';
+import 'package:quantum_parking_flutter/features/setup/data/datasources/business_remote_datasource.dart';
 import 'package:quantum_parking_flutter/features/setup/data/datasources/setup_local_datasource.dart';
 import 'package:quantum_parking_flutter/features/setup/data/models/business_setup_model.dart';
 import 'injection.config.dart';
@@ -28,11 +29,15 @@ Future<void> registerMainDependencies() async {
 
   await configureDependencies();
 
+  final apiClient = ApiClient();
 
+  getIt.registerSingleton<ApiClient>(apiClient);
 
   final authRepository = AuthRepositoryImpl(
-    AuthRemoteDataSourceImpl(ApiClient()),
+    AuthRemoteDataSourceImpl(apiClient),
   );
+
+
 
   getIt.registerSingleton<AuthRepository>(authRepository);
 
@@ -56,7 +61,9 @@ Future<void> registerMainDependencies() async {
   // Create AuthRepositor
   getIt.registerSingleton<SetupLocalDatasource>(SetupLocalDatasourceImpl(setupBox));
   getIt.registerSingleton<LocalStorageService>(localStorageService);
-
+  getIt.registerSingleton<BusinessRemoteDatasource>(BusinessRemoteDatasourceImpl(
+    apiClient: getIt(),
+  ));
 
   getIt.registerSingleton<MainBloc>(MainBloc(
     localStorageService: getIt(),
