@@ -68,11 +68,11 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
   Future<void> _onFetchBusinesses(SetupFetchBusinesses event, Emitter<SetupState> emit) async {
     emit(SetupLoading());
     try {
-      final businesses = await _businessRemoteDatasource.getBusinesses();
-      await _localDatasource.saveBusinesses(businesses);
-      
-      if (businesses.isNotEmpty) {
-        final setup = businesses.first;
+      final business = await _businessRemoteDatasource.getBusiness();
+    
+      if (business != null) {
+        await _localDatasource.saveSetup(business);
+        final setup = business;
         _businessName = setup.businessName;
         _businessBrand = setup.businessBrand;
         _carHourCost = setup.carHourCost;
