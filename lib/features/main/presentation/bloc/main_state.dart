@@ -1,84 +1,150 @@
 // States
 import 'package:equatable/equatable.dart';
 
-abstract class MainState extends Equatable {
-  const MainState();
+enum MainStateStatus {
+  initial,
+  loading,
+  success,
+  checkInSuccess,
+  checkOutSuccess,
+  error,
+  setupRequired,
+  setupVerified,
+  vehicleFound,
+  printerSetup;
 
-  @override
-  List<Object?> get props => [];
+  bool get isInitial => this == initial;
+  bool get isLoading => this == loading;
+  bool get isSuccess => this == success;
+  bool get isCheckInSuccess => this == checkInSuccess;
+  bool get isCheckOutSuccess => this == checkOutSuccess;
+  bool get isError => this == error;
+  bool get isSetupRequired => this == setupRequired;
+  bool get isSetupVerified => this == setupVerified;
+  bool get isVehicleFound => this == vehicleFound;
+  bool get isPrinterSetup => this == printerSetup;
 }
 
-class MainInitial extends MainState {}
-
-class MainLoading extends MainState {}
-
-class MainSuccess extends MainState {
-  final String message;
-
-  const MainSuccess(this.message);
-
-  @override
-  List<Object?> get props => [message];
-}
-
-class CheckInSuccess extends MainState {}
-
-class CheckOutSuccess extends MainState {
-  final double totalCost;
-  final double discount;
-  final double finalCost;
-
-  const CheckOutSuccess({
-    required this.totalCost,
-    required this.discount,
-    required this.finalCost,
-  });
-
-  @override
-  List<Object?> get props => [totalCost, discount, finalCost];
-}
-
-class MainError extends MainState {
+class MainState extends Equatable {
+  final MainStateStatus status;
+  final bool isLoading;
+  final String? message;
   final bool isCheckin;
   final bool isCheckout;
-  final String message;
-
-  const MainError(this.message, {this.isCheckin = false, this.isCheckout = false});
-
-  @override
-  List<Object?> get props => [message, isCheckin, isCheckout];
-}
-
-class SetupRequired extends MainState {}
-
-class SetupVerified extends MainState {}
-
-class VehicleFoundSuccess extends MainState {
-  final String parkingTime;
-  final double paymentValue;
-  final String paymentMethod;
-
-  const VehicleFoundSuccess({
-    required this.parkingTime,
-    required this.paymentValue,
-    required this.paymentMethod,
-  });
-
-  @override
-  List<Object?> get props => [parkingTime, paymentValue, paymentMethod];
-}
-
-class PrinterSetupSuccess extends MainState {
+  final String? parkingTime;
+  final double? paymentValue;
+  final String? paymentMethod;
   final String? printerName;
-  final bool isConnected;
+  final bool isPrinterConnected;
+  final bool isSetupRequired;
+  final bool isSetupVerified;
 
-  const PrinterSetupSuccess({
+  const MainState({
+    this.status = MainStateStatus.initial,
+    this.isLoading = false,
+    this.message,
+    this.isCheckin = false,
+    this.isCheckout = false,
+    this.parkingTime,
+    this.paymentValue,
+    this.paymentMethod,
     this.printerName,
-    this.isConnected = false,
+    this.isPrinterConnected = false,
+    this.isSetupRequired = false,
+    this.isSetupVerified = false,
   });
 
+  factory MainState.initial() => const MainState();
+
+  factory MainState.loading() => const MainState(isLoading: true);
+
+  factory MainState.success(String message) => MainState(message: message);
+
+  factory MainState.checkInSuccess() => const MainState(isCheckin: true);
+
+  factory MainState.checkOutSuccess({
+    required double totalCost,
+    required double discount,
+    required double finalCost,
+  }) => MainState(
+    isCheckout: true,
+    paymentValue: finalCost,
+  );
+
+  factory MainState.error({
+    required String message,
+    bool isCheckin = false,
+    bool isCheckout = false,
+  }) => MainState(
+    message: message,
+    isCheckin: isCheckin,
+    isCheckout: isCheckout,
+  );
+
+  factory MainState.setupRequired() => const MainState(isSetupRequired: true);
+
+  factory MainState.setupVerified() => const MainState(isSetupVerified: true);
+
+  factory MainState.vehicleFound({
+    required String parkingTime,
+    required double paymentValue,
+    required String paymentMethod,
+  }) => MainState(
+    parkingTime: parkingTime,
+    paymentValue: paymentValue,
+    paymentMethod: paymentMethod,
+  );
+
+  factory MainState.printerSetup({
+    String? printerName,
+    bool isConnected = false,
+  }) => MainState(
+    printerName: printerName,
+    isPrinterConnected: isConnected,
+  );
+
+  MainState copyWith({
+    bool? isLoading,
+    String? message,
+    bool? isCheckin,
+    bool? isCheckout,
+    String? parkingTime,
+    double? paymentValue,
+    String? paymentMethod,
+    String? printerName,
+    bool? isPrinterConnected,
+    bool? isSetupRequired,
+    bool? isSetupVerified,
+  }) {
+    return MainState(
+      isLoading: isLoading ?? this.isLoading,
+      message: message ?? this.message,
+      isCheckin: isCheckin ?? this.isCheckin,
+      isCheckout: isCheckout ?? this.isCheckout,
+      parkingTime: parkingTime ?? this.parkingTime,
+      paymentValue: paymentValue ?? this.paymentValue,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      printerName: printerName ?? this.printerName,
+      isPrinterConnected: isPrinterConnected ?? this.isPrinterConnected,
+      isSetupRequired: isSetupRequired ?? this.isSetupRequired,
+      isSetupVerified: isSetupVerified ?? this.isSetupVerified,
+    );
+  }
+
   @override
-  List<Object?> get props => [printerName, isConnected];
+  List<Object?> get props => [
+    isLoading,
+    message,
+    isCheckin,
+    isCheckout,
+    parkingTime,
+    paymentValue,
+    paymentMethod,
+    printerName,
+    isPrinterConnected,
+    isSetupRequired,
+    isSetupVerified,
+  ];
 }
 
 // Grace time 10 min

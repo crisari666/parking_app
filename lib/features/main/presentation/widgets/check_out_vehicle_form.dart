@@ -4,6 +4,7 @@ import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_blo
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_event.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:quantum_parking_flutter/features/main/presentation/widgets/check_out_vehicel_form/payment_method_selector.dart';
 
 class CheckOutVehicleForm extends StatefulWidget {
   const CheckOutVehicleForm({super.key});
@@ -23,12 +24,12 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
       builder: (context, state) {
         return BlocListener<MainBloc, MainState>(
           listener: (context, state) {
-            if (state is MainError && state.isCheckout) {
+            if (state.message != null && state.isCheckout) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message), backgroundColor: Colors.red),
+                SnackBar(content: Text(state.message!), backgroundColor: Colors.red),
               );
             }
-            if (state is CheckOutSuccess) {
+            if (state.isCheckout) {
               _plateController.clear();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(l10n.success)),
@@ -60,73 +61,32 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
                     onChanged: (value) {
                       context.read<MainBloc>().add(CheckOutPlateNumberChanged(value));
                     },
-                    readOnly: state is VehicleFoundSuccess,
+                    readOnly: state.parkingTime != null,
                   ),
                   const SizedBox(height: 16),
-                  if (state is! VehicleFoundSuccess)
+                  if (state.parkingTime != null) ...[
+                    Text('${l10n.parkingTime}: ${state.parkingTime}'),
+                    Text('${l10n.paymentValue}: \$${state.paymentValue?.toStringAsFixed(2)}'),
+                    const SizedBox(height: 16),
+                    const PaymentMethodSelector(),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        context.read<MainBloc>().add(CheckOutRequested(
+                          plate: _plateController.text,
+                          paymentMethod: state.paymentMethod ?? 'cash',
+                          paymentValue: state.paymentValue,
+                        ));
+                      },
+                      child: Text(l10n.checkOut),
+                    ),
+                  ] else
                     ElevatedButton(
                       onPressed: () {
                         context.read<MainBloc>().add(FindVehicleInParkingRequested(_plateController.text));
                       },
                       child: Text(l10n.findVehicle),
                     ),
-                  if (state is VehicleFoundSuccess) ...[
-                    Row(
-                      children: [
-                        const Icon(Icons.timer),
-                        const SizedBox(width: 8),
-                        Text(
-                          state.parkingTime,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(width: 16),
-                    Row(
-                      children: [
-                        const Icon(Icons.monetization_on),
-                        const SizedBox(width: 8),
-                        Text(
-                          '\$${state.paymentValue.toString()}',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Flexible(
-                      child: DropdownButtonFormField<String>(
-                        value: state.paymentMethod,
-                        decoration: InputDecoration(
-                          labelText: l10n.paymentMethod,
-                          border: const OutlineInputBorder(),
-                        ),
-                        items: [
-                          DropdownMenuItem(value: 'cash', child: Text(l10n.cash)),
-                          DropdownMenuItem(value: 'transaction', child: Text(l10n.transaction)),
-                        ],
-                        onChanged: (value) {
-                          context.read<MainBloc>().add(PaymentMethodChanged(value!));
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<MainBloc>().add(CheckOutRequested(
-                          plate: _plateController.text,
-                          paymentMethod: state.paymentMethod,
-                          paymentValue: state.paymentValue,
-                        ));
-                      },
-                      child: Text(l10n.checkOut),
-                    ),
-                  ],
                 ],
               ),
             ),

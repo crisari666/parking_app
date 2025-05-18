@@ -26,20 +26,12 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   }) : _localStorageService = localStorageService,
        _setupLocalDatasource = setupLocalDatasource,
        _businessRemoteDatasource = businessRemoteDatasource,
-       super(MainInitial()) {
-    on<PlateNumberChanged>((event, emit) {
-      _plateNumber = event.plateNumber;
-    });
-    on<VehicleTypeChanged>((event, emit) {
-      _vehicleType = event.vehicleType;
-    });
+       super(MainState.initial()) {
+    on<PlateNumberChanged>(_handlePlateNumberChanged);
+    on<VehicleTypeChanged>(_handleVehicleTypeChanged);
     on<CheckInRequested>(_checkInRequested);
-    on<CheckOutPlateNumberChanged>((event, emit) {
-      _checkOutPlateNumber = event.plateNumber;
-    });
-    on<DiscountChanged>((event, emit) {
-      _discount = event.discount;
-    });
+    on<CheckOutPlateNumberChanged>(_handleCheckOutPlateNumberChanged);
+    on<DiscountChanged>(_handleDiscountChanged);
     on<CheckOutRequested>(_checkOutRequested);
     on<VerifySetupRequested>(_verifySetup);
     on<PaymentMethodChanged>(_handlePaymentMethodChanged);
@@ -47,41 +39,57 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<PrinterSetupRequested>(_handlePrinterSetup);
   }
 
-  void _handlePrinterSetup(PrinterSetupRequested event, Emitter<MainState> emit) {
-    _printerName = event.printerName;
-    _isPrinterConnected = event.isConnected;
-    emit(PrinterSetupSuccess(
-      printerName: _printerName,
-      isConnected: _isPrinterConnected,
-    ));
+  void _handlePlateNumberChanged(PlateNumberChanged event, Emitter<MainState> emit) {
+    _plateNumber = event.plateNumber;
+  }
+
+  void _handleVehicleTypeChanged(VehicleTypeChanged event, Emitter<MainState> emit) {
+    _vehicleType = event.vehicleType;
+  }
+
+  void _handleCheckOutPlateNumberChanged(CheckOutPlateNumberChanged event, Emitter<MainState> emit) {
+    _checkOutPlateNumber = event.plateNumber;
+  }
+
+  void _handleDiscountChanged(DiscountChanged event, Emitter<MainState> emit) {
+    _discount = event.discount;
   }
 
   void _handlePaymentMethodChanged(PaymentMethodChanged event, Emitter<MainState> emit) {
     _paymentMethod = event.method;
   }
 
+  void _handlePrinterSetup(PrinterSetupRequested event, Emitter<MainState> emit) {
+    _printerName = event.printerName;
+    _isPrinterConnected = event.isConnected;
+    emit(MainState.printerSetup(
+      printerName: _printerName,
+      isConnected: _isPrinterConnected,
+    ));
+  }
+
   void _checkOutRequested(CheckOutRequested event, Emitter<MainState> emit) async {
-    emit(MainLoading());
+    emit(MainState.loading());
     try {
       if (_checkOutPlateNumber.isEmpty) {
-        emit(const MainError('Plate number is required', isCheckout: true));
+        emit(MainState.error(message: 'Plate number is required', isCheckout: true));
         return;
       }
 
       final vehicle = await _localStorageService.getVehicle(_checkOutPlateNumber);
       if (vehicle == null) {
-        emit(const MainError('Vehicle not found', isCheckout: true));
+        emit(MainState.error(message: 'Vehicle not found', isCheckout: true));
         return;
       }
 
       if (vehicle.checkOut != null) {
-        emit(const MainError('Vehicle is already checked out', isCheckout: true));
+        emit(MainState.error(message: 'Vehicle is already checked out', isCheckout: true));
         return;
       }
 
       final setup = await _setupLocalDatasource.getSetup();
       if (setup == null) {
-        emit(const MainError('Business setup not found', isCheckout: true));
+        emit(MainState.error(message: 'Business setup not found', isCheckout: true));
         return;
       }
 
@@ -115,20 +123,20 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
       final success = await _localStorageService.updateVehicle(updatedVehicle);
       if (success) {
-        emit(const MainSuccess('Vehicle checked out successfully'));
+        emit(MainState.success('Vehicle checked out successfully'));
       } else {
-        emit(const MainError('Failed to check out vehicle', isCheckout: true));
+        emit(MainState.error(message: 'Failed to check out vehicle', isCheckout: true));
       }
     } catch (e) {
-      emit(MainError(e.toString(), isCheckout: true));
+      emit(MainState.error(message: e.toString(), isCheckout: true));
     }
   }
 
   void _checkInRequested(CheckInRequested event, Emitter<MainState> emit) async {
-    emit(MainLoading());
+    emit(MainState.loading());
     try {
       if (_plateNumber.isEmpty || _vehicleType.isEmpty) {
-        emit(const MainError('Plate number and vehicle type are required', isCheckin: true));
+        emit(MainState.error(message: 'Plate number and vehicle type are required', isCheckin: true));
         return;
       }
 
@@ -140,13 +148,13 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
       final success = await _localStorageService.saveVehicle(vehicle);
       if (!success) {
-        emit(const MainError('Vehicle is already checked in'));
+        emit(MainState.error(message: 'Vehicle is already checked in'));
         return;
       }
 
-      emit(CheckInSuccess());
+      emit(MainState.checkInSuccess());
     } catch (e) {
-      emit(MainError(e.toString()));
+      emit(MainState.error(message: e.toString()));
     }
   }
 
@@ -154,7 +162,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     VerifySetupRequested event,
     Emitter<MainState> emit,
   ) async {
-    emit(MainLoading());
+    emit(MainState.loading());
     try {
       final setup = await _setupLocalDatasource.getSetup();
       if (setup == null) {
@@ -162,35 +170,35 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         if (business != null) {
           final setup = business;
           await _setupLocalDatasource.saveSetup(setup);
-          emit(SetupVerified());
+          emit(MainState.setupVerified());
         } else {
-          emit(SetupRequired());
+          emit(MainState.setupRequired());
         }
       } else {
-        emit(SetupVerified());
+        emit(MainState.setupVerified());
       }
     } catch (e) {
-      emit(MainError(e.toString()));
+      emit(MainState.error(message: e.toString()));
     }
   }
 
   Future<void> _findVehicleInParking(FindVehicleInParkingRequested event, Emitter<MainState> emit) async {
-    emit(MainLoading());
+    emit(MainState.loading());
     try {
       final vehicle = await _localStorageService.getVehicle(event.plateNumber);
       if (vehicle == null) {
-        emit(const MainError('Vehicle not found', isCheckout: true));
+        emit(MainState.error(message: 'Vehicle not found', isCheckout: true));
         return;
       }
 
       if (vehicle.checkOut != null) {
-        emit(const MainError('Vehicle is already checked out', isCheckout: true));
+        emit(MainState.error(message: 'Vehicle is already checked out', isCheckout: true));
         return;
       }
 
       final setup = await _setupLocalDatasource.getSetup();
       if (setup == null) {
-        emit(const MainError('Business setup not found', isCheckout: true));
+        emit(MainState.error(message: 'Business setup not found', isCheckout: true));
         return;
       }
 
@@ -212,13 +220,13 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
       final parkingTime = '${hours}h ${extraMinutes}m';
 
-      emit(VehicleFoundSuccess(
+      emit(MainState.vehicleFound(
         parkingTime: parkingTime,
         paymentValue: paymentValue,
         paymentMethod: _paymentMethod,
       ));
     } catch (e) {
-      emit(MainError(e.toString()));
+      emit(MainState.error(message: e.toString()));
     }
   }
 } 
