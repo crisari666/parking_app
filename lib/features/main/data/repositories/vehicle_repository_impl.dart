@@ -8,7 +8,7 @@ import '../models/vehicle_model.dart';
 class VehicleRepositoryImpl implements VehicleRepository {
   final LocalStorageService _localStorageService;
 
-  VehicleRepositoryImpl(this._localStorageService);
+  VehicleRepositoryImpl({required LocalStorageService localStorageService}) : _localStorageService = localStorageService;
 
   @override
   Future<bool> checkInVehicle(VehicleModel vehicle) async {

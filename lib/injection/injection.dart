@@ -9,6 +9,8 @@ import 'package:quantum_parking_flutter/features/auth/domain/models/user.dart';
 import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:quantum_parking_flutter/features/main/data/datasources/local_storage_service.dart';
 import 'package:quantum_parking_flutter/features/main/data/models/vehicle_model.dart';
+import 'package:quantum_parking_flutter/features/main/data/repositories/vehicle_repository_impl.dart';
+import 'package:quantum_parking_flutter/features/main/domain/repositories/vehicle_repository.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_bloc.dart';
 import 'package:quantum_parking_flutter/features/records/data/models/daily_closure_model.dart';
 import 'package:quantum_parking_flutter/features/records/data/models/vehicle_log_model.dart';
@@ -30,6 +32,10 @@ Future<void> registerMainDependencies() async {
 
   await configureDependencies();
 
+  //ApiClient
+  final apiClient = ApiClient();
+  getIt.registerSingleton<ApiClient>(apiClient);
+
   //Hive setup
   await Hive.initFlutter();
   // Register the adapters
@@ -38,47 +44,45 @@ Future<void> registerMainDependencies() async {
   Hive.registerAdapter(VehicleLogModelAdapter());
   Hive.registerAdapter(DailyClosureModelAdapter());
   Hive.registerAdapter(UserAdapter());
-  
-  //ApiClient
-  final apiClient = ApiClient();
-  getIt.registerSingleton<ApiClient>(apiClient);
+
 
   // Open the boxes
   final setupBox = await Hive.openBox<BusinessSetupModel>(HiveConstants.setupBox);
   final businessesBox = await Hive.openBox<List<BusinessSetupModel>>(HiveConstants.businessesBox);
 
+  final localStorageService = LocalStorageService();
+  await localStorageService.init();
 
-  final authRepository = AuthRepositoryImpl(
-    AuthRemoteDataSourceImpl(apiClient),
-  );
+  getIt.registerSingleton<LocalStorageService>(localStorageService);
 
+  //Repositories
+  final authRepository = AuthRepositoryImpl(AuthRemoteDataSourceImpl(apiClient),);
+  getIt.registerSingleton<AuthRepository>(authRepository);
+
+  final vehicleRepository = VehicleRepositoryImpl(localStorageService: getIt(),);
+  getIt.registerSingleton<VehicleRepository>(vehicleRepository);
+
+
+  //Datasources
   getIt.registerSingleton<SetupLocalDatasource>(SetupLocalDatasourceImpl(
     setupBox: setupBox, 
     businessesBox: businessesBox,
   ));
 
-  getIt.registerSingleton<AuthRepository>(authRepository);
-
-  getIt.registerSingleton<AuthBloc>(AuthBloc(
-    authRepository: getIt(),
-    setupLocalDatasource: getIt(),
-  ));
-  
-  // Initialize LocalStorageService
-  final localStorageService = LocalStorageService();
-  await localStorageService.init();
-  
-  // Create AuthRepositor
-  
-  
-  getIt.registerSingleton<LocalStorageService>(localStorageService);
   getIt.registerSingleton<BusinessRemoteDatasource>(BusinessRemoteDatasourceImpl(
     apiClient: getIt(),
   ));
 
+  
+  //Blocs
+  getIt.registerSingleton<AuthBloc>(AuthBloc(
+    authRepository: getIt(),
+    setupLocalDatasource: getIt(),
+  ));
   getIt.registerSingleton<MainBloc>(MainBloc(
     localStorageService: getIt(),
     setupLocalDatasource: getIt(),
     businessRemoteDatasource: getIt(),
   ));
 }
+

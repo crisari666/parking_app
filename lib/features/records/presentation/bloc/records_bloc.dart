@@ -8,7 +8,9 @@ import 'package:quantum_parking_flutter/features/records/presentation/bloc/model
 class RecordsBloc extends Bloc<RecordsEvent, RecordsState> {
   final VehicleRepository _vehicleRepository;
 
-  RecordsBloc(this._vehicleRepository) : super(RecordsInitial()) {
+  RecordsBloc({required VehicleRepository vehicleRepository}) : 
+    _vehicleRepository = vehicleRepository, 
+  super(RecordsInitial()) {
     on<SearchPlateNumberChanged>(_searchPlateNumberChanged);
     on<LoadRecordsRequested>(_loadRecords);
     on<GetVehicleLogsRequested>(_getVehicleLogs);
