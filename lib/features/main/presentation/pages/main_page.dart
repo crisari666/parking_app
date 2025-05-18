@@ -32,7 +32,7 @@ class MainPage extends StatelessWidget {
       body: ScrollConfiguration(
         behavior: NoGlowScrollBehaviour(),
         child: SingleChildScrollView(
-          child: BlocConsumer<MainBloc, MainState>(
+          child:BlocConsumer<MainBloc, MainState>(
             listener: (context, state) {
               if (state is MainError && !state.isCheckin && !state.isCheckout) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -65,31 +65,31 @@ class MainPage extends StatelessWidget {
                 return const Center(child: CircularProgressIndicator());
               }
           
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const CheckInVehicle(),
-                  const SizedBox(height: 16),
-                  const CheckOutVehicle(),
-                  PrinterTestButtonDevice(defaultPrinter: const Printer(
-                    url: 'bt://00:11:22:33:44:55',  // Bluetooth MAC address format
-                    name: 'POSPrinter',
-                    isDefault: true,
-                    model: 'POSPrinter',
-                  ),),
-                  // PrintButton(
-                  //   text: 'Hello, World!',
-                  //   qrCodeData: '1234567890',
-                  // ),
-                ],
-              ),
-            );
-          },
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const CheckInVehicle(),
+                const SizedBox(height: 16),
+                const CheckOutVehicle(),
+                PrinterTestButtonDevice(defaultPrinter: const Printer(
+                  url: 'bt://00:11:22:33:44:55',  // Bluetooth MAC address format
+                  name: 'POSPrinter',
+                  isDefault: true,
+                  model: 'POSPrinter',
+                ),),
+                // PrintButton(
+                //   text: 'Hello, World!',
+                //   qrCodeData: '1234567890',
+                // ),
+              ],
+            ),
+          );
+        },
         ),
       ),
-    )
-    );
+          )
+      );
   }
 } 

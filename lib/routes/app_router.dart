@@ -6,6 +6,7 @@ import 'package:quantum_parking_flutter/features/auth/presentation/pages/registe
 import 'package:quantum_parking_flutter/features/closure/presentation/pages/closure_page.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/pages/main_page.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/pages/printer_setup_page.dart';
+import 'package:quantum_parking_flutter/features/main/presentation/pages/wrapper_page.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/bloc/models/vehicle_record.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/pages/records_page.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/pages/vehicle_logs_page.dart';
@@ -21,7 +22,8 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: LoginRoute.page, path: '/login', initial: true),
     AutoRoute(page: RegisterRoute.page, path: '/register'),
 
-    AutoRoute(page: MainRoute.page, path: '/main', children: [
+    AutoRoute(page: WrapperRoute.page, path: '/main', children: [
+      AutoRoute(page: MainRoute.page, path: 'main', initial: true),
       AutoRoute(page: SetupRoute.page, path: 'setup'),
       AutoRoute(page: ClosureRoute.page, path: 'closure'),
       AutoRoute(page: RecordsRoute.page, path: 'records'),

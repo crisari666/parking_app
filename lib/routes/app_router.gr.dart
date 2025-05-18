@@ -206,3 +206,22 @@ class VehicleLogsRouteArgs {
     return 'VehicleLogsRouteArgs{key: $key, records: $records}';
   }
 }
+
+/// generated route for
+/// [WrapperPage]
+class WrapperRoute extends PageRouteInfo<void> {
+  const WrapperRoute({List<PageRouteInfo>? children})
+      : super(
+          WrapperRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'WrapperRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const WrapperPage();
+    },
+  );
+}

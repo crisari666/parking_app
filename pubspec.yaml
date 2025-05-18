@@ -62,9 +62,10 @@ dependencies:
   print_bluetooth_thermal: ^1.1.6
   permission_handler: ^11.3.0
   printing: ^5.14.2
-  qr: ^3.0.1
+  qr: ^3.0.2
   qr_flutter: ^4.1.0
   esc_pos_utils_plus: ^2.0.4
+  pdf: ^3.11.3
 
 dev_dependencies:
   flutter_launcher_icons: ^0.14.3
