@@ -20,13 +20,15 @@ class AppRouter extends RootStackRouter {
   List<AutoRoute> get routes => [
     AutoRoute(page: LoginRoute.page, path: '/login', initial: true),
     AutoRoute(page: RegisterRoute.page, path: '/register'),
-    AutoRoute(page: SetupRoute.page, path: '/setup'),
-    AutoRoute(page: MainRoute.page, path: '/main'),
-    AutoRoute(page: ClosureRoute.page, path: '/closure'),
-    AutoRoute(page: RecordsRoute.page, path: '/records'),
-    AutoRoute(page: VehicleLogsRoute.page, path: '/vehicle-logs'),
+
+    AutoRoute(page: MainRoute.page, path: '/main', children: [
+      AutoRoute(page: SetupRoute.page, path: 'setup'),
+      AutoRoute(page: ClosureRoute.page, path: 'closure'),
+      AutoRoute(page: RecordsRoute.page, path: 'records'),
+      AutoRoute(page: VehicleLogsRoute.page, path: 'vehicle-logs'),
+      AutoRoute(page: PrinterSetupRoute.page, path: 'printer-setup'),
+    ]),
     AutoRoute(page: LogoutRoute.page, path: '/logout'),
-    AutoRoute(page: PrinterSetupRoute.page, path: '/printer-setup'),
   ];
 
   @override

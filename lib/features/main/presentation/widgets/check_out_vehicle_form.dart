@@ -71,25 +71,32 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
                       child: Text(l10n.findVehicle),
                     ),
                   if (state is VehicleFoundSuccess) ...[
-                    TextField(
-                      readOnly: true,
-                      decoration: InputDecoration(
-                        labelText: l10n.parkingTime,
-                        border: const OutlineInputBorder(),
-                      ),
-                      controller: TextEditingController(text: state.parkingTime),
+                    Row(
+                      children: [
+                        const Icon(Icons.timer),
+                        const SizedBox(width: 8),
+                        Text(
+                          state.parkingTime,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      readOnly: true,
-                      decoration: InputDecoration(
-                        labelText: l10n.estimatedPayment,
-                        border: const OutlineInputBorder(),
-                        prefixText: '\$',
-                      ),
-                      controller: TextEditingController(
-                        text: state.paymentValue.toString(),
-                      ),
+                    const SizedBox(width: 16),
+                    Row(
+                      children: [
+                        const Icon(Icons.monetization_on),
+                        const SizedBox(width: 8),
+                        Text(
+                          '\$${state.paymentValue.toString()}',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 16),
                     Flexible(

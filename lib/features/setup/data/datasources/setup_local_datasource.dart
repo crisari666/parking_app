@@ -5,8 +5,8 @@ import '../models/business_setup_model.dart';
 abstract class SetupLocalDatasource {
   Future<BusinessSetupModel> saveSetup(BusinessSetupModel setup);
   Future<BusinessSetupModel?> getSetup();
-  Future<void> saveBusinesses(List<BusinessSetupModel> businesses);
-  Future<List<BusinessSetupModel>> getBusinesses();
+  Future<void> saveBusinesses(BusinessSetupModel businesses);
+  Future<BusinessSetupModel?> getBusiness();
   Future<void> clear();
 }
 
@@ -16,35 +16,38 @@ class SetupLocalDatasourceImpl implements SetupLocalDatasource {
   static const String setupKey = HiveConstants.setupKey;
   static const String businessesKey = HiveConstants.businessesKey;
 
-  final Box<BusinessSetupModel> setupBox;
-  final Box<List<BusinessSetupModel>> businessesBox;
+  late final Box<BusinessSetupModel> _setupBox;
+  late final Box<BusinessSetupModel> _businessesBox;
 
-  SetupLocalDatasourceImpl({required this.setupBox, required this.businessesBox});
+  Future<void> init() async {
+    _setupBox = await Hive.openBox<BusinessSetupModel>(setupBoxName);
+    _businessesBox = await Hive.openBox<BusinessSetupModel>(businessesBoxName);
+  }
 
   @override
   Future<BusinessSetupModel> saveSetup(BusinessSetupModel setup) async {
-    await setupBox.put(setupKey, setup);
+    await _setupBox.put(setupKey, setup);
     return setup;
   }
 
   @override
   Future<BusinessSetupModel?> getSetup() async {
-    return setupBox.get(setupKey);
+    return _setupBox.get(setupKey);
   }
 
   @override
-  Future<void> saveBusinesses(List<BusinessSetupModel> businesses) async {
-    await businessesBox.put(businessesKey, businesses);
+  Future<void> saveBusinesses(BusinessSetupModel businesses) async {
+    await _businessesBox.put(businessesKey, businesses);
   }
 
   @override
-  Future<List<BusinessSetupModel>> getBusinesses() async {
-    return businessesBox.get(businessesKey, defaultValue: []) ?? [];
+  Future<BusinessSetupModel?> getBusiness() async {
+    return _businessesBox.get(businessesKey);
   }
 
   @override
   Future<void> clear() async {
-    await setupBox.clear();
-    await businessesBox.clear();
+    await _setupBox.clear();
+    await _businessesBox.clear();
   }
 } 

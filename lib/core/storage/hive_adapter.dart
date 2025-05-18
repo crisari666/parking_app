@@ -1,5 +1,8 @@
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:quantum_parking_flutter/core/contants/hive_constants.dart';
+import 'package:quantum_parking_flutter/features/auth/domain/models/user.dart';
 import 'package:quantum_parking_flutter/features/main/data/models/vehicle_model.dart';
+import 'package:quantum_parking_flutter/features/records/data/models/daily_closure_model.dart';
 import 'package:quantum_parking_flutter/features/records/data/models/vehicle_log_model.dart';
 import 'package:quantum_parking_flutter/features/setup/data/models/business_setup_model.dart';
 
@@ -14,11 +17,19 @@ class HiveAdapter {
     if (!Hive.isAdapterRegistered(2)) {
       Hive.registerAdapter(VehicleLogModelAdapter());
     }
+    if (!Hive.isAdapterRegistered(3)) {
+      Hive.registerAdapter(DailyClosureModelAdapter());
+    }
+    if (!Hive.isAdapterRegistered(4)) {
+      Hive.registerAdapter(UserAdapter());
+    }
   }
 
   static Future<void> openBoxes() async {
-    await Hive.openBox<VehicleModel>('vehicles');
-    await Hive.openBox<BusinessSetupModel>('business_setup');
-    await Hive.openBox<VehicleLogModel>('parking_logs');
+    await Hive.openBox<VehicleModel>(HiveConstants.vehicleBox);
+    await Hive.openBox<BusinessSetupModel>(HiveConstants.setupBox);
+    await Hive.openBox<VehicleLogModel>(HiveConstants.vehicleLogBox);
+    await Hive.openBox<DailyClosureModel>(HiveConstants.dailyClosureBox);
+    await Hive.openBox<User>(HiveConstants.userBox);
   }
 } 

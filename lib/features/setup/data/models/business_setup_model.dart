@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 
 part 'business_setup_model.g.dart';
 
-@HiveType(typeId: 0)
+@HiveType(typeId: 1)
 class BusinessSetupModel extends HiveObject {
   @HiveField(0)
   final String? name;
@@ -58,6 +58,23 @@ class BusinessSetupModel extends HiveObject {
     required this.studentMotorcycleHourCost,
     this.businessId,
   });
+
+  factory BusinessSetupModel.empty() {
+    return BusinessSetupModel(
+      businessName: '',
+      businessBrand: '',
+      carHourCost: 0,
+      motorcycleHourCost: 0,
+      carMonthlyCost: 0,
+      motorcycleMonthlyCost: 0,
+      carDayCost: 0,
+      motorcycleDayCost: 0,
+      carNightCost: 0,
+      motorcycleNightCost: 0,
+      studentMotorcycleHourCost: 0,
+    );
+
+  }
 
   Map<String, dynamic> toJson() {
     return {

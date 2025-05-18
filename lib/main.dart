@@ -45,8 +45,6 @@ class MyApp extends StatelessWidget {
           setupLocalDatasource: getIt.get<SetupLocalDatasource>(),
         )),
         BlocProvider(create: (_) => getIt.get<MainBloc>()),
-        // BlocProvider(create: (_) => ClosureBloc(vehicleRepository: VehicleRepositoryImpl(getIt.get<LocalStorageService>()))),
-        // BlocProvider(create: (_) => RecordsBloc(VehicleRepositoryImpl(getIt.get<LocalStorageService>()))),
       ],
       child: MaterialApp.router(
         title: 'Quantum Parking',

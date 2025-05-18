@@ -3,7 +3,7 @@ import 'package:quantum_parking_flutter/features/records/data/models/vehicle_log
 
 part 'daily_closure_model.g.dart';
 
-@HiveType(typeId: 4)
+@HiveType(typeId: 3)
 class DailyClosureModel {
   @HiveField(0)
   final DateTime date;

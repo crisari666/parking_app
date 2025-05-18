@@ -17,48 +17,51 @@ class BusinessSetupModelAdapter extends TypeAdapter<BusinessSetupModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return BusinessSetupModel(
-      businessName: fields[0] as String,
-      businessBrand: fields[1] as String,
-      carHourCost: fields[2] as double,
-      motorcycleHourCost: fields[3] as double,
-      carMonthlyCost: fields[4] as double,
-      motorcycleMonthlyCost: fields[5] as double,
-      carDayCost: fields[6] as double,
-      motorcycleDayCost: fields[7] as double,
-      carNightCost: fields[8] as double,
-      motorcycleNightCost: fields[9] as double,
-      studentMotorcycleHourCost: fields[10] as double,
-      businessId: fields[11] as String?,
+      name: fields[0] as String?,
+      businessName: fields[1] as String,
+      businessBrand: fields[2] as String,
+      carHourCost: fields[3] as double,
+      motorcycleHourCost: fields[4] as double,
+      carMonthlyCost: fields[5] as double,
+      motorcycleMonthlyCost: fields[6] as double,
+      carDayCost: fields[7] as double,
+      motorcycleDayCost: fields[8] as double,
+      carNightCost: fields[9] as double,
+      motorcycleNightCost: fields[10] as double,
+      studentMotorcycleHourCost: fields[11] as double,
+      businessId: fields[12] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, BusinessSetupModel obj) {
     writer
-      ..writeByte(12)
+      ..writeByte(13)
       ..writeByte(0)
-      ..write(obj.businessName)
+      ..write(obj.name)
       ..writeByte(1)
-      ..write(obj.businessBrand)
+      ..write(obj.businessName)
       ..writeByte(2)
-      ..write(obj.carHourCost)
+      ..write(obj.businessBrand)
       ..writeByte(3)
-      ..write(obj.motorcycleHourCost)
+      ..write(obj.carHourCost)
       ..writeByte(4)
-      ..write(obj.carMonthlyCost)
+      ..write(obj.motorcycleHourCost)
       ..writeByte(5)
-      ..write(obj.motorcycleMonthlyCost)
+      ..write(obj.carMonthlyCost)
       ..writeByte(6)
-      ..write(obj.carDayCost)
+      ..write(obj.motorcycleMonthlyCost)
       ..writeByte(7)
-      ..write(obj.motorcycleDayCost)
+      ..write(obj.carDayCost)
       ..writeByte(8)
-      ..write(obj.carNightCost)
+      ..write(obj.motorcycleDayCost)
       ..writeByte(9)
-      ..write(obj.motorcycleNightCost)
+      ..write(obj.carNightCost)
       ..writeByte(10)
-      ..write(obj.studentMotorcycleHourCost)
+      ..write(obj.motorcycleNightCost)
       ..writeByte(11)
+      ..write(obj.studentMotorcycleHourCost)
+      ..writeByte(12)
       ..write(obj.businessId);
   }
 

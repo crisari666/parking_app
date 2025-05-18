@@ -11,7 +11,6 @@ import 'package:quantum_parking_flutter/features/main/presentation/widgets/check
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/check_out_vehicle.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/main_page_app_bar.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/printer_setup/printer_test_button_device.dart';
-import 'package:quantum_parking_flutter/injection/injection.dart';
 import 'package:quantum_parking_flutter/l10n/app_localizations_context.dart';
 import 'package:quantum_parking_flutter/routes/app_router.dart';
 

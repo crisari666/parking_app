@@ -8,7 +8,7 @@ part of 'daily_closure_model.dart';
 
 class DailyClosureModelAdapter extends TypeAdapter<DailyClosureModel> {
   @override
-  final int typeId = 4;
+  final int typeId = 3;
 
   @override
   DailyClosureModel read(BinaryReader reader) {
