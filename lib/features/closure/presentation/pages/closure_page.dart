@@ -8,6 +8,7 @@ import 'package:quantum_parking_flutter/features/closure/presentation/bloc/closu
 import 'package:quantum_parking_flutter/features/closure/presentation/widgets/daily_summary_card.dart';
 import 'package:quantum_parking_flutter/features/closure/presentation/widgets/financial_summary_card.dart';
 import 'package:quantum_parking_flutter/features/closure/presentation/widgets/current_closure_details.dart';
+import 'package:quantum_parking_flutter/injection/injection.dart';
 
 @RoutePage()
 class ClosurePage extends StatelessWidget {
@@ -16,8 +17,11 @@ class ClosurePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    context.read<ClosureBloc>().add(GenerateDailyClosureRequested());
-    return DefaultTabController(
+    return BlocProvider(
+      create: (context) => ClosureBloc(
+        vehicleRepository: getIt(),
+      )..add(GenerateDailyClosureRequested()),
+      child: DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
@@ -82,6 +86,6 @@ class ClosurePage extends StatelessWidget {
           child: const Icon(Icons.refresh),
         ),
       ),
-    );
+    ));
   }
 } 
