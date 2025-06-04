@@ -33,11 +33,11 @@ class VehicleRecord extends Equatable {
 
   @override
   List<Object?> get props => [
-        plateNumber,
-        vehicleType,
-        checkIn,
-        checkOut,
-        totalCost,
-        paymentMethod,
-      ];
+    plateNumber,
+    vehicleType,
+    checkIn,
+    checkOut,
+    totalCost,
+    paymentMethod,
+  ];
 }

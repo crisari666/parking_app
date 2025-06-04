@@ -1,3 +1,5 @@
+import 'package:quantum_parking_flutter/features/main/data/datasources/vehicle_log_remote_datasource.dart';
+import 'package:quantum_parking_flutter/features/main/data/models/active_vehicle_log_model.dart';
 import 'package:quantum_parking_flutter/features/records/data/models/vehicle_log_model.dart';
 import 'package:quantum_parking_flutter/features/records/data/models/daily_closure_model.dart';
 
@@ -6,9 +8,10 @@ import '../datasources/local_storage_service.dart';
 import '../models/vehicle_model.dart';
 
 class VehicleRepositoryImpl implements VehicleRepository {
+  final VehicleLogRemoteDatasource _vehicleLogRemoteDatasource;
   final LocalStorageService _localStorageService;
 
-  VehicleRepositoryImpl({required LocalStorageService localStorageService}) : _localStorageService = localStorageService;
+  VehicleRepositoryImpl({required LocalStorageService localStorageService, required VehicleLogRemoteDatasource vehicleLogRemoteDatasource}) : _localStorageService = localStorageService, _vehicleLogRemoteDatasource = vehicleLogRemoteDatasource;
 
   @override
   Future<bool> checkInVehicle(VehicleModel vehicle) async {
@@ -111,5 +114,10 @@ class VehicleRepositoryImpl implements VehicleRepository {
   @override
   Future<List<DailyClosureModel>> getDailyClosures(DateTime startDate, DateTime endDate) async {
     return await _localStorageService.getDailyClosures(startDate, endDate);
+  }
+
+  @override
+  Future<List<ActiveVehicleLogModel>> getActiveVehicles() async {
+    return await _vehicleLogRemoteDatasource.getActiveVehicles();
   }
 } 

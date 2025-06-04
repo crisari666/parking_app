@@ -28,9 +28,9 @@ class RecordsPage extends StatelessWidget {
             // }
           },
           builder: (context, state) {
-            if (state is RecordsLoading) {
+            if (state.status == RecordsStatus.loading) {
               return const Center(child: CircularProgressIndicator());
-            } else if (state is RecordsSuccess) {
+            } else if (state.records.isNotEmpty) {
               return Column(
                 children: [
                   Padding(
@@ -51,10 +51,10 @@ class RecordsPage extends StatelessWidget {
                   ),
                 ],
               );
-            } else if (state is RecordsError) {
+            } else if (state.errorMessage != null) {
               return Center(
                 child: Text(
-                  state.message,
+                  state.errorMessage!,
                   style: const TextStyle(color: Colors.red),
                 ),
               );

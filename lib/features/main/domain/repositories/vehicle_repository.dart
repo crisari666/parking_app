@@ -1,3 +1,4 @@
+import 'package:quantum_parking_flutter/features/main/data/models/active_vehicle_log_model.dart';
 import 'package:quantum_parking_flutter/features/records/data/models/vehicle_log_model.dart';
 import 'package:quantum_parking_flutter/features/records/data/models/daily_closure_model.dart';
 
@@ -10,6 +11,7 @@ abstract class VehicleRepository {
   Future<List<VehicleModel>> getAllVehicles();
   Future<List<VehicleLogModel>> getParkingLogs();
   Future<List<VehicleLogModel>> getVehicleParkingLogs(String plateNumber);
+  Future<List<ActiveVehicleLogModel>> getActiveVehicles();
   Future<bool> isVehicleCheckedIn(String plateNumber);
   
   // Daily closure methods

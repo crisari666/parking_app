@@ -1,9 +1,11 @@
 import 'package:quantum_parking_flutter/core/network/api_client.dart';
 import '../models/vehicle_log_response_model.dart';
+import '../models/active_vehicle_log_model.dart';
 
 abstract class VehicleLogRemoteDatasource {
   Future<VehicleLogResponseModel> createVehicleLog(String plateNumber, String vehicleType);
   Future<VehicleLogResponseModel?> getLastVehicleLog(String plateNumber);
+  Future<List<ActiveVehicleLogModel>> getActiveVehicles();
 }
 
 class VehicleLogRemoteDatasourceImpl implements VehicleLogRemoteDatasource {
@@ -50,6 +52,22 @@ class VehicleLogRemoteDatasourceImpl implements VehicleLogRemoteDatasource {
       }
     } catch (e) {
       throw Exception('Failed to get last vehicle log: $e');
+    }
+  }
+
+  @override
+  Future<List<ActiveVehicleLogModel>> getActiveVehicles() async {
+    try {
+      final response = await _apiClient.dio.get('/vehicle-log/active',);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data;
+        return data.map((json) => ActiveVehicleLogModel.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to get active vehicles: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to get active vehicles: $e');
     }
   }
 }

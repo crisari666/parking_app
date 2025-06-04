@@ -13,13 +13,13 @@ class RecordsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<RecordsBloc, RecordsState>(
       listener: (context, state) {
-        if (state is RecordsSuccess && state.vehicleLogs != null) {
+        if (state.status == RecordsStatus.success && state.vehicleLogs != null) {
           AutoRouter.of(context).push(VehicleLogsRoute(records: state.vehicleLogs!));
           
         }
       },
       builder: (context, state) {
-        if (state is RecordsSuccess) {
+        if (state.status == RecordsStatus.success) {
           return ListView.builder(
             itemCount: state.records.length,
             itemBuilder: (context, index) {

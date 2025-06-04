@@ -8,9 +8,10 @@ import 'package:quantum_parking_flutter/features/records/presentation/bloc/model
 class RecordsBloc extends Bloc<RecordsEvent, RecordsState> {
   final VehicleRepository _vehicleRepository;
 
-  RecordsBloc({required VehicleRepository vehicleRepository}) : 
-    _vehicleRepository = vehicleRepository, 
-  super(RecordsInitial()) {
+  RecordsBloc({
+    required VehicleRepository vehicleRepository,
+  }) : _vehicleRepository = vehicleRepository,
+       super(RecordsState.initial()) {
     on<SearchPlateNumberChanged>(_searchPlateNumberChanged);
     on<LoadRecordsRequested>(_loadRecords);
     on<GetVehicleLogsRequested>(_getVehicleLogs);
@@ -18,11 +19,11 @@ class RecordsBloc extends Bloc<RecordsEvent, RecordsState> {
 
   Future<void> _searchPlateNumberChanged(SearchPlateNumberChanged event, Emitter<RecordsState> emit) async {
     if (event.plateNumber.isEmpty) {
-      emit(const RecordsSuccess([]));
+      emit(RecordsState.success([]));
       return;
     }
 
-    emit(RecordsLoading());
+    emit(RecordsState.loading());
     try {
       final vehicle = await _vehicleRepository.getVehicle(event.plateNumber);
       if (vehicle != null) {
@@ -34,17 +35,17 @@ class RecordsBloc extends Bloc<RecordsEvent, RecordsState> {
           totalCost: vehicle.totalCost,
           paymentMethod: vehicle.paymentMethod,
         );
-        emit(RecordsSuccess([record]));
+        emit(RecordsState.success([record]));
       } else {
-        emit(const RecordsSuccess([]));
+        emit(RecordsState.success([]));
       }
     } catch (e) {
-      emit(RecordsError('Error searching for vehicle: ${e.toString()}'));
+      emit(RecordsState.error('Error searching for vehicle: ${e.toString()}'));
     }
   }
 
   Future<void> _loadRecords(LoadRecordsRequested event, Emitter<RecordsState> emit) async {
-    emit(RecordsLoading());
+    emit(RecordsState.loading());
     try {
       final vehicles = await _vehicleRepository.getAllVehicles();
       final records = vehicles.map((vehicle) => VehicleRecord(
@@ -55,33 +56,33 @@ class RecordsBloc extends Bloc<RecordsEvent, RecordsState> {
         totalCost: vehicle.totalCost,
         paymentMethod: vehicle.paymentMethod,
       )).toList();
-      emit(RecordsSuccess(records));
+      emit(RecordsState.success(records));
     } catch (e) {
-      emit(RecordsError(e.toString()));
+      emit(RecordsState.error(e.toString()));
     }
   }
 
   Future<void> _getVehicleLogs(GetVehicleLogsRequested event, Emitter<RecordsState> emit) async {
-    if (state is! RecordsSuccess) return;
-    
-    final currentState = state as RecordsSuccess;
-    emit(RecordsLoading());
+    emit(state.copyWith(status: RecordsStatus.loading));
     
     try {
       final vehicleLogs = await _vehicleRepository.getVehicleParkingLogs(event.plateNumber);
       
       final records = vehicleLogs.map((log) => VehicleRecord(
-            plateNumber: log.plateNumber,
-            vehicleType: log.vehicleType ?? "",
-            checkIn: log.checkIn,
-            checkOut: log.checkOut,
-            totalCost: log.totalCost,
-            paymentMethod: log.paymentMethod,
-          )).toList();
+        plateNumber: log.plateNumber,
+        vehicleType: log.vehicleType ?? "",
+        checkIn: log.checkIn,
+        checkOut: log.checkOut,
+        totalCost: log.totalCost,
+        paymentMethod: log.paymentMethod,
+      )).toList();
       
-      emit(RecordsSuccess(currentState.records, vehicleLogs: records));
+      emit(state.copyWith(
+        status: RecordsStatus.success,
+        vehicleLogs: records,
+      ));
     } catch (e) {
-      emit(RecordsError(e.toString()));
+      emit(RecordsState.error(e.toString()));
     }
   }
 }   
