@@ -14,10 +14,14 @@ class RecordsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => RecordsBloc(
+    if(!getIt.isRegistered<RecordsBloc>()) {
+      getIt.registerSingleton<RecordsBloc>(RecordsBloc(
         vehicleRepository: getIt(),
-      )..add(LoadRecordsRequested()),
+      ));
+    } 
+    final recordsBloc = getIt.get<RecordsBloc>();
+    return BlocProvider.value(
+      value: recordsBloc..add(LoadRecordsRequested()),
       child: Scaffold(
         appBar: AppBar(
           title: Text(context.loc.vehicleRecords),

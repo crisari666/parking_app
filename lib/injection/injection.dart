@@ -36,6 +36,7 @@ Future<void> registerMainDependencies() async {
   final apiClient = ApiClient();
   getIt.registerSingleton<ApiClient>(apiClient);
 
+
   //Hive setup
   await Hive.initFlutter();
   await HiveAdapter.registerAdapters();
