@@ -1,8 +1,8 @@
 import 'package:quantum_parking_flutter/features/main/data/datasources/vehicle_log_remote_datasource.dart';
 import 'package:quantum_parking_flutter/features/main/data/models/active_vehicle_log_model.dart';
+import 'package:quantum_parking_flutter/features/main/data/models/vehicle_log_response_model.dart';
 import 'package:quantum_parking_flutter/features/records/data/models/vehicle_log_model.dart';
 import 'package:quantum_parking_flutter/features/records/data/models/daily_closure_model.dart';
-
 import '../../domain/repositories/vehicle_repository.dart';
 import '../datasources/local_storage_service.dart';
 import '../models/vehicle_model.dart';
@@ -119,5 +119,10 @@ class VehicleRepositoryImpl implements VehicleRepository {
   @override
   Future<List<ActiveVehicleLogModel>> getActiveVehicles() async {
     return await _vehicleLogRemoteDatasource.getActiveVehicles();
+  }
+
+  @override
+  Future<List<VehicleLogResponseModel>> getVehicleLogs(String plateNumber) async {
+    return await _vehicleLogRemoteDatasource.getVehicleLogs(plateNumber);
   }
 } 

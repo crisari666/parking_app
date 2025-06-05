@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:quantum_parking_flutter/features/main/data/models/active_vehicle_log_model.dart';
+import 'package:quantum_parking_flutter/features/main/data/models/vehicle_log_response_model.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/bloc/models/vehicle_record.dart';
 
 enum RecordsStatus {
@@ -17,7 +18,7 @@ class RecordsState extends Equatable {
 
   final RecordsStatus status;
   final List<VehicleRecord> records;
-  final List<VehicleRecord>? vehicleLogs;
+  final List<VehicleLogResponseModel>? vehicleLogs;
   final List<ActiveVehicleLogModel> logs;
   final String? errorMessage;
 
@@ -33,7 +34,7 @@ class RecordsState extends Equatable {
 
   factory RecordsState.loading() => const RecordsState(status: RecordsStatus.loading);
 
-  factory RecordsState.success(List<VehicleRecord> records, {List<VehicleRecord> vehicleLogs = const [], List<ActiveVehicleLogModel> logs = const []}) => 
+  factory RecordsState.success(List<VehicleRecord> records, {List<VehicleLogResponseModel> vehicleLogs = const [], List<ActiveVehicleLogModel> logs = const []}) => 
     RecordsState(
       records: records, 
       vehicleLogs: vehicleLogs, 
@@ -47,7 +48,7 @@ class RecordsState extends Equatable {
   RecordsState copyWith({
     RecordsStatus? status,
     List<VehicleRecord>? records,
-    List<VehicleRecord>? vehicleLogs,
+    List<VehicleLogResponseModel>? vehicleLogs,
     String? errorMessage,
     List<ActiveVehicleLogModel>? logs,
   }) {

@@ -6,6 +6,7 @@ abstract class VehicleLogRemoteDatasource {
   Future<VehicleLogResponseModel> createVehicleLog(String plateNumber, String vehicleType);
   Future<VehicleLogResponseModel?> getLastVehicleLog(String plateNumber);
   Future<List<ActiveVehicleLogModel>> getActiveVehicles();
+  Future<List<VehicleLogResponseModel>> getVehicleLogs(String plateNumber);
 }
 
 class VehicleLogRemoteDatasourceImpl implements VehicleLogRemoteDatasource {
@@ -68,6 +69,24 @@ class VehicleLogRemoteDatasourceImpl implements VehicleLogRemoteDatasource {
       }
     } catch (e) {
       throw Exception('Failed to get active vehicles: $e');
+    }
+  }
+
+  @override
+  Future<List<VehicleLogResponseModel>> getVehicleLogs(String plateNumber) async {
+    try {
+      final response = await _apiClient.dio.get(
+        '/vehicle-log/vehicle/$plateNumber/logs',
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data;
+        return data.map((json) => VehicleLogResponseModel.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to get vehicle logs: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to get vehicle logs: $e');
     }
   }
 }

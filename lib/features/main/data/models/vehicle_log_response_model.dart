@@ -1,3 +1,29 @@
+enum PaymentMethod {
+  cash(0),
+  transfer(1),
+  credit(2),
+  debit(3),
+  other(4);
+
+  bool get isCash => this == PaymentMethod.cash;
+  bool get isTransfer => this == PaymentMethod.transfer;
+  bool get isCredit => this == PaymentMethod.credit;
+  bool get isDebit => this == PaymentMethod.debit;
+  bool get isOther => this == PaymentMethod.other;
+
+  final int value;
+  const PaymentMethod(this.value);
+
+  static PaymentMethod fromValue(int value) {
+    return PaymentMethod.values.firstWhere(
+      (method) => method.value == value,
+      orElse: () => PaymentMethod.other,
+    );
+  }
+
+  bool get isValid => this != PaymentMethod.other;
+}
+
 class VehicleLogResponseModel {
   final String vehicleId;
   final String businessId;
@@ -9,6 +35,7 @@ class VehicleLogResponseModel {
   final DateTime createdAt;
   final DateTime updatedAt;
   final int v;
+  final PaymentMethod? paymentMethod;
 
   VehicleLogResponseModel({
     required this.vehicleId,
@@ -21,6 +48,7 @@ class VehicleLogResponseModel {
     required this.createdAt,
     required this.updatedAt,
     required this.v,
+    this.paymentMethod,
   });
 
   factory VehicleLogResponseModel.fromJson(Map<String, dynamic> json) {
@@ -35,6 +63,9 @@ class VehicleLogResponseModel {
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
       v: json['__v'] as int,
+      paymentMethod: json['paymentMethod'] != null 
+          ? PaymentMethod.fromValue(json['paymentMethod'] as int)
+          : null,
     );
   }
 
@@ -49,5 +80,6 @@ class VehicleLogResponseModel {
     'createdAt': createdAt.toIso8601String(),
     'updatedAt': updatedAt.toIso8601String(),
     '__v': v,
+    'paymentMethod': paymentMethod?.value,
   };
 } 

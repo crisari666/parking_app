@@ -1,11 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:quantum_parking_flutter/features/records/presentation/bloc/records_bloc.dart';
-import 'package:quantum_parking_flutter/features/records/presentation/bloc/records_event.dart';
 import 'package:quantum_parking_flutter/features/main/data/models/active_vehicle_log_model.dart';
 import 'package:quantum_parking_flutter/l10n/app_localizations_context.dart';
+import 'package:quantum_parking_flutter/routes/app_router.dart';
 
 class RecordItem extends StatelessWidget {
   final ActiveVehicleLogModel record;
@@ -53,7 +52,11 @@ class RecordItem extends StatelessWidget {
       ),
       child: InkWell(
         onTap: () {
-          context.read<RecordsBloc>().add(GetVehicleLogsRequested(record.vehicleId.plateNumber));
+          AutoRouter.of(context).push(VehicleLogsRoute(
+            plateNumber: record.vehicleId.plateNumber,
+            vehicleType: record.vehicleId.vehicleType,
+          ));
+          //context.read<RecordsBloc>().add(GetVehicleLogsRequested(record.vehicleId.plateNumber));
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),

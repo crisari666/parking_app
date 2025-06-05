@@ -5,6 +5,7 @@ import 'package:quantum_parking_flutter/features/auth/domain/models/login_respon
 abstract class AuthRemoteDataSource {
   Future<LoginResponse> login(String user, String password);
   Future<void> setAuthToken(String token);
+  Future<void> loadAuthToken();
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -34,5 +35,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     await _apiClient.setAuthToken(token);
   }
 
+  @override
+  Future<void> loadAuthToken() async {
+    await _apiClient.loadAuthToken();
+  }
 
 } 

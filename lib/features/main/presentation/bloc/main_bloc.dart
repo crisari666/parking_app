@@ -109,7 +109,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       
       final totalCost = billableHours * ratePerHour;
       final discount = double.tryParse(_discount) ?? 0.0;
-      final finalCost = totalCost - discount;
+      final p = totalCost - discount;
 
       final updatedVehicle = VehicleModel(
         plateNumber: vehicle.plateNumber,

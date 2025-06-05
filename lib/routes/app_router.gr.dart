@@ -166,13 +166,15 @@ class SetupRoute extends PageRouteInfo<void> {
 class VehicleLogsRoute extends PageRouteInfo<VehicleLogsRouteArgs> {
   VehicleLogsRoute({
     Key? key,
-    required List<VehicleRecord> records,
+    required String plateNumber,
+    required String vehicleType,
     List<PageRouteInfo>? children,
   }) : super(
           VehicleLogsRoute.name,
           args: VehicleLogsRouteArgs(
             key: key,
-            records: records,
+            plateNumber: plateNumber,
+            vehicleType: vehicleType,
           ),
           initialChildren: children,
         );
@@ -185,7 +187,8 @@ class VehicleLogsRoute extends PageRouteInfo<VehicleLogsRouteArgs> {
       final args = data.argsAs<VehicleLogsRouteArgs>();
       return VehicleLogsPage(
         key: args.key,
-        records: args.records,
+        plateNumber: args.plateNumber,
+        vehicleType: args.vehicleType,
       );
     },
   );
@@ -194,16 +197,19 @@ class VehicleLogsRoute extends PageRouteInfo<VehicleLogsRouteArgs> {
 class VehicleLogsRouteArgs {
   const VehicleLogsRouteArgs({
     this.key,
-    required this.records,
+    required this.plateNumber,
+    required this.vehicleType,
   });
 
   final Key? key;
 
-  final List<VehicleRecord> records;
+  final String plateNumber;
+
+  final String vehicleType;
 
   @override
   String toString() {
-    return 'VehicleLogsRouteArgs{key: $key, records: $records}';
+    return 'VehicleLogsRouteArgs{key: $key, plateNumber: $plateNumber, vehicleType: $vehicleType}';
   }
 }
 

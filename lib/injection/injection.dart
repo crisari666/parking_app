@@ -1,6 +1,8 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:injectable/injectable.dart';
+import 'package:quantum_parking_flutter/core/app_bloc_observer.dart';
 import 'package:quantum_parking_flutter/core/network/api_client.dart';
 import 'package:quantum_parking_flutter/core/storage/hive_adapter.dart';
 import 'package:quantum_parking_flutter/features/auth/data/datasources/auth_remote_data_source.dart';
@@ -25,6 +27,8 @@ final getIt = GetIt.instance;
 Future<void> configureDependencies() async => getIt.init();
 
 Future<void> registerMainDependencies() async {
+
+  Bloc.observer = AppBlocObserver();
 
   await configureDependencies();
 

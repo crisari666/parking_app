@@ -30,7 +30,12 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<User?> getCurrentUser() async {
     final box = await _box;
-    return box.get(_userKey);
+    final User? user = box.get(_userKey);
+    if (user != null) {
+      _remoteDataSource.loadAuthToken();
+      return user;
+    }
+    return null;
   }
 
   @override

@@ -19,7 +19,7 @@ class RecordsBloc extends Bloc<RecordsEvent, RecordsState> {
 
   Future<void> _searchPlateNumberChanged(SearchPlateNumberChanged event, Emitter<RecordsState> emit) async {
     if (event.plateNumber.isEmpty) {
-      emit(RecordsState.success([]));
+      emit(RecordsState.success(const[]));
       return;
     }
 
@@ -37,7 +37,7 @@ class RecordsBloc extends Bloc<RecordsEvent, RecordsState> {
         );
         emit(RecordsState.success([record]));
       } else {
-        emit(RecordsState.success([]));
+        emit(RecordsState.success(const []));
       }
     } catch (e) {
       emit(RecordsState.error('Error searching for vehicle: ${e.toString()}'));
@@ -47,17 +47,12 @@ class RecordsBloc extends Bloc<RecordsEvent, RecordsState> {
   Future<void> _loadRecords(LoadRecordsRequested event, Emitter<RecordsState> emit) async {
     emit(RecordsState.loading());
     try {
-      final vehicles = await _vehicleRepository.getAllVehicles();
+      //final vehicles = await _vehicleRepository.getAllVehicles();
       final activeVehicles = await _vehicleRepository.getActiveVehicles();
-      final records = vehicles.map((vehicle) => VehicleRecord(
-        plateNumber: vehicle.plateNumber,
-        vehicleType: vehicle.vehicleType,
-        checkIn: vehicle.checkIn,
-        checkOut: vehicle.checkOut,
-        totalCost: vehicle.totalCost,
-        paymentMethod: vehicle.paymentMethod,
-      )).toList();
-      emit(RecordsState.success(records, vehicleLogs: [], logs: activeVehicles));
+      emit(state.copyWith(
+        status: RecordsStatus.success,
+        logs: activeVehicles,
+      ));
     } catch (e) {
       emit(RecordsState.error(e.toString()));
     }
@@ -67,21 +62,10 @@ class RecordsBloc extends Bloc<RecordsEvent, RecordsState> {
     emit(state.copyWith(status: RecordsStatus.loading));
     
     try {
-      final vehicleLogs = await _vehicleRepository.getVehicleParkingLogs(event.plateNumber);
-      
-      final records = vehicleLogs.map((log) => VehicleRecord(
-        plateNumber: log.plateNumber,
-        vehicleType: log.vehicleType ?? "",
-        checkIn: log.checkIn,
-        checkOut: log.checkOut,
-        totalCost: log.totalCost,
-        paymentMethod: log.paymentMethod,
-      )).toList();
-      
+      final vehicleLogs = await _vehicleRepository.getVehicleLogs(event.plateNumber);      
       emit(state.copyWith(
         status: RecordsStatus.success,
-        vehicleLogs: records,
-        //logs: vehicleLogs,
+        vehicleLogs: vehicleLogs,
       ));
     } catch (e) {
       emit(RecordsState.error(e.toString()));

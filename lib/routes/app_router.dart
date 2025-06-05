@@ -7,7 +7,6 @@ import 'package:quantum_parking_flutter/features/closure/presentation/pages/clos
 import 'package:quantum_parking_flutter/features/main/presentation/pages/main_page.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/pages/printer_setup_page.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/pages/wrapper_page.dart';
-import 'package:quantum_parking_flutter/features/records/presentation/bloc/models/vehicle_record.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/pages/records_page.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/pages/vehicle_logs_page.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/pages/setup_page.dart';

@@ -78,4 +78,13 @@ class ApiClient {
     final box = await Hive.openBox(_boxName);
     await box.delete(_tokenKey);
   }
+
+  Future<void> loadAuthToken() async {
+    final box = await Hive.openBox(_boxName);
+    final token = box.get(_tokenKey);
+    
+    if (token != null) {
+      _dio.options.headers['Authorization'] = 'Bearer $token';
+    }
+  }
 } 
