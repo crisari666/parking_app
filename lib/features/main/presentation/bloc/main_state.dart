@@ -1,5 +1,6 @@
 // States
 import 'package:equatable/equatable.dart';
+import 'package:quantum_parking_flutter/features/main/data/models/vehicle_log_response_model.dart';
 
 enum MainStateStatus {
   initial,
@@ -42,6 +43,7 @@ class MainState extends Equatable {
   final String vehicleType;
   final String checkOutPlateNumber;
   final String discount;
+  final VehicleLogResponseModel? vehicleLog;
 
   const MainState({
     this.status = MainStateStatus.initial,
@@ -60,11 +62,10 @@ class MainState extends Equatable {
     this.vehicleType = '',
     this.checkOutPlateNumber = '',
     this.discount = '0',
+    this.vehicleLog,
   });
 
   factory MainState.initial() => const MainState();
-
-  factory MainState.loading() => const MainState(isLoading: true);
 
   factory MainState.success(String message) => MainState(message: message);
 
@@ -93,16 +94,6 @@ class MainState extends Equatable {
 
   factory MainState.setupVerified() => const MainState(isSetupVerified: true);
 
-  factory MainState.vehicleFound({
-    required String parkingTime,
-    required double paymentValue,
-    required String paymentMethod,
-  }) => MainState(
-    parkingTime: parkingTime,
-    paymentValue: paymentValue,
-    paymentMethod: paymentMethod,
-  );
-
   factory MainState.printerSetup({
     String? printerName,
     bool isConnected = false,
@@ -117,7 +108,9 @@ class MainState extends Equatable {
     bool? isCheckin,
     bool? isCheckout,
     String? parkingTime,
+    bool? clearParkingTime,
     double? paymentValue,
+    bool? clearPaymentValue,
     String? paymentMethod,
     String? printerName,
     bool? isPrinterConnected,
@@ -127,14 +120,16 @@ class MainState extends Equatable {
     String? vehicleType,
     String? checkOutPlateNumber,
     String? discount,
+    VehicleLogResponseModel? vehicleLog,
+    bool? clearVehicleLog,
   }) {
     return MainState(
       isLoading: isLoading ?? this.isLoading,
       message: message ?? this.message,
       isCheckin: isCheckin ?? this.isCheckin,
       isCheckout: isCheckout ?? this.isCheckout,
-      parkingTime: parkingTime ?? this.parkingTime,
-      paymentValue: paymentValue ?? this.paymentValue,
+      parkingTime: clearParkingTime == true ? null : parkingTime ?? this.parkingTime,
+      paymentValue: clearPaymentValue == true ? null : paymentValue ?? this.paymentValue,
       paymentMethod: paymentMethod ?? this.paymentMethod,
       printerName: printerName ?? this.printerName,
       isPrinterConnected: isPrinterConnected ?? this.isPrinterConnected,
@@ -144,6 +139,7 @@ class MainState extends Equatable {
       vehicleType: vehicleType ?? this.vehicleType,
       checkOutPlateNumber: checkOutPlateNumber ?? this.checkOutPlateNumber,
       discount: discount ?? this.discount,
+      vehicleLog: clearVehicleLog == true ? null : vehicleLog ?? this.vehicleLog,
     );
   }
 
@@ -164,6 +160,7 @@ class MainState extends Equatable {
     vehicleType,
     checkOutPlateNumber,
     discount,
+    vehicleLog,
   ];
 }
 

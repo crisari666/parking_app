@@ -22,7 +22,7 @@ abstract class VehicleRepository {
   Future<bool> saveDailyClosure(DailyClosureModel closure);
   Future<List<DailyClosureModel>> getDailyClosures(DateTime startDate, DateTime endDate);
   // New method for getting current parking duration and cost
-  Future<Map<String, dynamic>> getCurrentParkingDurationAndCost(String plateNumber);
+  Future<VehicleLogResponseModel?> getCurrentParkingDurationAndCost(String plateNumber);
 } 
 
 class VehicleRepositoryImpl implements VehicleRepository {
@@ -148,27 +148,11 @@ class VehicleRepositoryImpl implements VehicleRepository {
   }
 
   @override
-  Future<Map<String, dynamic>> getCurrentParkingDurationAndCost(String plateNumber) async {
+  Future<VehicleLogResponseModel?> getCurrentParkingDurationAndCost(String plateNumber) async {
     final lastLog = await _vehicleLogRemoteDatasource.getLastVehicleLog(plateNumber);
     if (lastLog == null) {
       throw Exception('No active parking log found for vehicle');
-    }
-
-    final currentTime = DateTime.now();
-    final duration = currentTime.difference(lastLog.entryTime);
-    final totalMinutes = duration.inMinutes;
-    final hours = totalMinutes ~/ 60;
-    final extraMinutes = totalMinutes % 60;
-    
-    // Grace period: if extraMinutes <= 10, do not charge for next hour
-    final billableHours = extraMinutes > 10 ? hours + 1 : hours;
-    
-    return {
-      'hours': hours,
-      'extraMinutes': extraMinutes,
-      'billableHours': billableHours,
-      'checkIn': lastLog.entryTime,
-      'vehicleType': lastLog.vehicleId,
-    };
+    }    
+    return lastLog;
   }
 } 

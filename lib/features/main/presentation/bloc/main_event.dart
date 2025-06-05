@@ -115,3 +115,5 @@ class CheckOutPaymentValueChanged extends MainEvent {
   @override
   List<Object> get props => [paymentValue];
 }
+
+class ResetCheckOutForm extends MainEvent {}

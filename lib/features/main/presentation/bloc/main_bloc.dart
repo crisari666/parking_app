@@ -38,6 +38,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<FindVehicleInParkingRequested>(_findVehicleInParking);
     on<PrinterSetupRequested>(_handlePrinterSetup);
     on<CheckOutPaymentValueChanged>(_handleCheckOutPaymentValueChanged);
+    on<ResetCheckOutForm>(_handleResetCheckOutForm);
   }
 
   void _handlePlateNumberChanged(PlateNumberChanged event, Emitter<MainState> emit) {
@@ -74,8 +75,18 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     emit(state.copyWith(paymentValue: _paymentValue));
   }
 
+  void _handleResetCheckOutForm(ResetCheckOutForm event, Emitter<MainState> emit) {
+    emit(state.copyWith(
+      checkOutPlateNumber: '',
+      clearParkingTime: true,
+      clearPaymentValue: true,
+      clearVehicleLog: true,
+      discount: '',
+    ));
+  }
+
   void _checkOutRequested(CheckOutRequested event, Emitter<MainState> emit) async {
-    emit(MainState.loading());
+    emit(state.copyWith(isLoading: true));
     try {
       if (state.checkOutPlateNumber.isEmpty) {
         emit(MainState.error(message: 'Plate number is required', isCheckout: true));
@@ -139,7 +150,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   }
 
   void _checkInRequested(CheckInRequested event, Emitter<MainState> emit) async {
-    emit(MainState.loading());
+    emit(state.copyWith(isLoading: true));
     try {
       if (state.plateNumber.isEmpty || state.vehicleType.isEmpty) {
         emit(MainState.error(message: 'Plate number and vehicle type are required', isCheckin: true));
@@ -163,7 +174,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     VerifySetupRequested event,
     Emitter<MainState> emit,
   ) async {
-    emit(MainState.loading());
+    emit(state.copyWith(isLoading: true));
     try {
       final setup = await _setupLocalDatasource.getSetup();
       if (setup == null) {
@@ -184,7 +195,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   }
 
   Future<void> _findVehicleInParking(FindVehicleInParkingRequested event, Emitter<MainState> emit) async {
-    emit(MainState.loading());
+    emit(state.copyWith(isLoading: true));
     try {
       final setup = await _setupLocalDatasource.getSetup();
       if (setup == null) {
@@ -193,18 +204,32 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       }
 
       final parkingInfo = await _vehicleRepository.getCurrentParkingDurationAndCost(event.plateNumber);
+      if (parkingInfo == null) {
+        emit(MainState.error(message: 'Vehicle not found', isCheckout: true));
+        return;
+      }
+
+      final duration = DateTime.now().difference(parkingInfo.entryTime);
+      final totalMinutes = duration.inMinutes;
+      final hours = totalMinutes ~/ 60;
+      final extraMinutes = totalMinutes % 60;
+    
+      // Grace period: if extraMinutes <= 10, do not charge for next hour
+      final billableHours = extraMinutes > 10 ? hours + 1 : hours;
       
       // Get rate from business setup based on vehicle type
-      final ratePerHour = parkingInfo['vehicleType'].toLowerCase().contains('car') 
+      final ratePerHour = parkingInfo.vehicleId.toLowerCase().contains('car') 
           ? setup.carHourCost 
           : setup.motorcycleHourCost;
       
-      final paymentValue = parkingInfo['billableHours'] * ratePerHour;
-      final parkingTime = '${parkingInfo['hours']}h ${parkingInfo['extraMinutes']}m';
+      final paymentValue = (parkingInfo.duration / 60) * ratePerHour;
+      final parkingTime = '${parkingInfo.duration}m';
 
-      emit(MainState.vehicleFound(
+      emit(state.copyWith(
         parkingTime: parkingTime,
         paymentValue: paymentValue,
+        vehicleLog: parkingInfo,
+        isLoading: false,
         paymentMethod: state.paymentMethod ?? 'cash',
       ));
     } catch (e) {

@@ -54,128 +54,126 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return BlocBuilder<MainBloc, MainState>(
+    return BlocConsumer<MainBloc, MainState>(
+      listener: (context, state) {
+        if (state.message != null && state.isCheckout) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message!), backgroundColor: Colors.red),
+          );
+        }
+        if (state.isCheckout) {
+          _plateController.clear();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.success)),
+          );
+          Navigator.of(context).pop(); // Close dialog on success
+        }
+      },
+      buildWhen: (previous, current) => previous.vehicleLog != current.vehicleLog || previous.parkingTime != current.parkingTime || previous.paymentValue != current.paymentValue,
       builder: (context, state) {
         // Update payment value controller when state changes
         if (state.paymentValue != null && !_isEditingPayment) {
           _paymentValueController.text = state.paymentValue!.toStringAsFixed(2);
         }
-
-        return BlocListener<MainBloc, MainState>(
-          listener: (context, state) {
-            if (state.message != null && state.isCheckout) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message!), backgroundColor: Colors.red),
-              );
-            }
-            if (state.isCheckout) {
-              _plateController.clear();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(l10n.success)),
-              );
-              Navigator.of(context).pop(); // Close dialog on success
-            }
-          },
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    l10n.checkOutVehicle,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+        return  Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  l10n.checkOutVehicle,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
                   ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: _plateController,
-                    decoration: InputDecoration(
-                      labelText: l10n.licensePlate,
-                      border: const OutlineInputBorder(),
-                    ),
-                    onChanged: (value) {
-                      context.read<MainBloc>().add(CheckOutPlateNumberChanged(value));
-                    },
-                    readOnly: state.parkingTime != null,
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: _plateController,
+                  decoration: InputDecoration(
+                    labelText: l10n.licensePlate,
+                    border: const OutlineInputBorder(),
                   ),
+                  onChanged: (value) {
+                    context.read<MainBloc>().add(CheckOutPlateNumberChanged(value));
+                  },
+                  readOnly: state.parkingTime != null,
+                ),
+                const SizedBox(height: 16),
+                if (state.parkingTime != null) ...[
+                  Text('${l10n.parkingTime}: ${state.parkingTime}'),
                   const SizedBox(height: 16),
-                  if (state.parkingTime != null) ...[
-                    Text('${l10n.parkingTime}: ${state.parkingTime}'),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: _paymentValueController,
-                            decoration: InputDecoration(
-                              labelText: l10n.paymentValue,
-                              border: const OutlineInputBorder(),
-                              prefixText: '\$',
-                            ),
-                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                            readOnly: !_isEditingPayment,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _paymentValueController,
+                          decoration: InputDecoration(
+                            labelText: l10n.paymentValue,
+                            border: const OutlineInputBorder(),
+                            prefixText: '\$',
                           ),
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          readOnly: !_isEditingPayment,
                         ),
-                        if (!_isEditingPayment)
-                          ElevatedButton(
-                            onPressed: _startEditingPayment,
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.blue,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                side: const BorderSide(color: Colors.blue),
+                      ),
+                      if (!_isEditingPayment)
+                        ElevatedButton(
+                          onPressed: _startEditingPayment,
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.blue,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              side: const BorderSide(color: Colors.blue),
+                            ),
+                          ),
+                          child: const Icon(Icons.edit),
+                        )
+                      else
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton.outlined(
+                              icon: const Icon(Icons.check),
+                              onPressed: _savePaymentValue,
+                              style: IconButton.styleFrom(
+                                foregroundColor: Colors.green,
                               ),
                             ),
-                            child: const Icon(Icons.edit),
-                          )
-                        else
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton.outlined(
-                                icon: const Icon(Icons.check),
-                                onPressed: _savePaymentValue,
-                                style: IconButton.styleFrom(
-                                  foregroundColor: Colors.green,
-                                ),
+                            IconButton.outlined(
+                              icon: const Icon(Icons.close),
+                              onPressed: _cancelEditingPayment,
+                              style: IconButton.styleFrom(
+                                foregroundColor: Colors.red,
                               ),
-                              IconButton.outlined(
-                                icon: const Icon(Icons.close),
-                                onPressed: _cancelEditingPayment,
-                                style: IconButton.styleFrom(
-                                  foregroundColor: Colors.red,
-                                ),
-                              ),
-                            ],
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    const PaymentMethodSelector(),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<MainBloc>().add(CheckOutRequested(
-                          plate: _plateController.text,
-                          paymentMethod: state.paymentMethod ?? 'cash',
-                          paymentValue: state.paymentValue,
-                        ));
-                      },
-                      child: Text(l10n.checkOut),
-                    ),
-                  ] else
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<MainBloc>().add(FindVehicleInParkingRequested(_plateController.text));
-                      },
-                      child: Text(l10n.findVehicle),
-                    ),
-                ],
-              ),
+                            ),
+                          ],
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  const PaymentMethodSelector(),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.read<MainBloc>().add(CheckOutRequested(
+                        plate: _plateController.text,
+                        paymentMethod: state.paymentMethod ?? 'cash',
+                        paymentValue: state.paymentValue,
+                      ));
+                    },
+                    child: Text(l10n.checkOut),
+                  ),
+                ] else
+                  ElevatedButton(
+                    onPressed: () {
+                      context.read<MainBloc>().add(FindVehicleInParkingRequested(_plateController.text));
+                    },
+                    child: Text(l10n.findVehicle),
+                  ),
+              ],
             ),
           ),
         );
