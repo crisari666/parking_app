@@ -13,7 +13,7 @@ class CheckOutVehicle extends StatelessWidget {
           context: context,
           builder: (context) => const Dialog(
             child: Padding(
-              padding: EdgeInsets.all(16.0),
+              padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
               child: CheckOutVehicleForm(),
             ),
           ),

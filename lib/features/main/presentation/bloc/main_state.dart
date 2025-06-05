@@ -38,6 +38,10 @@ class MainState extends Equatable {
   final bool isPrinterConnected;
   final bool isSetupRequired;
   final bool isSetupVerified;
+  final String plateNumber;
+  final String vehicleType;
+  final String checkOutPlateNumber;
+  final String discount;
 
   const MainState({
     this.status = MainStateStatus.initial,
@@ -52,6 +56,10 @@ class MainState extends Equatable {
     this.isPrinterConnected = false,
     this.isSetupRequired = false,
     this.isSetupVerified = false,
+    this.plateNumber = '',
+    this.vehicleType = '',
+    this.checkOutPlateNumber = '',
+    this.discount = '0',
   });
 
   factory MainState.initial() => const MainState();
@@ -115,6 +123,10 @@ class MainState extends Equatable {
     bool? isPrinterConnected,
     bool? isSetupRequired,
     bool? isSetupVerified,
+    String? plateNumber,
+    String? vehicleType,
+    String? checkOutPlateNumber,
+    String? discount,
   }) {
     return MainState(
       isLoading: isLoading ?? this.isLoading,
@@ -128,6 +140,10 @@ class MainState extends Equatable {
       isPrinterConnected: isPrinterConnected ?? this.isPrinterConnected,
       isSetupRequired: isSetupRequired ?? this.isSetupRequired,
       isSetupVerified: isSetupVerified ?? this.isSetupVerified,
+      plateNumber: plateNumber ?? this.plateNumber,
+      vehicleType: vehicleType ?? this.vehicleType,
+      checkOutPlateNumber: checkOutPlateNumber ?? this.checkOutPlateNumber,
+      discount: discount ?? this.discount,
     );
   }
 
@@ -144,6 +160,10 @@ class MainState extends Equatable {
     isPrinterConnected,
     isSetupRequired,
     isSetupVerified,
+    plateNumber,
+    vehicleType,
+    checkOutPlateNumber,
+    discount,
   ];
 }
 

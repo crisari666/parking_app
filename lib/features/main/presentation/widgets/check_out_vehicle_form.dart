@@ -15,6 +15,40 @@ class CheckOutVehicleForm extends StatefulWidget {
 
 class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
   final TextEditingController _plateController = TextEditingController();
+  final TextEditingController _paymentValueController = TextEditingController();
+  bool _isEditingPayment = false;
+  double? _originalPaymentValue;
+
+  @override
+  void dispose() {
+    _plateController.dispose();
+    _paymentValueController.dispose();
+    super.dispose();
+  }
+
+  void _startEditingPayment() {
+    setState(() {
+      _isEditingPayment = true;
+      _originalPaymentValue = double.tryParse(_paymentValueController.text);
+    });
+  }
+
+  void _cancelEditingPayment() {
+    setState(() {
+      _isEditingPayment = false;
+      _paymentValueController.text = _originalPaymentValue?.toStringAsFixed(2) ?? '';
+    });
+  }
+
+  void _savePaymentValue() {
+    final newValue = double.tryParse(_paymentValueController.text);
+    if (newValue != null) {
+      context.read<MainBloc>().add(CheckOutPaymentValueChanged(newValue));
+    }
+    setState(() {
+      _isEditingPayment = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +56,11 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
 
     return BlocBuilder<MainBloc, MainState>(
       builder: (context, state) {
+        // Update payment value controller when state changes
+        if (state.paymentValue != null && !_isEditingPayment) {
+          _paymentValueController.text = state.paymentValue!.toStringAsFixed(2);
+        }
+
         return BlocListener<MainBloc, MainState>(
           listener: (context, state) {
             if (state.message != null && state.isCheckout) {
@@ -66,7 +105,55 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
                   const SizedBox(height: 16),
                   if (state.parkingTime != null) ...[
                     Text('${l10n.parkingTime}: ${state.parkingTime}'),
-                    Text('${l10n.paymentValue}: \$${state.paymentValue?.toStringAsFixed(2)}'),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _paymentValueController,
+                            decoration: InputDecoration(
+                              labelText: l10n.paymentValue,
+                              border: const OutlineInputBorder(),
+                              prefixText: '\$',
+                            ),
+                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                            readOnly: !_isEditingPayment,
+                          ),
+                        ),
+                        if (!_isEditingPayment)
+                          ElevatedButton(
+                            onPressed: _startEditingPayment,
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.blue,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                side: const BorderSide(color: Colors.blue),
+                              ),
+                            ),
+                            child: const Icon(Icons.edit),
+                          )
+                        else
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton.outlined(
+                                icon: const Icon(Icons.check),
+                                onPressed: _savePaymentValue,
+                                style: IconButton.styleFrom(
+                                  foregroundColor: Colors.green,
+                                ),
+                              ),
+                              IconButton.outlined(
+                                icon: const Icon(Icons.close),
+                                onPressed: _cancelEditingPayment,
+                                style: IconButton.styleFrom(
+                                  foregroundColor: Colors.red,
+                                ),
+                              ),
+                            ],
+                          ),
+                      ],
+                    ),
                     const SizedBox(height: 16),
                     const PaymentMethodSelector(),
                     const SizedBox(height: 16),

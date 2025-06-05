@@ -106,3 +106,12 @@ class PrinterSetupRequested extends MainEvent {
   @override
   List<Object?> get props => [printerName, isConnected];
 }
+
+class CheckOutPaymentValueChanged extends MainEvent {
+  final double paymentValue;
+
+  const CheckOutPaymentValueChanged(this.paymentValue);
+
+  @override
+  List<Object> get props => [paymentValue];
+}

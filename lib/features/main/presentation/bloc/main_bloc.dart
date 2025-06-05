@@ -13,13 +13,9 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   final LocalStorageService _localStorageService;
   final SetupLocalDatasource _setupLocalDatasource;
   final BusinessRemoteDatasource _businessRemoteDatasource;
-  String _plateNumber = '';
-  String _vehicleType = '';
-  String _checkOutPlateNumber = '';
-  String _discount = '0';
-  String _paymentMethod = 'cash';
   String? _printerName;
   bool _isPrinterConnected = false;
+  double? _paymentValue;
 
   MainBloc({
     required LocalStorageService localStorageService,
@@ -41,26 +37,27 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<PaymentMethodChanged>(_handlePaymentMethodChanged);
     on<FindVehicleInParkingRequested>(_findVehicleInParking);
     on<PrinterSetupRequested>(_handlePrinterSetup);
+    on<CheckOutPaymentValueChanged>(_handleCheckOutPaymentValueChanged);
   }
 
   void _handlePlateNumberChanged(PlateNumberChanged event, Emitter<MainState> emit) {
-    _plateNumber = event.plateNumber;
+    emit(state.copyWith(plateNumber: event.plateNumber));
   }
 
   void _handleVehicleTypeChanged(VehicleTypeChanged event, Emitter<MainState> emit) {
-    _vehicleType = event.vehicleType;
+    emit(state.copyWith(vehicleType: event.vehicleType));
   }
 
   void _handleCheckOutPlateNumberChanged(CheckOutPlateNumberChanged event, Emitter<MainState> emit) {
-    _checkOutPlateNumber = event.plateNumber;
+    emit(state.copyWith(checkOutPlateNumber: event.plateNumber));
   }
 
   void _handleDiscountChanged(DiscountChanged event, Emitter<MainState> emit) {
-    _discount = event.discount;
+    emit(state.copyWith(discount: event.discount));
   }
 
   void _handlePaymentMethodChanged(PaymentMethodChanged event, Emitter<MainState> emit) {
-    _paymentMethod = event.method;
+    emit(state.copyWith(paymentMethod: event.method));
   }
 
   void _handlePrinterSetup(PrinterSetupRequested event, Emitter<MainState> emit) {
@@ -72,15 +69,20 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     ));
   }
 
+  void _handleCheckOutPaymentValueChanged(CheckOutPaymentValueChanged event, Emitter<MainState> emit) {
+    _paymentValue = event.paymentValue;
+    emit(state.copyWith(paymentValue: _paymentValue));
+  }
+
   void _checkOutRequested(CheckOutRequested event, Emitter<MainState> emit) async {
     emit(MainState.loading());
     try {
-      if (_checkOutPlateNumber.isEmpty) {
+      if (state.checkOutPlateNumber.isEmpty) {
         emit(MainState.error(message: 'Plate number is required', isCheckout: true));
         return;
       }
 
-      final vehicle = await _localStorageService.getVehicle(_checkOutPlateNumber);
+      final vehicle = await _localStorageService.getVehicle(state.checkOutPlateNumber);
       if (vehicle == null) {
         emit(MainState.error(message: 'Vehicle not found', isCheckout: true));
         return;
@@ -112,7 +114,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           : setup.motorcycleHourCost;
       
       final totalCost = billableHours * ratePerHour;
-      final discount = double.tryParse(_discount) ?? 0.0;
+      final discount = double.tryParse(state.discount) ?? 0.0;
       final p = totalCost - discount;
 
       final updatedVehicle = VehicleModel(
@@ -122,7 +124,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         checkOut: checkOutTime,
         totalCost: totalCost,
         discount: discount,
-        paymentMethod: _paymentMethod,
+        paymentMethod: state.paymentMethod ?? 'cash',
       );
 
       final success = await _localStorageService.updateVehicle(updatedVehicle);
@@ -139,14 +141,14 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   void _checkInRequested(CheckInRequested event, Emitter<MainState> emit) async {
     emit(MainState.loading());
     try {
-      if (_plateNumber.isEmpty || _vehicleType.isEmpty) {
+      if (state.plateNumber.isEmpty || state.vehicleType.isEmpty) {
         emit(MainState.error(message: 'Plate number and vehicle type are required', isCheckin: true));
         return;
       }
 
       final vehicle = VehicleModel(
-        plateNumber: _plateNumber,
-        vehicleType: _vehicleType,
+        plateNumber: state.plateNumber,
+        vehicleType: state.vehicleType,
         checkIn: DateTime.now(),
       );
 
@@ -203,7 +205,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       emit(MainState.vehicleFound(
         parkingTime: parkingTime,
         paymentValue: paymentValue,
-        paymentMethod: _paymentMethod,
+        paymentMethod: state.paymentMethod ?? 'cash',
       ));
     } catch (e) {
       emit(MainState.error(message: e.toString()));
