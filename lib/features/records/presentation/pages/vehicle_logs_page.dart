@@ -49,7 +49,11 @@ class VehicleLogsPage extends StatelessWidget {
           ),
         ),
         body: BlocBuilder<RecordsBloc, RecordsState>(
+        buildWhen: (previous, current) => previous.isLoadingLogs != current.isLoadingLogs || previous.vehicleLogs != current.vehicleLogs,
         builder: (context, state) {
+          if (state.isLoadingLogs) {
+            return const Center(child: CircularProgressIndicator());
+          }
           return state.vehicleLogs?.isEmpty ?? true ? Center(
                   child: Text(l10n.noRecordsAvailable),
                 )

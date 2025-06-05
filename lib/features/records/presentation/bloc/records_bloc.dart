@@ -45,13 +45,14 @@ class RecordsBloc extends Bloc<RecordsEvent, RecordsState> {
   }
 
   Future<void> _loadRecords(LoadRecordsRequested event, Emitter<RecordsState> emit) async {
-    emit(RecordsState.loading());
+    emit(state.copyWith(isLoadingLogs: true));
     try {
       //final vehicles = await _vehicleRepository.getAllVehicles();
       final activeVehicles = await _vehicleRepository.getActiveVehicles();
       emit(state.copyWith(
         status: RecordsStatus.success,
         logs: activeVehicles,
+        isLoadingLogs: false,
       ));
     } catch (e) {
       emit(RecordsState.error(e.toString()));

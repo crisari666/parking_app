@@ -12,6 +12,7 @@ enum RecordsStatus {
   bool get isLoading => this == loading;
   bool get isSuccess => this == success;
   bool get isError => this == error;
+  bool get isInitial => this == initial;
 }
 
 class RecordsState extends Equatable {
@@ -21,6 +22,7 @@ class RecordsState extends Equatable {
   final List<VehicleLogResponseModel>? vehicleLogs;
   final List<ActiveVehicleLogModel> logs;
   final String? errorMessage;
+  final bool isLoadingLogs;
 
   const RecordsState({
     this.status = RecordsStatus.initial,
@@ -28,6 +30,7 @@ class RecordsState extends Equatable {
     this.vehicleLogs,
     this.logs = const [],
     this.errorMessage,
+    this.isLoadingLogs = false,
   });
 
   factory RecordsState.initial() => const RecordsState();
@@ -42,6 +45,7 @@ class RecordsState extends Equatable {
       status: RecordsStatus.success
     );
 
+
   factory RecordsState.error(String message) => 
     RecordsState(errorMessage: message);
 
@@ -51,6 +55,7 @@ class RecordsState extends Equatable {
     List<VehicleLogResponseModel>? vehicleLogs,
     String? errorMessage,
     List<ActiveVehicleLogModel>? logs,
+    bool? isLoadingLogs,
   }) {
     return RecordsState(
       status: status ?? this.status,
@@ -58,9 +63,10 @@ class RecordsState extends Equatable {
       vehicleLogs: vehicleLogs ?? this.vehicleLogs,
       errorMessage: errorMessage ?? this.errorMessage,
       logs: logs ?? this.logs,
+      isLoadingLogs: isLoadingLogs ?? this.isLoadingLogs,
     );
   }
 
   @override
-  List<Object?> get props => [status, records, vehicleLogs, errorMessage, logs];
+  List<Object?> get props => [status, records, vehicleLogs, errorMessage, logs, isLoadingLogs];
 }
