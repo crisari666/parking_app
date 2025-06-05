@@ -10,7 +10,6 @@ import 'package:quantum_parking_flutter/features/auth/data/repositories/auth_rep
 import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:quantum_parking_flutter/features/main/data/datasources/local_storage_service.dart';
 import 'package:quantum_parking_flutter/features/main/data/datasources/vehicle_log_remote_datasource.dart';
-import 'package:quantum_parking_flutter/features/main/data/repositories/vehicle_repository_impl.dart';
 import 'package:quantum_parking_flutter/features/main/domain/repositories/vehicle_repository.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_bloc.dart';
 import 'package:quantum_parking_flutter/features/setup/data/datasources/business_remote_datasource.dart';
@@ -76,6 +75,7 @@ Future<void> registerMainDependencies() async {
     setupLocalDatasource: getIt(),
   ));
   getIt.registerSingleton<MainBloc>(MainBloc(
+    vehicleRepository: getIt(),
     localStorageService: getIt(),
     setupLocalDatasource: getIt(),
     businessRemoteDatasource: getIt(),

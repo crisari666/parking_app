@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quantum_parking_flutter/features/main/data/datasources/local_storage_service.dart';
 import 'package:quantum_parking_flutter/features/main/data/models/vehicle_model.dart';
+import 'package:quantum_parking_flutter/features/main/domain/repositories/vehicle_repository.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_event.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_state.dart';
 import 'package:quantum_parking_flutter/features/setup/data/datasources/business_remote_datasource.dart';
@@ -8,6 +9,7 @@ import 'package:quantum_parking_flutter/features/setup/data/datasources/setup_lo
 
 // Bloc
 class MainBloc extends Bloc<MainEvent, MainState> {
+  final VehicleRepository _vehicleRepository;
   final LocalStorageService _localStorageService;
   final SetupLocalDatasource _setupLocalDatasource;
   final BusinessRemoteDatasource _businessRemoteDatasource;
@@ -23,9 +25,11 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     required LocalStorageService localStorageService,
     required SetupLocalDatasource setupLocalDatasource,
     required BusinessRemoteDatasource businessRemoteDatasource,
+    required VehicleRepository vehicleRepository,
   }) : _localStorageService = localStorageService,
        _setupLocalDatasource = setupLocalDatasource,
        _businessRemoteDatasource = businessRemoteDatasource,
+       _vehicleRepository = vehicleRepository,
        super(MainState.initial()) {
     on<PlateNumberChanged>(_handlePlateNumberChanged);
     on<VehicleTypeChanged>(_handleVehicleTypeChanged);
@@ -146,12 +150,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         checkIn: DateTime.now(),
       );
 
-      final success = await _localStorageService.saveVehicle(vehicle);
-      if (!success) {
-        emit(MainState.error(message: 'Vehicle is already checked in'));
-        return;
-      }
-
+      await _vehicleRepository.checkInVehicle(vehicle);
       emit(MainState.checkInSuccess());
     } catch (e) {
       emit(MainState.error(message: e.toString()));

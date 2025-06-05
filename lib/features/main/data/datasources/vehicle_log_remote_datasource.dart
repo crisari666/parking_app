@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:quantum_parking_flutter/core/network/api_client.dart';
 import '../models/vehicle_log_response_model.dart';
 import '../models/active_vehicle_log_model.dart';
@@ -33,6 +34,11 @@ class VehicleLogRemoteDatasourceImpl implements VehicleLogRemoteDatasource {
         throw Exception('Failed to create vehicle log: ${response.statusCode}');
       }
     } catch (e) {
+      if(e is DioException){
+        if(e.response?.statusCode == 400 && e.response?.data['message'] == 'Vehicle is already in parking'){
+          throw Exception('El Vehiculo ya esta en el parqueadero');
+        }
+      }
       throw Exception('Failed to create vehicle log: $e');
     }
   }
