@@ -27,6 +27,7 @@ class RecordsPage extends StatelessWidget {
             // if (state is RecordsInitial) {
             // }
           },
+          buildWhen: (previous, current) => previous.status != current.status,
           builder: (context, state) {
             if (state.status == RecordsStatus.loading) {
               return const Center(child: CircularProgressIndicator());

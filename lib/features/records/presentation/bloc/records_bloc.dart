@@ -48,6 +48,7 @@ class RecordsBloc extends Bloc<RecordsEvent, RecordsState> {
     emit(RecordsState.loading());
     try {
       final vehicles = await _vehicleRepository.getAllVehicles();
+      final activeVehicles = await _vehicleRepository.getActiveVehicles();
       final records = vehicles.map((vehicle) => VehicleRecord(
         plateNumber: vehicle.plateNumber,
         vehicleType: vehicle.vehicleType,
@@ -56,7 +57,7 @@ class RecordsBloc extends Bloc<RecordsEvent, RecordsState> {
         totalCost: vehicle.totalCost,
         paymentMethod: vehicle.paymentMethod,
       )).toList();
-      emit(RecordsState.success(records));
+      emit(RecordsState.success(records, vehicleLogs: [], logs: activeVehicles));
     } catch (e) {
       emit(RecordsState.error(e.toString()));
     }
@@ -80,6 +81,7 @@ class RecordsBloc extends Bloc<RecordsEvent, RecordsState> {
       emit(state.copyWith(
         status: RecordsStatus.success,
         vehicleLogs: records,
+        //logs: vehicleLogs,
       ));
     } catch (e) {
       emit(RecordsState.error(e.toString()));

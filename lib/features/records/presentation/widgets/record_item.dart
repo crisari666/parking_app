@@ -4,11 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/bloc/records_bloc.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/bloc/records_event.dart';
-import 'package:quantum_parking_flutter/features/records/presentation/bloc/models/vehicle_record.dart';
+import 'package:quantum_parking_flutter/features/main/data/models/active_vehicle_log_model.dart';
 import 'package:quantum_parking_flutter/l10n/app_localizations_context.dart';
 
 class RecordItem extends StatelessWidget {
-  final VehicleRecord record;
+  final ActiveVehicleLogModel record;
   final bool hidePlateNumber;
 
   const RecordItem({
@@ -33,17 +33,14 @@ class RecordItem extends StatelessWidget {
     }
   }
 
-  String _getLocalizedPaymentMethod(BuildContext context, String method) {
-    final l10n = AppLocalizations.of(context);
-    switch (method.toLowerCase()) {
-      case 'cash':
-        return l10n.paymentMethodCash;
-      case 'card':
-        return l10n.paymentMethodCard;
-      case 'transfer':
-        return l10n.paymentMethodTransfer;
-      default:
-        return method;
+  String _formatDuration(int minutes) {
+    final hours = minutes ~/ 60;
+    final remainingMinutes = minutes % 60;
+    
+    if (hours > 0) {
+      return '$hours hour${hours > 1 ? 's' : ''} $remainingMinutes minute${remainingMinutes > 1 ? 's' : ''}';
+    } else {
+      return '$remainingMinutes minute${remainingMinutes > 1 ? 's' : ''}';
     }
   }
 
@@ -56,7 +53,7 @@ class RecordItem extends StatelessWidget {
       ),
       child: InkWell(
         onTap: () {
-          context.read<RecordsBloc>().add(GetVehicleLogsRequested(record.plateNumber));
+          context.read<RecordsBloc>().add(GetVehicleLogsRequested(record.vehicleId.plateNumber));
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
@@ -73,7 +70,7 @@ class RecordItem extends StatelessWidget {
                         const Icon(Icons.directions_car, size: 20, color: Colors.blueGrey),
                         const SizedBox(width: 6),
                         Text(
-                          record.plateNumber,
+                          record.vehicleId.plateNumber,
                           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                         ),
                       ],
@@ -85,7 +82,7 @@ class RecordItem extends StatelessWidget {
                       const Icon(Icons.category, size: 20, color: Colors.teal),
                       const SizedBox(width: 6),
                       Text(
-                        _getLocalizedVehicleType(context, record.vehicleType),
+                        _getLocalizedVehicleType(context, record.vehicleId.vehicleType),
                         style: const TextStyle(fontSize: 15, color: Colors.black87),
                       ),
                     ],
@@ -102,19 +99,19 @@ class RecordItem extends StatelessWidget {
                       const Icon(Icons.login, size: 18, color: Colors.green),
                       const SizedBox(width: 4),
                       Text(
-                        DateFormat('MMM dd, yyyy HH:mm').format(record.checkIn),
+                        DateFormat('MMM dd, yyyy HH:mm').format(record.entryTime),
                         style: const TextStyle(fontSize: 14),
                       ),
                     ],
                   ),
                   const SizedBox(width: 16),
-                  if (record.checkOut != null) ...[
+                  if (record.exitTime != null) ...[
                     Row(
                       children: [
                         const Icon(Icons.logout, size: 18, color: Colors.red),
                         const SizedBox(width: 4),
                         Text(
-                          DateFormat('MMM dd, yyyy HH:mm').format(record.checkOut!),
+                          DateFormat('MMM dd, yyyy HH:mm').format(record.exitTime!),
                           style: const TextStyle(fontSize: 14),
                         ),
                       ],
@@ -129,33 +126,24 @@ class RecordItem extends StatelessWidget {
                   const Icon(Icons.timer, size: 18, color: Colors.orange),
                   const SizedBox(width: 4),
                   Text(
-                    record.checkOut == null 
+                    record.exitTime == null 
                         ? context.loc.stillParking
-                        : record.duration,
+                        : _formatDuration(record.duration),
                     style: const TextStyle(fontSize: 14),
                   ),
                 ],
               ),
-              // Total cost and payment method with icons (if available)
-              if (record.totalCost != null) ...[
+              // Total cost with icon (if available)
+              if (record.cost > 0) ...[
                 const SizedBox(height: 8),
                 Row(
                   children: [
                     const Icon(Icons.attach_money, size: 18, color: Colors.green),
                     const SizedBox(width: 4),
                     Text(
-                      record.totalCost!.toStringAsFixed(2),
+                      record.cost.toString(),
                       style: const TextStyle(fontSize: 14),
                     ),
-                    if (record.paymentMethod != null) ...[
-                      const SizedBox(width: 16),
-                      const Icon(Icons.payment, size: 18, color: Colors.blue),
-                      const SizedBox(width: 4),
-                      Text(
-                        _getLocalizedPaymentMethod(context, record.paymentMethod!),
-                        style: const TextStyle(fontSize: 14),
-                      ),
-                    ],
                   ],
                 ),
               ],

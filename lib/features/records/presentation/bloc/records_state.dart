@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:quantum_parking_flutter/features/main/data/models/active_vehicle_log_model.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/bloc/models/vehicle_record.dart';
 
 enum RecordsStatus {
@@ -17,12 +18,14 @@ class RecordsState extends Equatable {
   final RecordsStatus status;
   final List<VehicleRecord> records;
   final List<VehicleRecord>? vehicleLogs;
+  final List<ActiveVehicleLogModel> logs;
   final String? errorMessage;
 
   const RecordsState({
     this.status = RecordsStatus.initial,
     this.records = const [],
     this.vehicleLogs,
+    this.logs = const [],
     this.errorMessage,
   });
 
@@ -30,8 +33,13 @@ class RecordsState extends Equatable {
 
   factory RecordsState.loading() => const RecordsState(status: RecordsStatus.loading);
 
-  factory RecordsState.success(List<VehicleRecord> records, {List<VehicleRecord>? vehicleLogs}) => 
-    RecordsState(records: records, vehicleLogs: vehicleLogs, status: RecordsStatus.success);
+  factory RecordsState.success(List<VehicleRecord> records, {List<VehicleRecord> vehicleLogs = const [], List<ActiveVehicleLogModel> logs = const []}) => 
+    RecordsState(
+      records: records, 
+      vehicleLogs: vehicleLogs, 
+      logs: logs, 
+      status: RecordsStatus.success
+    );
 
   factory RecordsState.error(String message) => 
     RecordsState(errorMessage: message);
@@ -41,15 +49,17 @@ class RecordsState extends Equatable {
     List<VehicleRecord>? records,
     List<VehicleRecord>? vehicleLogs,
     String? errorMessage,
+    List<ActiveVehicleLogModel>? logs,
   }) {
     return RecordsState(
       status: status ?? this.status,
       records: records ?? this.records,
       vehicleLogs: vehicleLogs ?? this.vehicleLogs,
       errorMessage: errorMessage ?? this.errorMessage,
+      logs: logs ?? this.logs,
     );
   }
 
   @override
-  List<Object?> get props => [status, records, vehicleLogs, errorMessage];
+  List<Object?> get props => [status, records, vehicleLogs, errorMessage, logs];
 }

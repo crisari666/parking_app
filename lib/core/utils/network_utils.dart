@@ -21,7 +21,7 @@ class NetworkUtils {
           
           // Running on physical device, use the computer's IP
           final computerIP = await _getComputerIP();
-          return originalUrl.replaceAll('localhost', computerIP);
+        return originalUrl.replaceAll('localhost', computerIP);
         } catch (e) {
           // Fallback to emulator address
           return originalUrl.replaceAll('localhost', '10.0.2.2');
