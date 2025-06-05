@@ -184,40 +184,21 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   Future<void> _findVehicleInParking(FindVehicleInParkingRequested event, Emitter<MainState> emit) async {
     emit(MainState.loading());
     try {
-      final vehicle = await _localStorageService.getVehicle(event.plateNumber);
-      if (vehicle == null) {
-        emit(MainState.error(message: 'Vehicle not found', isCheckout: true));
-        return;
-      }
-
-      if (vehicle.checkOut != null) {
-        emit(MainState.error(message: 'Vehicle is already checked out', isCheckout: true));
-        return;
-      }
-
       final setup = await _setupLocalDatasource.getSetup();
       if (setup == null) {
         emit(MainState.error(message: 'Business setup not found', isCheckout: true));
         return;
       }
 
-      final currentTime = DateTime.now();
-      final duration = currentTime.difference(vehicle.checkIn);
-      final totalMinutes = duration.inMinutes;
-      final hours = totalMinutes ~/ 60;
-      final extraMinutes = totalMinutes % 60;
-      
-      // Grace period: if extraMinutes <= 10, do not charge for next hour
-      final billableHours = extraMinutes > 10 ? hours + 1 : hours;
+      final parkingInfo = await _vehicleRepository.getCurrentParkingDurationAndCost(event.plateNumber);
       
       // Get rate from business setup based on vehicle type
-      final ratePerHour = vehicle.vehicleType.toLowerCase() == 'car' 
+      final ratePerHour = parkingInfo['vehicleType'].toLowerCase().contains('car') 
           ? setup.carHourCost 
           : setup.motorcycleHourCost;
       
-      final paymentValue = billableHours * ratePerHour;
-
-      final parkingTime = '${hours}h ${extraMinutes}m';
+      final paymentValue = parkingInfo['billableHours'] * ratePerHour;
+      final parkingTime = '${parkingInfo['hours']}h ${parkingInfo['extraMinutes']}m';
 
       emit(MainState.vehicleFound(
         parkingTime: parkingTime,
