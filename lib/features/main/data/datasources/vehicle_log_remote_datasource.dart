@@ -8,6 +8,7 @@ abstract class VehicleLogRemoteDatasource {
   Future<VehicleLogResponseModel?> getLastVehicleLog(String plateNumber);
   Future<List<ActiveVehicleLogModel>> getActiveVehicles();
   Future<List<VehicleLogResponseModel>> getVehicleLogs(String plateNumber);
+  Future<VehicleLogResponseModel> checkoutVehicle(String plateNumber, int cost);
 }
 
 class VehicleLogRemoteDatasourceImpl implements VehicleLogRemoteDatasource {
@@ -93,6 +94,31 @@ class VehicleLogRemoteDatasourceImpl implements VehicleLogRemoteDatasource {
       }
     } catch (e) {
       throw Exception('Failed to get vehicle logs: $e');
+    }
+  }
+
+  @override
+  Future<VehicleLogResponseModel> checkoutVehicle(String plateNumber, int cost) async {
+    try {
+      final response = await _apiClient.dio.patch(
+        '/vehicle-log/vehicle/$plateNumber/checkout',
+        data: {
+          'cost': cost,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return VehicleLogResponseModel.fromJson(response.data);
+      } else {
+        throw Exception('Failed to checkout vehicle: ${response.statusCode}');
+      }
+    } catch (e) {
+      if (e is DioException) {
+        if (e.response?.statusCode == 404 && e.response?.data['message'] == 'No active vehicle log found') {
+          throw Exception('No active vehicle log found');
+        }
+      }
+      throw Exception('Failed to checkout vehicle: $e');
     }
   }
 }

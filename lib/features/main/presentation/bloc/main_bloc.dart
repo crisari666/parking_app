@@ -110,40 +110,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         return;
       }
 
-      final checkOutTime = DateTime.now();
-      final duration = checkOutTime.difference(vehicle.checkIn);
-      final totalMinutes = duration.inMinutes;
-      final hours = totalMinutes ~/ 60;
-      final extraMinutes = totalMinutes % 60;
-      
-      // Grace period: if extraMinutes <= 10, do not charge for next hour
-      final billableHours = extraMinutes > 10 ? hours + 1 : hours;
-      
-      // Get rate from business setup based on vehicle type
-      final ratePerHour = vehicle.vehicleType.toLowerCase() == 'car' 
-          ? setup.carHourCost 
-          : setup.motorcycleHourCost;
-      
-      final totalCost = billableHours * ratePerHour;
-      final discount = double.tryParse(state.discount) ?? 0.0;
-      final p = totalCost - discount;
-
-      final updatedVehicle = VehicleModel(
-        plateNumber: vehicle.plateNumber,
-        vehicleType: vehicle.vehicleType,
-        checkIn: vehicle.checkIn,
-        checkOut: checkOutTime,
-        totalCost: totalCost,
-        discount: discount,
-        paymentMethod: state.paymentMethod ?? 'cash',
-      );
-
-      final success = await _localStorageService.updateVehicle(updatedVehicle);
-      if (success) {
-        emit(MainState.success('Vehicle checked out successfully'));
-      } else {
-        emit(MainState.error(message: 'Failed to check out vehicle', isCheckout: true));
-      }
+      await _vehicleRepository.checkoutVehicle(state.checkOutPlateNumber, state.paymentValue?.toInt() ?? 0);
+      emit(MainState.success('Vehicle checked out successfully'));
     } catch (e) {
       emit(MainState.error(message: e.toString(), isCheckout: true));
     }

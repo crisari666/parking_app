@@ -108,7 +108,10 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
                   Row(
                     children: [
                       Expanded(
-                        child: TextField(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child:
+                         TextField(
                           controller: _paymentValueController,
                           decoration: InputDecoration(
                             labelText: l10n.paymentValue,
@@ -117,7 +120,7 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
                           ),
                           keyboardType: const TextInputType.numberWithOptions(decimal: true),
                           readOnly: !_isEditingPayment,
-                        ),
+                        )),
                       ),
                       if (!_isEditingPayment)
                         ElevatedButton(

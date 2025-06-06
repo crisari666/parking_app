@@ -17,6 +17,7 @@ abstract class VehicleRepository {
   Future<List<ActiveVehicleLogModel>> getActiveVehicles();
   Future<bool> isVehicleCheckedIn(String plateNumber);
   Future<List<VehicleLogResponseModel>> getVehicleLogs(String plateNumber);
+  Future<VehicleLogResponseModel> checkoutVehicle(String plateNumber, int cost);
   // Daily closure methods
   Future<DailyClosureModel> getDailyClosure(DateTime date);
   Future<bool> saveDailyClosure(DailyClosureModel closure);
@@ -154,5 +155,10 @@ class VehicleRepositoryImpl implements VehicleRepository {
       throw Exception('No active parking log found for vehicle');
     }    
     return lastLog;
+  }
+
+  @override
+  Future<VehicleLogResponseModel> checkoutVehicle(String plateNumber, int cost) async {
+    return await _vehicleLogRemoteDatasource.checkoutVehicle(plateNumber, cost);
   }
 } 
