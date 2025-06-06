@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_bloc.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_event.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/check_out_vehicle_form.dart';
+import 'package:quantum_parking_flutter/injection/injection.dart';
 import 'package:quantum_parking_flutter/l10n/app_localizations_context.dart';
 
 class CheckOutVehicle extends StatelessWidget {
@@ -12,7 +13,7 @@ class CheckOutVehicle extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () async {
-        await showDialog(
+        showDialog(
           context: context,
           builder: (context) => const Dialog(
             child: Padding(
@@ -20,10 +21,9 @@ class CheckOutVehicle extends StatelessWidget {
               child: CheckOutVehicleForm(),
             ),
           ),
-        );
-        if (context.mounted) {
-          context.read<MainBloc>().add(ResetCheckOutForm());
-        }
+        ).then((value) {
+          getIt.get<MainBloc>().add(ResetCheckOutForm());
+        });
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 32),
