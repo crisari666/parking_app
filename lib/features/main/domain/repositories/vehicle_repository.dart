@@ -24,6 +24,8 @@ abstract class VehicleRepository {
   Future<List<DailyClosureModel>> getDailyClosures(DateTime startDate, DateTime endDate);
   // New method for getting current parking duration and cost
   Future<VehicleLogResponseModel?> getCurrentParkingDurationAndCost(String plateNumber);
+  // New method for getting vehicle logs by date
+  Future<List<ActiveVehicleLogModel>> getVehicleLogsByDate(String date);
 } 
 
 class VehicleRepositoryImpl implements VehicleRepository {
@@ -160,5 +162,10 @@ class VehicleRepositoryImpl implements VehicleRepository {
   @override
   Future<VehicleLogResponseModel> checkoutVehicle(String plateNumber, int cost) async {
     return await _vehicleLogRemoteDatasource.checkoutVehicle(plateNumber, cost);
+  }
+
+  @override
+  Future<List<ActiveVehicleLogModel>> getVehicleLogsByDate(String date) async {
+    return await _vehicleLogRemoteDatasource.getVehicleLogsByDate(date);
   }
 } 

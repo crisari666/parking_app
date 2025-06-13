@@ -10,3 +10,4 @@ targets:
             - lib/features/auth/domain/models/user.dart
             - lib/features/records/data/models/daily_closure_model.dart
             - lib/features/auth/domain/models/login_response.dart
+            - lib/features/main/data/models/vehicle_log_response_model.dart

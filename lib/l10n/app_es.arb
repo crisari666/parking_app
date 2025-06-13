@@ -114,5 +114,6 @@
   "motorcycleNightCost": "Costo Nocturno de Motocicleta",
   "studentMotorcycleHourCost": "Costo por Hora de Motocicleta Estudiantil",
   "dailyRates": "Tarifas Diarias",
-  "nightRates": "Tarifas Nocturnas"
+  "nightRates": "Tarifas Nocturnas",
+  "selectDate": "Seleccionar Fecha"
 }

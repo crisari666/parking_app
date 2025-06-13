@@ -5,14 +5,29 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quantum_parking_flutter/features/closure/presentation/bloc/closure_event.dart';
 import 'package:quantum_parking_flutter/features/closure/presentation/bloc/closure_state.dart';
+import 'package:quantum_parking_flutter/features/closure/presentation/widgets/closure_date_selector.dart';
 import 'package:quantum_parking_flutter/features/closure/presentation/widgets/daily_summary_card.dart';
 import 'package:quantum_parking_flutter/features/closure/presentation/widgets/financial_summary_card.dart';
 import 'package:quantum_parking_flutter/features/closure/presentation/widgets/current_closure_details.dart';
+// esimport 'package:quantum_parking_flutter/features/closure/presentation/widgets/closure_date_selector.dart';
 import 'package:quantum_parking_flutter/injection/injection.dart';
 
 @RoutePage()
-class ClosurePage extends StatelessWidget {
+class ClosurePage extends StatefulWidget {
   const ClosurePage({super.key});
+
+  @override
+  State<ClosurePage> createState() => _ClosurePageState();
+}
+
+class _ClosurePageState extends State<ClosurePage> {
+  late DateTime selectedDate;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedDate = DateTime.now();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,41 +50,55 @@ class ClosurePage extends StatelessWidget {
         ),
         body: BlocBuilder<ClosureBloc, ClosureState>(
           builder: (context, state) {
-            if (state is ClosureLoading) {
+            if (state.status.isLoading) {
               return const Center(child: CircularProgressIndicator());
-            } else if (state is ClosureSuccess) {
-              // Get current day's logs
-              final now = DateTime.now();
-              final startOfDay = DateTime(now.year, now.month, now.day);
+            } else if (state.status.isSuccess) {
+              // Get selected day's logs
+              final startOfDay = DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
               final endOfDay = startOfDay.add(const Duration(days: 1));
               
-              final currentDayLogs = state.closure.vehicleLogs.where((log) => 
+              final selectedDayLogs = state.closure?.vehicleLogs.where((log) => 
                 log.checkIn.isAfter(startOfDay) && 
                 log.checkIn.isBefore(endOfDay)
               ).toList();
 
-              return TabBarView(
+              return Column(
                 children: [
-                  // Summary Tab
-                  SingleChildScrollView(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                  ClosureDateSelector(
+                    selectedDate: selectedDate,
+                    onDateChanged: (date) {
+                      setState(() {
+                        selectedDate = date;
+                      });
+                      context.read<ClosureBloc>().add(GetClosureDataByDate(date));
+                    },
+                  ),
+                  Expanded(
+                    child: TabBarView(
                       children: [
-                        DailySummaryCard(closure: state.closure, l10n: l10n),
-                        const SizedBox(height: 16),
-                        FinancialSummaryCard(closure: state.closure, l10n: l10n),
+                        // Summary Tab
+                        SingleChildScrollView(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              DailySummaryCard(closure: state.closure!, l10n: l10n),
+                              const SizedBox(height: 16),
+                              FinancialSummaryCard(closure: state.closure!, l10n: l10n),
+                            ],
+                          ),
+                        ),
+                        // Details Tab
+                        CurrentClosureDetails(vehicleLogs: selectedDayLogs!, l10n: l10n),
                       ],
                     ),
                   ),
-                  // Details Tab
-                  CurrentClosureDetails(vehicleLogs: currentDayLogs, l10n: l10n),
                 ],
               );
-            } else if (state is ClosureError) {
+            } else if (state.status.isError) {
               return Center(
                 child: Text(
-                  state.message,
+                  state.errorMessage!,
                   style: const TextStyle(color: Colors.red),
                 ),
               );

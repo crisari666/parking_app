@@ -114,5 +114,6 @@
   "motorcycleNightCost": "Motorcycle Night Cost",
   "studentMotorcycleHourCost": "Student Motorcycle Hourly Cost",
   "dailyRates": "Daily Rates",
-  "nightRates": "Night Rates"
+  "nightRates": "Night Rates",
+  "selectDate": "Select Date"
 }

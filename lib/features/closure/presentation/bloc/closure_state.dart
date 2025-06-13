@@ -2,40 +2,64 @@
 import 'package:equatable/equatable.dart';
 import 'package:quantum_parking_flutter/features/records/data/models/daily_closure_model.dart';
 
-abstract class ClosureState extends Equatable {
-  const ClosureState();
+enum ClosureStatus {
+  initial,
+  loading,
+  success,
+  error;
 
-  @override
-  List<Object?> get props => [];
+  bool get isLoading => this == ClosureStatus.loading;
+  bool get isInitial => this == ClosureStatus.initial;
+  bool get isSuccess => this == ClosureStatus.success;
+  bool get isError => this == ClosureStatus.error;
 }
 
-class ClosureInitial extends ClosureState {}
+class ClosureState extends Equatable {
+  final ClosureStatus status;
+  final DailyClosureModel? closure;
+  final List<DailyClosureModel>? closures;
+  final String? errorMessage;
 
-class ClosureLoading extends ClosureState {}
+  const ClosureState({
+    this.status = ClosureStatus.initial,
+    this.closure,
+    this.closures,
+    this.errorMessage,
+  });
 
-class ClosureSuccess extends ClosureState {
-  final DailyClosureModel closure;
+  ClosureState copyWith({
+    ClosureStatus? status,
+    DailyClosureModel? closure,
+    List<DailyClosureModel>? closures,
+    String? errorMessage,
+  }) {
+    return ClosureState(
+      status: status ?? this.status,
+      closure: closure ?? this.closure,
+      closures: closures ?? this.closures,
+      errorMessage: errorMessage ?? this.errorMessage,
+    );
+  }
 
-  const ClosureSuccess(this.closure);
+  factory ClosureState.initial() => const ClosureState();
+
+  factory ClosureState.loading() => const ClosureState(status: ClosureStatus.loading);
+
+  factory ClosureState.success(DailyClosureModel closure) => ClosureState(
+        status: ClosureStatus.success,
+        closure: closure,
+      );
+
+  factory ClosureState.closuresLoaded(List<DailyClosureModel> closures) => ClosureState(
+        status: ClosureStatus.success,
+        closures: closures,
+      );
+
+  factory ClosureState.error(String message) => ClosureState(
+        status: ClosureStatus.error,
+        errorMessage: message,
+      );
 
   @override
-  List<Object?> get props => [closure];
-}
-
-class ClosuresLoaded extends ClosureState {
-  final List<DailyClosureModel> closures;
-
-  const ClosuresLoaded(this.closures);
-
-  @override
-  List<Object?> get props => [closures];
-}
-
-class ClosureError extends ClosureState {
-  final String message;
-
-  const ClosureError(this.message);
-
-  @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [status, closure, closures, errorMessage];
 }

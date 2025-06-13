@@ -9,6 +9,7 @@ abstract class VehicleLogRemoteDatasource {
   Future<List<ActiveVehicleLogModel>> getActiveVehicles();
   Future<List<VehicleLogResponseModel>> getVehicleLogs(String plateNumber);
   Future<VehicleLogResponseModel> checkoutVehicle(String plateNumber, int cost);
+  Future<List<ActiveVehicleLogModel>> getVehicleLogsByDate(String date);
 }
 
 class VehicleLogRemoteDatasourceImpl implements VehicleLogRemoteDatasource {
@@ -119,6 +120,24 @@ class VehicleLogRemoteDatasourceImpl implements VehicleLogRemoteDatasource {
         }
       }
       throw Exception('Failed to checkout vehicle: $e');
+    }
+  }
+
+  @override
+  Future<List<ActiveVehicleLogModel>> getVehicleLogsByDate(String date) async {
+    try {
+      final response = await _apiClient.dio.get(
+        '/vehicle-log/date/$date',
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data;
+        return data.map((json) => ActiveVehicleLogModel.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to get vehicle logs by date: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to get vehicle logs by date: $e');
     }
   }
 }
