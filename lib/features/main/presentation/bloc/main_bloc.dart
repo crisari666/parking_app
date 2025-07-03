@@ -51,6 +51,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<CheckOutPaymentValueChanged>(_handleCheckOutPaymentValueChanged);
     on<ResetCheckOutForm>(_handleResetCheckOutForm);
     on<PrintQRCodeRequested>(_handlePrintQRCode);
+    on<ClearMessage>(_handleClearMessage);
   }
 
   void _handlePlateNumberChanged(PlateNumberChanged event, Emitter<MainState> emit) {
@@ -92,6 +93,10 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       clearVehicleLog: true,
       discount: '',
     ));
+  }
+
+  void _handleClearMessage(ClearMessage event, Emitter<MainState> emit) {
+    emit(state.copyWith(message: null));
   }
 
   void _checkOutRequested(CheckOutRequested event, Emitter<MainState> emit) async {

@@ -126,3 +126,5 @@ class PrintQRCodeRequested extends MainEvent {
   @override
   List<Object> get props => [plateNumber];
 }
+
+class ClearMessage extends MainEvent {}
