@@ -117,3 +117,12 @@ class CheckOutPaymentValueChanged extends MainEvent {
 }
 
 class ResetCheckOutForm extends MainEvent {}
+
+class PrintQRCodeRequested extends MainEvent {
+  final String plateNumber;
+
+  const PrintQRCodeRequested(this.plateNumber);
+
+  @override
+  List<Object> get props => [plateNumber];
+}

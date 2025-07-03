@@ -16,7 +16,8 @@ class ApiClient {
   }
 
   Future<void> _initializeDio() async {
-    final baseUrl = await NetworkUtils.getBaseUrl(Env.apiUrl);
+    //final baseUrl = await NetworkUtils.getBaseUrl(Env.apiUrl);
+    final baseUrl = await Env.apiUrl;
     
     _dio = Dio(
       BaseOptions(

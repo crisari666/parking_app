@@ -1,6 +1,7 @@
 // States
 import 'package:equatable/equatable.dart';
 import 'package:quantum_parking_flutter/features/main/data/models/vehicle_log_response_model.dart';
+import 'package:quantum_parking_flutter/features/setup/data/models/business_setup_model.dart';
 
 enum MainStateStatus {
   initial,
@@ -44,6 +45,7 @@ class MainState extends Equatable {
   final String checkOutPlateNumber;
   final String discount;
   final VehicleLogResponseModel? vehicleLog;
+  final BusinessSetupModel? businessSetup;
 
   const MainState({
     this.status = MainStateStatus.initial,
@@ -63,13 +65,13 @@ class MainState extends Equatable {
     this.checkOutPlateNumber = '',
     this.discount = '0',
     this.vehicleLog,
+    this.businessSetup,
   });
 
   factory MainState.initial() => const MainState();
 
   factory MainState.success(String message) => MainState(message: message);
 
-  factory MainState.checkInSuccess() => const MainState(isCheckin: true);
 
   factory MainState.checkOutSuccess({
     required double totalCost,
@@ -88,18 +90,6 @@ class MainState extends Equatable {
     message: message,
     isCheckin: isCheckin,
     isCheckout: isCheckout,
-  );
-
-  factory MainState.setupRequired() => const MainState(isSetupRequired: true);
-
-  factory MainState.setupVerified() => const MainState(isSetupVerified: true);
-
-  factory MainState.printerSetup({
-    String? printerName,
-    bool isConnected = false,
-  }) => MainState(
-    printerName: printerName,
-    isPrinterConnected: isConnected,
   );
 
   MainState copyWith({
@@ -122,6 +112,7 @@ class MainState extends Equatable {
     String? discount,
     VehicleLogResponseModel? vehicleLog,
     bool? clearVehicleLog,
+    BusinessSetupModel? businessSetup,
   }) {
     return MainState(
       isLoading: isLoading ?? this.isLoading,
@@ -140,6 +131,7 @@ class MainState extends Equatable {
       checkOutPlateNumber: checkOutPlateNumber ?? this.checkOutPlateNumber,
       discount: discount ?? this.discount,
       vehicleLog: clearVehicleLog == true ? null : vehicleLog ?? this.vehicleLog,
+      businessSetup: businessSetup ?? this.businessSetup,
     );
   }
 
@@ -161,6 +153,7 @@ class MainState extends Equatable {
     checkOutPlateNumber,
     discount,
     vehicleLog,
+    businessSetup,
   ];
 }
 

@@ -44,6 +44,9 @@ class PrinterTestButtonDevice extends StatelessWidget {
 
       final pdf = pw.Document();
 
+      final printers = await Printing.listPrinters();
+      _logger.d('Printers: $printers');
+
       pdf.addPage(
         pw.Page(
           pageFormat: PdfPageFormat.roll80,

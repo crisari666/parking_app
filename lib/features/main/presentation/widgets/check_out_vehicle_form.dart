@@ -61,12 +61,13 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
             SnackBar(content: Text(state.message!), backgroundColor: Colors.red),
           );
         }
+
         if (state.isCheckout) {
           _plateController.clear();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(l10n.success)),
           );
-          Navigator.of(context).pop(); // Close dialog on success
+          Navigator.of(context).popUntil((route) => route.isFirst); // Close dialog on success
         }
       },
       buildWhen: (previous, current) => previous.vehicleLog != current.vehicleLog || previous.parkingTime != current.parkingTime || previous.paymentValue != current.paymentValue,

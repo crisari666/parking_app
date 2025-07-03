@@ -25,6 +25,15 @@ class RecordsPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(context.loc.vehicleRecords),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              onPressed: () {
+                context.read<RecordsBloc>().add(LoadRecordsRequested());
+              },
+              tooltip: 'Refresh Records',
+            ),
+          ],
         ),
         body: BlocConsumer<RecordsBloc, RecordsState>(
           listener: (context, state) {

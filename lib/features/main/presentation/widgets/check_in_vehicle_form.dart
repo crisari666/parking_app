@@ -19,6 +19,15 @@ class CheckInVehicleForm extends StatelessWidget {
             SnackBar(content: Text(state.message!), backgroundColor: Colors.red),
           );
         }
+        if (state.message != null && !state.isCheckin && !state.isCheckout) {
+          // Handle QR code printing messages
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message!),
+              backgroundColor: state.message!.contains('printed successfully') ? Colors.green : Colors.red,
+            ),
+          );
+        }
         if (state.isCheckin) {
           _textEditingController.clear();
           ScaffoldMessenger.of(context).showSnackBar(

@@ -34,7 +34,16 @@ class MainPage extends StatelessWidget {
             listener: (context, state) {
               if (state.message != null && !state.isCheckin && !state.isCheckout) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.message!)),
+                  SnackBar(
+                    content: Text(state.message!),
+                    behavior: SnackBarBehavior.floating,
+                    action: SnackBarAction(
+                      label: 'Dismiss',
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                      },
+                    ),
+                  ),
                 );
               } else if (state.isSetupRequired) {
                 showDialog(

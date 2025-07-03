@@ -1,11 +1,21 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quantum_parking_flutter/features/main/data/datasources/local_storage_service.dart';
+import 'package:quantum_parking_flutter/features/main/data/models/vehicle_log_response_model.dart';
 import 'package:quantum_parking_flutter/features/main/data/models/vehicle_model.dart';
 import 'package:quantum_parking_flutter/features/main/domain/repositories/vehicle_repository.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_event.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_state.dart';
 import 'package:quantum_parking_flutter/features/setup/data/datasources/business_remote_datasource.dart';
 import 'package:quantum_parking_flutter/features/setup/data/datasources/setup_local_datasource.dart';
+import 'package:logger/logger.dart';
+import 'package:printing/printing.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:qr/qr.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'dart:ui' as ui;
+import 'dart:typed_data';
+import 'package:flutter/material.dart';
 
 // Bloc
 class MainBloc extends Bloc<MainEvent, MainState> {
@@ -13,6 +23,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   final LocalStorageService _localStorageService;
   final SetupLocalDatasource _setupLocalDatasource;
   final BusinessRemoteDatasource _businessRemoteDatasource;
+  final Logger _logger = Logger();
   String? _printerName;
   bool _isPrinterConnected = false;
   double? _paymentValue;
@@ -39,6 +50,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<PrinterSetupRequested>(_handlePrinterSetup);
     on<CheckOutPaymentValueChanged>(_handleCheckOutPaymentValueChanged);
     on<ResetCheckOutForm>(_handleResetCheckOutForm);
+    on<PrintQRCodeRequested>(_handlePrintQRCode);
   }
 
   void _handlePlateNumberChanged(PlateNumberChanged event, Emitter<MainState> emit) {
@@ -64,10 +76,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   void _handlePrinterSetup(PrinterSetupRequested event, Emitter<MainState> emit) {
     _printerName = event.printerName;
     _isPrinterConnected = event.isConnected;
-    emit(MainState.printerSetup(
-      printerName: _printerName,
-      isConnected: _isPrinterConnected,
-    ));
+    emit(state.copyWith(printerName: _printerName, isPrinterConnected: _isPrinterConnected));
   }
 
   void _handleCheckOutPaymentValueChanged(CheckOutPaymentValueChanged event, Emitter<MainState> emit) {
@@ -88,32 +97,24 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   void _checkOutRequested(CheckOutRequested event, Emitter<MainState> emit) async {
     emit(state.copyWith(isLoading: true));
     try {
-      if (state.checkOutPlateNumber.isEmpty) {
-        emit(MainState.error(message: 'Plate number is required', isCheckout: true));
+      if (state.vehicleLog == null) {
+        emit(MainState.error(message: 'Plate number is required', isCheckout: false));
         return;
       }
 
-      final vehicle = await _localStorageService.getVehicle(state.checkOutPlateNumber);
-      if (vehicle == null) {
-        emit(MainState.error(message: 'Vehicle not found', isCheckout: true));
-        return;
-      }
 
-      if (vehicle.checkOut != null) {
-        emit(MainState.error(message: 'Vehicle is already checked out', isCheckout: true));
-        return;
-      }
 
       final setup = await _setupLocalDatasource.getSetup();
       if (setup == null) {
-        emit(MainState.error(message: 'Business setup not found', isCheckout: true));
+        emit(MainState.error(message: 'Business setup not found', isCheckout: false));
         return;
       }
 
-      await _vehicleRepository.checkoutVehicle(state.checkOutPlateNumber, state.paymentValue?.toInt() ?? 0);
-      emit(MainState.success('Vehicle checked out successfully'));
+      VehicleLogResponseModel response =   await _vehicleRepository.checkoutVehicle(state.checkOutPlateNumber, state.paymentValue?.toInt() ?? 0);
+      
+      emit(state.copyWith(message: 'Vehicle checked out successfully', isLoading: false));
     } catch (e) {
-      emit(MainState.error(message: e.toString(), isCheckout: true));
+      emit(MainState.error(message: e.toString(), isCheckout: false));
     }
   }
 
@@ -132,7 +133,11 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       );
 
       await _vehicleRepository.checkInVehicle(vehicle);
-      emit(MainState.checkInSuccess());
+      
+      // Print QR code after successful check-in
+      add(PrintQRCodeRequested(state.plateNumber));
+      
+      emit(state.copyWith(isCheckin: true));
     } catch (e) {
       emit(MainState.error(message: e.toString()));
     }
@@ -150,12 +155,12 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         if (business != null) {
           final setup = business;
           await _setupLocalDatasource.saveSetup(setup);
-          emit(MainState.setupVerified());
+          emit(state.copyWith(businessSetup: setup, isSetupVerified: true, isLoading: false));
         } else {
-          emit(MainState.setupRequired());
+          emit(state.copyWith(isSetupRequired: true, isLoading: false));
         }
       } else {
-        emit(MainState.setupVerified());
+        emit(state.copyWith(businessSetup: setup, isLoading: false));
       }
     } catch (e) {
       emit(MainState.error(message: e.toString()));
@@ -171,7 +176,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         return;
       }
 
-      final parkingInfo = await _vehicleRepository.getCurrentParkingDurationAndCost(event.plateNumber);
+      final VehicleLogResponseModel? parkingInfo = await _vehicleRepository.getCurrentParkingDurationAndCost(event.plateNumber);
       if (parkingInfo == null) {
         emit(MainState.error(message: 'Vehicle not found', isCheckout: true));
         return;
@@ -202,6 +207,148 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       ));
     } catch (e) {
       emit(MainState.error(message: e.toString()));
+    }
+  }
+
+  Future<Uint8List> _generateQrCodeImage(String data) async {
+    final qrCode = QrCode.fromData(
+      data: data,
+      errorCorrectLevel: QrErrorCorrectLevel.M,
+    );
+
+    final recorder = ui.PictureRecorder();
+    final canvas = ui.Canvas(recorder);
+    final painter = QrPainter.withQr(
+      qr: qrCode,
+      color: const Color(0xFF000000),
+      gapless: true,
+    );
+
+    const size = 200.0;
+    painter.paint(canvas, const ui.Size(size, size));
+
+    final picture = recorder.endRecording();
+    final img = await picture.toImage(size.toInt(), size.toInt());
+    final byteData = await img.toByteData(format: ui.ImageByteFormat.png);
+    return byteData!.buffer.asUint8List();
+  }
+
+  Future<void> _handlePrintQRCode(PrintQRCodeRequested event, Emitter<MainState> emit) async {
+    try {
+      // Get business setup from state (optimized to avoid local storage access)
+      final businessSetup = state.businessSetup;
+      if (businessSetup == null) {
+        emit(MainState.error(message: 'Business setup not found. Please verify setup first.'));
+        return;
+      }
+
+      final qrBytes = await _generateQrCodeImage(event.plateNumber);
+      final pdf = pw.Document();
+
+      pdf.addPage(
+        pw.Page(
+          pageFormat: PdfPageFormat.roll80,
+          build: (pw.Context context) {
+            return pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.center,
+              children: [
+                // Business name at the top
+                pw.Text(
+                  businessSetup.businessName,
+                  style: pw.TextStyle(
+                    fontSize: 24,
+                    fontWeight: pw.FontWeight.bold,
+                  ),
+                ),
+                if (businessSetup.businessBrand.isNotEmpty) ...[
+                  pw.SizedBox(height: 8),
+                  pw.Text(
+                    businessSetup.businessBrand,
+                    style: const pw.TextStyle(fontSize: 16),
+                  ),
+                ],
+                pw.SizedBox(height: 20),
+                pw.Divider(thickness: 2),
+                pw.SizedBox(height: 10),
+                // Check-in header
+                pw.Text(
+                  'VEHICLE CHECK-IN',
+                  style: pw.TextStyle(
+                    fontSize: 20,
+                    fontWeight: pw.FontWeight.bold,
+                  ),
+                ),
+                pw.SizedBox(height: 10),
+                // Plate number
+                pw.Text(
+                  'Plate: ${event.plateNumber}',
+                  style: const pw.TextStyle(fontSize: 16),
+                ),
+                pw.SizedBox(height: 5),
+                // Date and time
+                pw.Text(
+                  'Date: ${DateTime.now().toString().substring(0, 19)}',
+                  style: const pw.TextStyle(fontSize: 14),
+                ),
+                pw.SizedBox(height: 20),
+                // QR Code
+                pw.Image(
+                  pw.MemoryImage(qrBytes),
+                  width: 200,
+                  height: 200,
+                ),
+                pw.SizedBox(height: 20),
+                pw.Divider(thickness: 2),
+                pw.SizedBox(height: 10),
+                // Footer messages
+                pw.Text(
+                  'Welcome to our parking!',
+                  style: const pw.TextStyle(fontSize: 14),
+                ),
+                pw.SizedBox(height: 5),
+                pw.Text(
+                  'Please keep this receipt for checkout',
+                  style: const pw.TextStyle(fontSize: 12),
+                ),
+              ],
+            );
+          },
+        ),
+      );
+
+      final pdfBytes = await pdf.save();
+
+      // Try to print using available printers
+      final printers = await Printing.listPrinters();
+      _logger.d('Available printers: $printers');
+
+      if (printers.isNotEmpty) {
+        // Try to use the first available printer
+        try {
+          await Printing.directPrintPdf(
+            printer: printers.first,
+            onLayout: (format) async => pdfBytes,
+          );
+          
+          emit(state.copyWith(message: 'Check-in QR code printed successfully for ${event.plateNumber}'));
+        } catch (e) {
+          _logger.e('Error in direct printing: $e');
+          // Fallback to normal printing dialog
+          await Printing.layoutPdf(
+            onLayout: (format) async => pdfBytes,
+          );
+          emit(state.copyWith(message: 'Check-in QR code ready for printing for ${event.plateNumber}'));
+        }
+      } else {
+        // No printers available, show printing dialog
+        await Printing.layoutPdf(
+          onLayout: (format) async => pdfBytes,
+        );
+        emit(MainState.success('Check-in QR code ready for printing for ${event.plateNumber}'));
+      }
+    } catch (e) {
+      _logger.e('Error printing QR code: $e');
+      emit(MainState.error(message: 'Error printing QR code: $e'));
     }
   }
 } 
