@@ -63,7 +63,7 @@ class PrinterSetupSuccessWidget extends StatelessWidget {
             label: Text(l10n.refreshDevices),
           ),
           const SizedBox(height: 16),
-          PrinterTestButtonDevice(),
+          // PrinterTestButtonDevice(),
           if (isConnected)
             Column(
               children: [

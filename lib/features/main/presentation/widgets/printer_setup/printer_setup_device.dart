@@ -75,27 +75,27 @@ class PrinterSetupDevice extends StatelessWidget {
                       ),
                   ],
                 ),
-              const SizedBox(height: 16),
-              ElevatedButton.icon(
-                onPressed: () {
-                  context.read<PrinterSetupBloc>().add(
-                    PrinterSetupGetPairedDevices(),
-                  );
-                },
-                icon: const Icon(Icons.refresh),
-                label: Text(l10n.refreshDevices),
-              ),
-              const SizedBox(height: 16),
-              if (state.isConnected)
+                const SizedBox(height: 16),
                 ElevatedButton.icon(
                   onPressed: () {
                     context.read<PrinterSetupBloc>().add(
-                      PrinterSetupDisconnect(),
+                      PrinterSetupGetPairedDevices(),
                     );
                   },
-                  icon: const Icon(Icons.link_off),
-                  label: Text(l10n.disconnectPrinter),
+                  icon: const Icon(Icons.refresh),
+                  label: Text(l10n.refreshDevices),
                 ),
+                const SizedBox(height: 16),
+                if (state.isConnected)
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      context.read<PrinterSetupBloc>().add(
+                        PrinterSetupDisconnect(),
+                      );
+                    },
+                    icon: const Icon(Icons.link_off),
+                    label: Text(l10n.disconnectPrinter),
+                  ),
             ],
           );
         }
