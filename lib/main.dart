@@ -6,6 +6,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:quantum_parking_flutter/core/contants/hive_constants.dart';
 import 'package:quantum_parking_flutter/core/theme/app_theme.dart';
 import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:quantum_parking_flutter/features/config/presentation/bloc/config_bloc.dart';
+import 'package:quantum_parking_flutter/features/config/presentation/bloc/config_state.dart';
+import 'package:quantum_parking_flutter/features/config/presentation/widgets/update_dialog.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_bloc.dart';
 import 'package:quantum_parking_flutter/injection/injection.dart';
 import 'package:quantum_parking_flutter/routes/app_router.dart';
@@ -42,16 +45,32 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => getIt.get<AuthBloc>()),
         BlocProvider(create: (_) => getIt.get<MainBloc>()),
+        BlocProvider(create: (_) => getIt.get<ConfigBloc>()),
       ],
-      child: MaterialApp.router(
-        title: 'Quantum Parking',
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        themeMode: ThemeMode.system,
-        routerConfig: appRouter.config(),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        locale: const Locale('es'), // Default locale
+      child: BlocListener<ConfigBloc, ConfigState>(
+        listener: (context, state) {
+          if (state is UpdateRequired) {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => UpdateDialog(
+                currentVersion: state.currentVersion,
+                minRequiredVersion: state.minRequiredVersion,
+                storeUrl: state.storeUrl,
+              ),
+            );
+          }
+        },
+        child: MaterialApp.router(
+          title: 'Quantum Parking',
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: ThemeMode.system,
+          routerConfig: appRouter.config(),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('es'), // Default locale
+        ),
       ),
     );
   }

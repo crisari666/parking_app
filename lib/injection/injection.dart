@@ -8,6 +8,11 @@ import 'package:quantum_parking_flutter/core/storage/hive_adapter.dart';
 import 'package:quantum_parking_flutter/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:quantum_parking_flutter/features/auth/data/repositories/auth_repository.dart';
 import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:quantum_parking_flutter/features/config/data/datasources/config_local_datasource.dart';
+import 'package:quantum_parking_flutter/features/config/data/datasources/config_remote_datasource.dart';
+import 'package:quantum_parking_flutter/features/config/data/repositories/config_repository.dart';
+import 'package:quantum_parking_flutter/features/config/domain/services/config_service.dart';
+import 'package:quantum_parking_flutter/features/config/presentation/bloc/config_bloc.dart';
 import 'package:quantum_parking_flutter/features/main/data/datasources/local_storage_service.dart';
 import 'package:quantum_parking_flutter/features/main/data/datasources/vehicle_log_remote_datasource.dart';
 import 'package:quantum_parking_flutter/features/main/domain/repositories/vehicle_repository.dart';
@@ -58,15 +63,36 @@ Future<void> registerMainDependencies() async {
   );
   getIt.registerSingleton<VehicleRepository>(vehicleRepository);
 
+  getIt.registerSingleton<ConfigRemoteDatasource>(ConfigRemoteDatasourceImpl(
+    apiClient: getIt(),
+  ));
+
+  final configLocalDatasource = ConfigLocalDatasourceImpl();
+  await configLocalDatasource.init();
+  getIt.registerSingleton<ConfigLocalDatasource>(configLocalDatasource);
+
+  final configRepository = ConfigRepositoryImpl(
+    remoteDatasource: getIt(),
+    localDatasource: getIt(),
+  );
+  getIt.registerSingleton<ConfigRepository>(configRepository);
+
+  final configService = ConfigService(getIt());
+  getIt.registerSingleton<ConfigService>(configService);
+
 
   //Datasources
   final setupLocalDatasource = SetupLocalDatasourceImpl();
   await setupLocalDatasource.init();
   getIt.registerSingleton<SetupLocalDatasource>(setupLocalDatasource);
 
+  
+
   getIt.registerSingleton<BusinessRemoteDatasource>(BusinessRemoteDatasourceImpl(
     apiClient: getIt(),
   ));
+
+  
 
   
   //Blocs
@@ -79,6 +105,9 @@ Future<void> registerMainDependencies() async {
     localStorageService: getIt(),
     setupLocalDatasource: getIt(),
     businessRemoteDatasource: getIt(),
+  ));
+  getIt.registerSingleton<ConfigBloc>(ConfigBloc(
+    configRepository: getIt(),
   ));
 }
 

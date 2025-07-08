@@ -32,13 +32,18 @@ class MainPage extends StatelessWidget {
         child: SingleChildScrollView(
           child: BlocConsumer<MainBloc, MainState>(
             listener: (context, state) {
+              if(state.message != null) {
+               Future.delayed(const Duration(milliseconds: 100), () {
+                  context.read<MainBloc>().add(ClearMessage());
+                }); 
+              }
               if (state.message != null && !state.isCheckin && !state.isCheckout) {
                 final currentMessage = state.message!;
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(currentMessage),
                     behavior: SnackBarBehavior.floating,
-                    duration: const Duration(seconds: 4),
+                    duration: const Duration(seconds: 3),
                     action: SnackBarAction(
                       label: 'Dismiss',
                       onPressed: () {
@@ -50,12 +55,7 @@ class MainPage extends StatelessWidget {
                 );
                 
                 // Clear message after snackbar is shown to prevent multiple snackbars
-                Future.delayed(const Duration(milliseconds: 100), () {
-                  // Only clear if the message is still the same (hasn't been changed by another event)
-                  if (context.read<MainBloc>().state.message == currentMessage) {
-                    context.read<MainBloc>().add(ClearMessage());
-                  }
-                });
+                
               } else if (state.isSetupRequired) {
                 showDialog(
                   context: context,

@@ -6,6 +6,8 @@ import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_eve
 import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_state.dart';
 import 'package:quantum_parking_flutter/features/auth/presentation/widgets/email_input.dart';
 import 'package:quantum_parking_flutter/features/auth/presentation/widgets/password_input.dart';
+import 'package:quantum_parking_flutter/features/config/presentation/bloc/config_bloc.dart';
+import 'package:quantum_parking_flutter/features/config/presentation/bloc/config_event.dart';
 import 'package:quantum_parking_flutter/l10n/app_localizations_context.dart';
 import 'package:quantum_parking_flutter/routes/app_router.dart';
 
@@ -17,8 +19,9 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.loc;
     
-    // Check for existing user on first render
+    // Check for existing user and app version on first render
     context.read<AuthBloc>().add(CheckAuthStatus());
+    context.read<ConfigBloc>().add(CheckAppVersion());
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.login),

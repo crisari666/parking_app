@@ -115,5 +115,13 @@
   "studentMotorcycleHourCost": "Costo por Hora de Motocicleta Estudiantil",
   "dailyRates": "Tarifas Diarias",
   "nightRates": "Tarifas Nocturnas",
-  "selectDate": "Seleccionar Fecha"
+  "selectDate": "Seleccionar Fecha",
+  "updateRequired": "Actualización Requerida",
+  "updateRequiredMessage": "Se requiere una nueva versión de la aplicación para continuar. Por favor, actualice a la última versión.",
+  "currentVersion": "Versión Actual",
+  "minimumVersion": "Versión Mínima",
+  "updateNow": "Actualizar Ahora",
+  "appConfiguration": "Configuración de la Aplicación",
+  "appName": "Nombre de la Aplicación",
+  "refresh": "Actualizar"
 }
