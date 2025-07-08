@@ -22,11 +22,11 @@ class ConfigRepositoryImpl implements ConfigRepository {
   @override
   Future<List<AppConfigModel>> getAppConfig() async {
     try {
-      // Try to get from local storage first
-      final localConfigs = await _localDatasource.getAppConfig();
-      if (localConfigs.isNotEmpty) {
-        return localConfigs;
-      }
+      // // Try to get from local storage first
+      // final localConfigs = await _localDatasource.getAppConfig();
+      // if (localConfigs.isNotEmpty) {
+      //   return localConfigs;
+      // }
 
       // If no local data, fetch from remote
       await refreshConfig();

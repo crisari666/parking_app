@@ -47,30 +47,15 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => getIt.get<MainBloc>()),
         BlocProvider(create: (_) => getIt.get<ConfigBloc>()),
       ],
-      child: BlocListener<ConfigBloc, ConfigState>(
-        listener: (context, state) {
-          if (state is UpdateRequired) {
-            showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (context) => UpdateDialog(
-                currentVersion: state.currentVersion,
-                minRequiredVersion: state.minRequiredVersion,
-                storeUrl: state.storeUrl,
-              ),
-            );
-          }
-        },
-        child: MaterialApp.router(
-          title: 'Quantum Parking',
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
-          themeMode: ThemeMode.system,
-          routerConfig: appRouter.config(),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          locale: const Locale('es'), // Default locale
-        ),
+      child: MaterialApp.router(
+        title: 'Quantum Parking',
+        theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
+        themeMode: ThemeMode.system,
+        routerConfig: appRouter.config(),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('es'), // Default locale
       ),
     );
   }

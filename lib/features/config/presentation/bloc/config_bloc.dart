@@ -21,6 +21,7 @@ class ConfigBloc extends Bloc<ConfigEvent, ConfigState> {
     try {
       final configs = await _configRepository.getAppConfig();
       emit(ConfigLoaded(configs));
+      event.afterRefresh();
     } catch (e) {
       emit(ConfigError(e.toString()));
     }
@@ -54,9 +55,8 @@ class ConfigBloc extends Bloc<ConfigEvent, ConfigState> {
           return;
         }
       }
-      
-      // If no update required, load config
-      add(LoadAppConfig());
+      // Call the callback if provided
+      event.afterCheck?.call();
     } catch (e) {
       emit(ConfigError(e.toString()));
     }
