@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import 'package:logger/logger.dart';
 import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
+import 'package:quantum_parking_flutter/core/utils/snackbar_service.dart';
 
 class PrinterTestButton extends StatelessWidget {
   final _logger = Logger();
@@ -14,8 +15,9 @@ class PrinterTestButton extends StatelessWidget {
       
       if (!isConnected) {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Please connect to a printer first')),
+          SnackbarService.instance.showWarningSnackbar(
+            context: context,
+            message: 'Please connect to a printer first',
           );
         }
         return;
@@ -52,15 +54,17 @@ class PrinterTestButton extends StatelessWidget {
       await PrintBluetoothThermal.writeBytes(bytes);
 
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Test QR code printed successfully')),
+        SnackbarService.instance.showSuccessSnackbar(
+          context: context,
+          message: 'Test QR code printed successfully',
         );
       }
     } catch (e) {
       _logger.e('Error printing test QR code: $e');
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error printing: $e')),
+        SnackbarService.instance.showErrorSnackbar(
+          context: context,
+          message: 'Error printing: $e',
         );
       }
     }

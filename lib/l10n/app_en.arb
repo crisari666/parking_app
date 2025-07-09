@@ -123,5 +123,9 @@
   "updateNow": "Update Now",
   "appConfiguration": "App Configuration",
   "appName": "App Name",
-  "refresh": "Refresh"
+  "refresh": "Refresh",
+  "scanQRCode": "Scan QR Code",
+  "cameraPermissionRequired": "Camera permission is required to scan QR codes",
+  "grantPermission": "Grant Permission",
+  "pointCameraAtQRCode": "Point camera at QR code to scan"
 }

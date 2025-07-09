@@ -24,6 +24,7 @@ void main() async {
   await Permission.bluetoothConnect.request();
   await Permission.bluetoothScan.request();
   await Permission.location.request();
+  await Permission.camera.request();
   
   await registerMainDependencies();
   

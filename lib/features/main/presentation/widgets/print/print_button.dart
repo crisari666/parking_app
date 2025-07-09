@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:quantum_parking_flutter/core/utils/snackbar_service.dart';
 
 class PrintButton extends StatefulWidget {
   final String text;
@@ -60,11 +61,10 @@ class _PrintButtonState extends State<PrintButton> {
         if (!allGranted) {
           _logger.e('Some permissions were not granted');
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Please grant all required permissions in settings'),
-                duration: Duration(seconds: 5),
-              ),
+            SnackbarService.instance.showWarningSnackbar(
+              context: context,
+              message: 'Please grant all required permissions in settings',
+              duration: const Duration(seconds: 5),
             );
           }
           return;
@@ -77,11 +77,10 @@ class _PrintButtonState extends State<PrintButton> {
     } catch (e) {
       _logger.e('Error checking permissions: $e');
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error checking permissions: $e'),
-            duration: const Duration(seconds: 5),
-          ),
+        SnackbarService.instance.showErrorSnackbar(
+          context: context,
+          message: 'Error checking permissions: $e',
+          duration: const Duration(seconds: 5),
         );
       }
     }
@@ -124,8 +123,9 @@ class _PrintButtonState extends State<PrintButton> {
     } catch (e) {
       _logger.e('Error connecting to printer: $e');
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error connecting to printer: $e')),
+        SnackbarService.instance.showErrorSnackbar(
+          context: context,
+          message: 'Error connecting to printer: $e',
         );
       }
     }
@@ -133,8 +133,9 @@ class _PrintButtonState extends State<PrintButton> {
 
   Future<void> _printTicket() async {
     if (!_isConnected) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please connect to a printer first')),
+      SnackbarService.instance.showWarningSnackbar(
+        context: context,
+        message: 'Please connect to a printer first',
       );
       return;
     }
@@ -182,8 +183,9 @@ class _PrintButtonState extends State<PrintButton> {
     } catch (e) {
       _logger.e('Error printing ticket: $e');
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error printing: $e')),
+        SnackbarService.instance.showErrorSnackbar(
+          context: context,
+          message: 'Error printing: $e',
         );
       }
     }

@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quantum_parking_flutter/core/utils/snackbar_service.dart';
 import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_event.dart';
 import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_state.dart';
@@ -21,11 +22,12 @@ class RegisterPage extends StatelessWidget {
         listener: (context, state) {
           if (state is AuthSuccess) {
             AutoRouter.of(context).push(const MainRoute());
-          } else if (state is AuthError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
-          }
+                  } else if (state is AuthError) {
+          SnackbarService.instance.showErrorSnackbar(
+            context: context,
+            message: state.message,
+          );
+        }
         },
         builder: (context, state) {
           if (state is AuthLoading) {

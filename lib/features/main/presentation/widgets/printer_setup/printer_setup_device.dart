@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:quantum_parking_flutter/core/utils/snackbar_service.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/printer_setup_bloc.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/printer_setup_event.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/printer_setup_state.dart';
@@ -15,14 +16,16 @@ class PrinterSetupDevice extends StatelessWidget {
       await prefs.setString('default_printer', printerName);
       
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Default printer set to: $printerName')),
+        SnackbarService.instance.showSuccessSnackbar(
+          context: context,
+          message: 'Default printer set to: $printerName',
         );
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error setting default printer: $e')),
+        SnackbarService.instance.showErrorSnackbar(
+          context: context,
+          message: 'Error setting default printer: $e',
         );
       }
     }

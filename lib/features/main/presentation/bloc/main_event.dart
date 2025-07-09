@@ -120,11 +120,21 @@ class ResetCheckOutForm extends MainEvent {}
 
 class PrintQRCodeRequested extends MainEvent {
   final String plateNumber;
+  final DateTime? vehicleLogDate;
 
-  const PrintQRCodeRequested(this.plateNumber);
+  const PrintQRCodeRequested(this.plateNumber, {this.vehicleLogDate});
+
+  @override
+  List<Object?> get props => [plateNumber, vehicleLogDate];
+}
+
+class ClearMessage extends MainEvent {}
+
+class QRCodeScanned extends MainEvent {
+  final String plateNumber;
+
+  const QRCodeScanned(this.plateNumber);
 
   @override
   List<Object> get props => [plateNumber];
 }
-
-class ClearMessage extends MainEvent {}

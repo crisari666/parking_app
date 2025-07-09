@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:quantum_parking_flutter/core/utils/custom_scroll_behaviour.dart';
+import 'package:quantum_parking_flutter/core/utils/snackbar_service.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_bloc.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_event.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_state.dart';
@@ -16,6 +17,47 @@ import 'package:quantum_parking_flutter/routes/app_router.dart';
 @RoutePage()
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
+
+  void _showSnackbarBasedOnMessageType(BuildContext context, MainState state) {
+    if (state.message == null) return;
+    
+    final message = state.message!;
+    final messageType = state.messageType;
+    
+    switch (messageType) {
+      case MessageType.success:
+        SnackbarService.instance.showSuccessSnackbar(
+          context: context,
+          message: message,
+        );
+        break;
+      case MessageType.error:
+        SnackbarService.instance.showErrorSnackbar(
+          context: context,
+          message: message,
+        );
+        break;
+      case MessageType.warning:
+        SnackbarService.instance.showWarningSnackbar(
+          context: context,
+          message: message,
+        );
+        break;
+      case MessageType.info:
+        SnackbarService.instance.showInfoSnackbar(
+          context: context,
+          message: message,
+        );
+        break;
+      default:
+        // Default to info for messages without specific type
+        SnackbarService.instance.showInfoSnackbar(
+          context: context,
+          message: message,
+        );
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,30 +74,13 @@ class MainPage extends StatelessWidget {
         child: SingleChildScrollView(
           child: BlocConsumer<MainBloc, MainState>(
             listener: (context, state) {
-              if(state.message != null) {
-               Future.delayed(const Duration(milliseconds: 100), () {
+              // Handle messages with centralized snackbar service
+              if (state.message != null) {
+                _showSnackbarBasedOnMessageType(context, state);
+                // Clear message after a short delay to prevent multiple snackbars
+                Future.delayed(const Duration(milliseconds: 100), () {
                   context.read<MainBloc>().add(ClearMessage());
-                }); 
-              }
-              if (state.message != null && !state.isCheckin && !state.isCheckout) {
-                final currentMessage = state.message!;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(currentMessage),
-                    behavior: SnackBarBehavior.floating,
-                    duration: const Duration(seconds: 3),
-                    action: SnackBarAction(
-                      label: 'Dismiss',
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                        context.read<MainBloc>().add(ClearMessage());
-                      },
-                    ),
-                  ),
-                );
-                
-                // Clear message after snackbar is shown to prevent multiple snackbars
-                
+                });
               } else if (state.isSetupRequired) {
                 showDialog(
                   context: context,

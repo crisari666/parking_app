@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quantum_parking_flutter/core/utils/snackbar_service.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_bloc.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_event.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/check_out_vehicel_form/payment_method_selector.dart';
+import 'package:quantum_parking_flutter/features/main/presentation/widgets/qr_scanner_widget.dart';
 
 class CheckOutVehicleForm extends StatefulWidget {
   const CheckOutVehicleForm({super.key});
@@ -56,16 +58,12 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
 
     return BlocConsumer<MainBloc, MainState>(
       listener: (context, state) {
-        if (state.message != null && state.isCheckout) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message!), backgroundColor: Colors.red),
-          );
-        }
-
+        // Handle check-out success
         if (state.isCheckout) {
           _plateController.clear();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(l10n.success)),
+          SnackbarService.instance.showSuccessSnackbar(
+            context: context,
+            message: l10n.success,
           );
           Navigator.of(context).popUntil((route) => route.isFirst); // Close dialog on success
         }
@@ -91,16 +89,44 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                TextField(
-                  controller: _plateController,
-                  decoration: InputDecoration(
-                    labelText: l10n.licensePlate,
-                    border: const OutlineInputBorder(),
-                  ),
-                  onChanged: (value) {
-                    context.read<MainBloc>().add(CheckOutPlateNumberChanged(value));
-                  },
-                  readOnly: state.parkingTime != null,
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _plateController,
+                        decoration: InputDecoration(
+                          labelText: l10n.licensePlate,
+                          border: const OutlineInputBorder(),
+                        ),
+                        onChanged: (value) {
+                          context.read<MainBloc>().add(CheckOutPlateNumberChanged(value));
+                        },
+                        readOnly: state.parkingTime != null,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    if (state.parkingTime == null)
+                      IconButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => QRScannerWidget(
+                                onQRCodeScanned: (plateNumber) {
+                                  context.read<MainBloc>().add(QRCodeScanned(plateNumber));
+                                  _plateController.text = plateNumber;
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.qr_code_scanner),
+                        tooltip: l10n.scanQRCode,
+                        style: IconButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          foregroundColor: Colors.white,
+                        ),
+                      ),
+                  ],
                 ),
                 const SizedBox(height: 16),
                 if (state.parkingTime != null) ...[

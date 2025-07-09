@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quantum_parking_flutter/core/utils/snackbar_service.dart';
 import 'package:quantum_parking_flutter/features/setup/data/datasources/business_remote_datasource.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/bloc/setup_bloc.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/bloc/setup_event.dart';
@@ -28,19 +29,15 @@ class SetupPage extends StatelessWidget {
         listener: (context, state) {
           if (state is SetupSuccess && state.setup != null) {
             if (state.isFromSave) {
-              ScaffoldMessenger.of(context).showSnackBar(       
-                  SnackBar(
-                    content: Text(l10n.setupSavedSuccess),
-                    backgroundColor: Colors.green,
-                  ),
+              SnackbarService.instance.showSuccessSnackbar(
+                context: context,
+                message: l10n.setupSavedSuccess,
               );
             }
           } else if (state is SetupError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: Colors.red,
-              ),
+            SnackbarService.instance.showErrorSnackbar(
+              context: context,
+              message: state.message,
             );
           }
         },

@@ -123,5 +123,9 @@
   "updateNow": "Actualizar Ahora",
   "appConfiguration": "Configuración de la Aplicación",
   "appName": "Nombre de la Aplicación",
-  "refresh": "Actualizar"
+  "refresh": "Actualizar",
+  "scanQRCode": "Escanear Código QR",
+  "cameraPermissionRequired": "Se requiere permiso de cámara para escanear códigos QR",
+  "grantPermission": "Conceder Permiso",
+  "pointCameraAtQRCode": "Apunte la cámara al código QR para escanear"
 }

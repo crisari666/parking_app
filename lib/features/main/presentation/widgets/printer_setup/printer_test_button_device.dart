@@ -7,6 +7,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'dart:ui' as ui;
 import 'dart:typed_data';
 import 'package:logger/logger.dart';
+import 'package:quantum_parking_flutter/core/utils/snackbar_service.dart';
 
 class PrinterTestButtonDevice extends StatelessWidget {
   final _logger = Logger();
@@ -94,8 +95,9 @@ class PrinterTestButtonDevice extends StatelessWidget {
           );
           
           if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Test QR code printed successfully')),
+            SnackbarService.instance.showSuccessSnackbar(
+              context: context,
+              message: 'Test QR code printed successfully',
             );
           }
         } catch (e) {
@@ -114,8 +116,9 @@ class PrinterTestButtonDevice extends StatelessWidget {
     } catch (e) {
       _logger.e('Error printing test QR code: $e');
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error printing: $e')),
+        SnackbarService.instance.showErrorSnackbar(
+          context: context,
+          message: 'Error printing: $e',
         );
       }
     }

@@ -8,14 +8,9 @@ import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_sta
 import 'package:quantum_parking_flutter/features/setup/data/datasources/business_remote_datasource.dart';
 import 'package:quantum_parking_flutter/features/setup/data/datasources/setup_local_datasource.dart';
 import 'package:logger/logger.dart';
-import 'package:printing/printing.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
-import 'package:qr/qr.dart';
-import 'package:qr_flutter/qr_flutter.dart';
-import 'dart:ui' as ui;
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
+import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
 
 // Bloc
 class MainBloc extends Bloc<MainEvent, MainState> {
@@ -52,6 +47,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<ResetCheckOutForm>(_handleResetCheckOutForm);
     on<PrintQRCodeRequested>(_handlePrintQRCode);
     on<ClearMessage>(_handleClearMessage);
+    on<QRCodeScanned>(_handleQRCodeScanned);
   }
 
   void _handlePlateNumberChanged(PlateNumberChanged event, Emitter<MainState> emit) {
@@ -117,7 +113,11 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
       VehicleLogResponseModel response =   await _vehicleRepository.checkoutVehicle(state.checkOutPlateNumber, state.paymentValue?.toInt() ?? 0);
       
-      emit(state.copyWith(message: 'Vehicle checked out successfully', isLoading: false));
+      emit(state.copyWith(
+        message: 'Vehicle checked out successfully', 
+        messageType: MessageType.success,
+        isLoading: false
+      ));
     } catch (e) {
       emit(MainState.error(message: e.toString(), isCheckout: false));
     }
@@ -137,12 +137,16 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         checkIn: DateTime.now(),
       );
 
-      await _vehicleRepository.checkInVehicle(vehicle);
+      VehicleLogResponseModel vehicleLog = await _vehicleRepository.checkInVehicle(vehicle);
       
       // Print QR code after successful check-in
-      add(PrintQRCodeRequested(state.plateNumber));
+      add(PrintQRCodeRequested(state.plateNumber, vehicleLogDate: vehicleLog.entryTime));
       
-      emit(state.copyWith(isCheckin: true));
+      emit(state.copyWith(
+        message: 'Vehicle checked in successfully',
+        messageType: MessageType.success,
+        isCheckin: true
+      ));
     } catch (e) {
       emit(MainState.error(message: e.toString()));
     }
@@ -215,28 +219,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     }
   }
 
-  Future<Uint8List> _generateQrCodeImage(String data) async {
-    final qrCode = QrCode.fromData(
-      data: data,
-      errorCorrectLevel: QrErrorCorrectLevel.M,
-    );
 
-    final recorder = ui.PictureRecorder();
-    final canvas = ui.Canvas(recorder);
-    final painter = QrPainter.withQr(
-      qr: qrCode,
-      color: const Color(0xFF000000),
-      gapless: true,
-    );
-
-    const size = 200.0;
-    painter.paint(canvas, const ui.Size(size, size));
-
-    final picture = recorder.endRecording();
-    final img = await picture.toImage(size.toInt(), size.toInt());
-    final byteData = await img.toByteData(format: ui.ImageByteFormat.png);
-    return byteData!.buffer.asUint8List();
-  }
 
   Future<void> _handlePrintQRCode(PrintQRCodeRequested event, Emitter<MainState> emit) async {
     try {
@@ -247,113 +230,131 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         return;
       }
 
-      final qrBytes = await _generateQrCodeImage(event.plateNumber);
-      final pdf = pw.Document();
-
-      pdf.addPage(
-        pw.Page(
-          pageFormat: PdfPageFormat.roll80,
-          build: (pw.Context context) {
-            return pw.Column(
-              crossAxisAlignment: pw.CrossAxisAlignment.center,
-              children: [
-                // Business name at the top
-                pw.Text(
-                  businessSetup.businessName,
-                  style: pw.TextStyle(
-                    fontSize: 24,
-                    fontWeight: pw.FontWeight.bold,
-                  ),
-                ),
-                if (businessSetup.businessBrand.isNotEmpty) ...[
-                  pw.SizedBox(height: 8),
-                  pw.Text(
-                    businessSetup.businessBrand,
-                    style: const pw.TextStyle(fontSize: 16),
-                  ),
-                ],
-                pw.SizedBox(height: 20),
-                pw.Divider(thickness: 2),
-                pw.SizedBox(height: 10),
-                // Check-in header
-                pw.Text(
-                  'VEHICLE CHECK-IN',
-                  style: pw.TextStyle(
-                    fontSize: 20,
-                    fontWeight: pw.FontWeight.bold,
-                  ),
-                ),
-                pw.SizedBox(height: 10),
-                // Plate number
-                pw.Text(
-                  'Plate: ${event.plateNumber}',
-                  style: const pw.TextStyle(fontSize: 16),
-                ),
-                pw.SizedBox(height: 5),
-                // Date and time
-                pw.Text(
-                  'Date: ${DateTime.now().toString().substring(0, 19)}',
-                  style: const pw.TextStyle(fontSize: 14),
-                ),
-                pw.SizedBox(height: 20),
-                // QR Code
-                pw.Image(
-                  pw.MemoryImage(qrBytes),
-                  width: 200,
-                  height: 200,
-                ),
-                pw.SizedBox(height: 20),
-                pw.Divider(thickness: 2),
-                pw.SizedBox(height: 10),
-                // Footer messages
-                pw.Text(
-                  'Welcome to our parking!',
-                  style: const pw.TextStyle(fontSize: 14),
-                ),
-                pw.SizedBox(height: 5),
-                pw.Text(
-                  'Please keep this receipt for checkout',
-                  style: const pw.TextStyle(fontSize: 12),
-                ),
-              ],
-            );
-          },
-        ),
-      );
-
-      final pdfBytes = await pdf.save();
-
-      // Try to print using available printers
-      final printers = await Printing.listPrinters();
-      _logger.d('Available printers: $printers');
-
-      if (printers.isNotEmpty) {
-        // Try to use the first available printer
-        try {
-          await Printing.directPrintPdf(
-            printer: printers.first,
-            onLayout: (format) async => pdfBytes,
-          );
-          
-          emit(state.copyWith(message: 'Check-in QR code printed successfully for ${event.plateNumber}'));
-        } catch (e) {
-          _logger.e('Error in direct printing: $e');
-          // Fallback to normal printing dialog
-          await Printing.layoutPdf(
-            onLayout: (format) async => pdfBytes,
-          );
-          emit(state.copyWith(message: 'Check-in QR code ready for printing for ${event.plateNumber}'));
-        }
-      } else {
-        // No printers available, show printing dialog
-        await Printing.layoutPdf(
-          onLayout: (format) async => pdfBytes,
-        );
-        emit(MainState.success('Check-in QR code ready for printing for ${event.plateNumber}'));
+      // Check if thermal printer is connected
+      final bool isConnected = await PrintBluetoothThermal.connectionStatus;
+      
+      if (!isConnected) {
+        emit(MainState.error(message: 'Please connect to a thermal printer first'));
+        return;
       }
+
+      // Create a generator with default profile
+      final profile = await CapabilityProfile.load();
+      final generator = Generator(PaperSize.mm80, profile);
+      List<int> bytes = [];
+
+      // Print business name header
+      bytes += generator.text(businessSetup.businessName,
+          styles: const PosStyles(
+            align: PosAlign.center,
+            height: PosTextSize.size2,
+            width: PosTextSize.size2,
+          ));
+      
+      // Print business brand if available
+      if (businessSetup.businessBrand.isNotEmpty) {
+        bytes += generator.text(businessSetup.businessBrand,
+            styles: const PosStyles(
+              align: PosAlign.center,
+              height: PosTextSize.size1,
+              width: PosTextSize.size1,
+            ));
+      }
+      
+      bytes += generator.hr();
+
+      // Print check-in header
+      bytes += generator.text('ENTRADA DE VEHICULO',
+          styles: const PosStyles(
+            align: PosAlign.center,
+            height: PosTextSize.size1,
+            width: PosTextSize.size1,
+          ));
+      
+      bytes += generator.hr();
+
+      // Print plate number
+      bytes += generator.text('PLACA: ${event.plateNumber.toUpperCase()}',
+          styles: const PosStyles(
+            align: PosAlign.left,
+            height: PosTextSize.size1,
+            width: PosTextSize.size1,
+          ));
+
+      // Print date and time
+      final dateTime = event.vehicleLogDate ?? DateTime.now();
+      final formattedDate = '${dateTime.day.toString().padLeft(2, '0')}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.year}';
+      final formattedTime = '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+      
+      bytes += generator.text('Fecha: $formattedDate',
+          styles: const PosStyles(
+            align: PosAlign.left,
+            height: PosTextSize.size1,
+            width: PosTextSize.size1,
+          ));
+      
+      bytes += generator.text('Hora: $formattedTime',
+          styles: const PosStyles(
+            align: PosAlign.left,
+            height: PosTextSize.size1,
+            width: PosTextSize.size1,
+          ));
+
+      bytes += generator.hr();
+
+      // Print QR code
+      bytes += generator.qrcode(event.plateNumber,
+          size: QRSize.size6,
+          cor: QRCorrection.M);
+
+      bytes += generator.hr();
+
+      // Print footer
+      bytes += generator.text('Bienvenido a nuestro parqueadero!',
+          styles: const PosStyles(
+            align: PosAlign.center,
+            height: PosTextSize.size1,
+            width: PosTextSize.size1,
+          ));
+      
+      bytes += generator.text('Por favor, mantenga este recibo para la salida',
+          styles: const PosStyles(
+            align: PosAlign.center,
+            height: PosTextSize.size1,
+            width: PosTextSize.size1,
+          ));
+      
+      bytes += generator.hr();
+      
+      // Print powered by footer
+      bytes += generator.text('Powered by quantum-devs.xyz',
+          styles: const PosStyles(
+            align: PosAlign.center,
+            height: PosTextSize.size1,
+            width: PosTextSize.size1,
+          ));
+
+      // Cut paper
+      bytes += generator.cut();
+
+      // Send to printer
+      await PrintBluetoothThermal.writeBytes(bytes);
+
+      emit(state.copyWith(
+        message: 'Check-in QR code printed successfully for ${event.plateNumber}',
+        messageType: MessageType.success
+      ));
     } catch (e) {
       _logger.e('Error printing QR code: $e');
       emit(MainState.error(message: 'Error printing QR code: $e'));
     }
+  }
+
+  void _handleQRCodeScanned(QRCodeScanned event, Emitter<MainState> emit) {
+    // Set the plate number from the scanned QR code
+    emit(state.copyWith(checkOutPlateNumber: event.plateNumber));
+    
+    // Automatically find the vehicle in parking
+    add(FindVehicleInParkingRequested(event.plateNumber));
   }
 } 

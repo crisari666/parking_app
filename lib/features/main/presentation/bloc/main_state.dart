@@ -27,10 +27,18 @@ enum MainStateStatus {
   bool get isPrinterSetup => this == printerSetup;
 }
 
+enum MessageType {
+  success,
+  error,
+  warning,
+  info,
+}
+
 class MainState extends Equatable {
   final MainStateStatus status;
   final bool isLoading;
   final String? message;
+  final MessageType? messageType;
   final bool isCheckin;
   final bool isCheckout;
   final String? parkingTime;
@@ -51,6 +59,7 @@ class MainState extends Equatable {
     this.status = MainStateStatus.initial,
     this.isLoading = false,
     this.message,
+    this.messageType,
     this.isCheckin = false,
     this.isCheckout = false,
     this.parkingTime,
@@ -70,7 +79,7 @@ class MainState extends Equatable {
 
   factory MainState.initial() => const MainState();
 
-  factory MainState.success(String message) => MainState(message: message);
+  factory MainState.success(String message) => MainState(message: message, messageType: MessageType.success);
 
 
   factory MainState.checkOutSuccess({
@@ -88,6 +97,7 @@ class MainState extends Equatable {
     bool isCheckout = false,
   }) => MainState(
     message: message,
+    messageType: MessageType.error,
     isCheckin: isCheckin,
     isCheckout: isCheckout,
   );
@@ -95,6 +105,7 @@ class MainState extends Equatable {
   MainState copyWith({
     bool? isLoading,
     String? message,
+    MessageType? messageType,
     bool? isCheckin,
     bool? isCheckout,
     String? parkingTime,
@@ -117,6 +128,7 @@ class MainState extends Equatable {
     return MainState(
       isLoading: isLoading ?? this.isLoading,
       message: message ?? this.message,
+      messageType: messageType ?? this.messageType,
       isCheckin: isCheckin ?? this.isCheckin,
       isCheckout: isCheckout ?? this.isCheckout,
       parkingTime: clearParkingTime == true ? null : parkingTime ?? this.parkingTime,
@@ -139,6 +151,7 @@ class MainState extends Equatable {
   List<Object?> get props => [
     isLoading,
     message,
+    messageType,
     isCheckin,
     isCheckout,
     parkingTime,

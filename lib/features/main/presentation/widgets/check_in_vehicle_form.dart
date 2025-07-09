@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quantum_parking_flutter/core/utils/snackbar_service.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_bloc.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_event.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_state.dart';
@@ -14,24 +15,12 @@ class CheckInVehicleForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<MainBloc, MainState>(
       listener: (context, state) {
-        if (state.message != null && state.isCheckin) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message!), backgroundColor: Colors.red),
-          );
-        }
-        if (state.message != null && !state.isCheckin && !state.isCheckout) {
-          // Handle QR code printing messages
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message!),
-              backgroundColor: state.message!.contains('printed successfully') ? Colors.green : Colors.red,
-            ),
-          );
-        }
+        // Handle check-in success
         if (state.isCheckin) {
           _textEditingController.clear();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(context.loc.vehicleCheckedInSuccess)),
+          SnackbarService.instance.showSuccessSnackbar(
+            context: context,
+            message: context.loc.vehicleCheckedInSuccess,
           );
           Navigator.of(context).pop(); // Close dialog on success
         }
