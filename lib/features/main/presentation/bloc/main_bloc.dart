@@ -193,19 +193,28 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
       final duration = DateTime.now().difference(parkingInfo.entryTime);
       final totalMinutes = duration.inMinutes;
-      final hours = totalMinutes ~/ 60;
-      final extraMinutes = totalMinutes % 60;
-    
-      // Grace period: if extraMinutes <= 10, do not charge for next hour
-      final billableHours = extraMinutes > 10 ? hours + 1 : hours;
+      
+      // Business logic: Minimum charge is 1 hour, with 10 minutes grace period
+      int billableHours;
+      if (totalMinutes <= 70) {
+        // If total time is 70 minutes or less (1 hour + 10 minutes grace), charge 1 hour
+        billableHours = 1;
+      } else {
+        // For times over 70 minutes, calculate additional hours
+        // Subtract the first 70 minutes (1 hour + 10 minutes grace)
+        final remainingMinutes = totalMinutes - 70;
+        // Calculate additional hours needed (rounding up)
+        final additionalHours = (remainingMinutes / 60).ceil();
+        billableHours = 1 + additionalHours;
+      }
       
       // Get rate from business setup based on vehicle type
       final ratePerHour = parkingInfo.vehicleId.toLowerCase().contains('car') 
           ? setup.carHourCost 
           : setup.motorcycleHourCost;
       
-      final paymentValue = (parkingInfo.duration / 60) * ratePerHour;
-      final parkingTime = '${parkingInfo.duration}m';
+      final paymentValue = billableHours * ratePerHour;
+      final parkingTime = '${totalMinutes}m';
 
       emit(state.copyWith(
         parkingTime: parkingTime,
