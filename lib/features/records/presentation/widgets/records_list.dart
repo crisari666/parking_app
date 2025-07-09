@@ -10,7 +10,7 @@ class RecordsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<RecordsBloc, RecordsState>(
-      buildWhen: (previous, current) => previous.records != current.records,
+      buildWhen: (previous, current) => previous.logs != current.logs,
       listener: (context, state) {
       },
       builder: (context, state) {
