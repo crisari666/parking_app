@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quantum_parking_flutter/core/utils/snackbar_service.dart';
@@ -22,7 +23,7 @@ class CheckInVehicleForm extends StatelessWidget {
             context: context,
             message: context.loc.vehicleCheckedInSuccess,
           );
-          Navigator.of(context).pop(); // Close dialog on success
+          AutoRouter.of(context).maybePop();
         }
       },
       child: Column(

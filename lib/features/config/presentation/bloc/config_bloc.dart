@@ -41,7 +41,7 @@ class ConfigBloc extends Bloc<ConfigEvent, ConfigState> {
         if (currentBuildNumber < minRequiredBuildNumber) {
           // Determine store URL based on platform
           String storeUrl;
-          if (packageInfo.packageName.contains('android')) {
+          if (packageInfo.packageName.contains('com.app.quantum_parking_flutter')) {
             storeUrl = 'https://play.google.com/store/apps/details?id=${packageInfo.packageName}';
           } else {
             storeUrl = 'https://apps.apple.com/app/id${packageInfo.packageName}';
