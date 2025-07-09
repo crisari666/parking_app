@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_bloc.dart';
+import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_event.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/check_in_vehicle_form.dart';
 import 'package:quantum_parking_flutter/l10n/app_localizations_context.dart';
 
@@ -9,6 +12,7 @@ class CheckInVehicle extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
+        context.read<MainBloc>().add(ClearChecksForm());
         showDialog(
           context: context,
           builder: (context) => Dialog(

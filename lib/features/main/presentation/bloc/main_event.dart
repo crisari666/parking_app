@@ -130,6 +130,8 @@ class PrintQRCodeRequested extends MainEvent {
 
 class ClearMessage extends MainEvent {}
 
+class ClearChecksForm extends MainEvent {}
+
 class QRCodeScanned extends MainEvent {
   final String plateNumber;
 

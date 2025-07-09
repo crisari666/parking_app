@@ -47,6 +47,19 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<PrintQRCodeRequested>(_handlePrintQRCode);
     on<ClearMessage>(_handleClearMessage);
     on<QRCodeScanned>(_handleQRCodeScanned);
+    on<ClearChecksForm>(_handleClearChecksForm);
+  }
+
+  void _handleClearChecksForm(ClearChecksForm event, Emitter<MainState> emit) {
+    emit(state.copyWith(
+      isCheckin: false,
+      isCheckout: false,
+      isLoading: false,
+      message: null,
+      messageType: null,
+      plateNumber: '',
+      vehicleType: '',
+    ));
   }
 
   void _handlePlateNumberChanged(PlateNumberChanged event, Emitter<MainState> emit) {
@@ -145,6 +158,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       emit(state.copyWith(
         message: 'Vehicle checked in successfully',
         messageType: MessageType.success,
+        isLoading: false,
         isCheckin: true
       ));
     } catch (e) {
@@ -243,7 +257,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       final bool isConnected = await PrintBluetoothThermal.connectionStatus;
       
       if (!isConnected) {
-        emit(MainState.error(message: 'Please connect to a thermal printer first'));
+        //emit(MainState.error(message: 'Please connect to a thermal printer first'));
         return;
       }
 

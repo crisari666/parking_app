@@ -12,6 +12,7 @@ class CheckOutVehicle extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () async {
+        getIt.get<MainBloc>().add(ClearChecksForm());
         showDialog(
           context: context,
           builder: (context) => Dialog(
