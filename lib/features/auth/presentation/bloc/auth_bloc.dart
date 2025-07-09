@@ -36,7 +36,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   Future<void> _onLoginRequested(LoginRequested event, Emitter<AuthState> emit) async {
-    emit(AuthLoading());
+    emit(AuthLoading(email: _email, password: _password));
     try {
       final loginResponse = await _authRepository.login(_email, _password);
       final user = User(
@@ -44,20 +44,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         password: _password,
       );
       await _authRepository.saveUser(user);
-      emit(AuthSuccess());
+      emit(AuthSuccess(email: _email, password: _password));
     } catch (e) {
-      emit(AuthError(e.toString()));
+      emit(AuthError(e.toString(), email: _email, password: _password));
     }
   }
 
   Future<void> _onRegisterRequested(RegisterRequested event, Emitter<AuthState> emit) async {
-    emit(AuthLoading());
+    emit(AuthLoading(email: _email, password: _password));
     try {
       final user = User(email: _email, password: _password);
       await _authRepository.saveUser(user);
-      emit(AuthSuccess());
+      emit(AuthSuccess(email: _email, password: _password));
     } catch (e) {
-      emit(AuthError(e.toString()));
+      emit(AuthError(e.toString(), email: _email, password: _password));
     }
   }
 
@@ -65,12 +65,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       final user = await _authRepository.getCurrentUser();
       if (user != null) {
-        emit(AuthSuccess());
+        emit(AuthSuccess(email: _email, password: _password));
       } else {
-        emit(AuthInitial());
+        emit(AuthInitial(email: _email, password: _password));
       }
     } catch (e) {
-      emit(AuthError(e.toString()));
+      emit(AuthError(e.toString(), email: _email, password: _password));
     }
   }
 
@@ -80,7 +80,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await _setupLocalDatasource.clear();
       emit(AuthInitial());
     } catch (e) {
-      emit(AuthError(e.toString()));
+      emit(AuthError(e.toString(), email: _email, password: _password));
     }
   }
 } 
