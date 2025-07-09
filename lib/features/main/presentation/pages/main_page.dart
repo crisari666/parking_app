@@ -149,16 +149,14 @@ class _MainPageState extends State<MainPage> {
                 return const Center(child: CircularProgressIndicator());
               }
 
-              return Padding(
-                padding: const EdgeInsets.all(16.0),
+              return const Padding(
+                padding: EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const CheckInVehicle(),
-                    const SizedBox(height: 16),
-                    const CheckOutVehicle(),
-                    const SizedBox(height: 16),
-                    PrinterTestButtonDevice(),
+                    CheckInVehicle(),
+                    SizedBox(height: 16),
+                    CheckOutVehicle(),
                   ],
                 ),
               );

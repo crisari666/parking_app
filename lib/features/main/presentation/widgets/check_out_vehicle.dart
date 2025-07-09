@@ -14,10 +14,52 @@ class CheckOutVehicle extends StatelessWidget {
       onPressed: () async {
         showDialog(
           context: context,
-          builder: (context) => const Dialog(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
-              child: CheckOutVehicleForm(),
+          builder: (context) => Dialog(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Header with close button
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(12),
+                      topRight: Radius.circular(12),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          context.loc.checkOutVehicle,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          // Reset the checkout form and close dialog
+                          getIt.get<MainBloc>().add(ResetCheckOutForm());
+                          Navigator.of(context).pop();
+                        },
+                        icon: const Icon(Icons.close),
+                        tooltip: 'Close',
+                        style: IconButton.styleFrom(
+                          foregroundColor: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // Form content
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
+                  child: CheckOutVehicleForm(),
+                ),
+              ],
             ),
           ),
         ).then((value) {

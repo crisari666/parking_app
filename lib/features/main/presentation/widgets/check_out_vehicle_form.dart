@@ -28,6 +28,15 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
     super.dispose();
   }
 
+  void _clearForm() {
+    _plateController.clear();
+    _paymentValueController.clear();
+    setState(() {
+      _isEditingPayment = false;
+      _originalPaymentValue = null;
+    });
+  }
+
   void _startEditingPayment() {
     setState(() {
       _isEditingPayment = true;
@@ -60,12 +69,21 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
       listener: (context, state) {
         // Handle check-out success
         if (state.isCheckout) {
-          _plateController.clear();
+          _clearForm();
           SnackbarService.instance.showSuccessSnackbar(
             context: context,
             message: l10n.success,
           );
           Navigator.of(context).popUntil((route) => route.isFirst); // Close dialog on success
+        }
+
+        if(state.parkingTime != null) {
+          _plateController.text = state.checkOutPlateNumber.toUpperCase();
+        }
+        
+        // Handle form reset - when parkingTime becomes null after being set
+        if (state.parkingTime == null && _plateController.text.isNotEmpty) {
+          _clearForm();
         }
       },
       buildWhen: (previous, current) => previous.vehicleLog != current.vehicleLog || previous.parkingTime != current.parkingTime || previous.paymentValue != current.paymentValue,
@@ -74,21 +92,13 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
         if (state.paymentValue != null && !_isEditingPayment) {
           _paymentValueController.text = state.paymentValue!.toStringAsFixed(2);
         }
-        return  Card(
+        return Card(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  l10n.checkOutVehicle,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 16),
                 Row(
                   children: [
                     Expanded(
