@@ -29,7 +29,7 @@ class RecordsPage extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.refresh),
               onPressed: () {
-                context.read<RecordsBloc>().add(LoadRecordsRequested());
+                recordsBloc.add(LoadRecordsRequested());
               },
               tooltip: 'Refresh Records',
             ),

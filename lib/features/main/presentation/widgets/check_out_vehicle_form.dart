@@ -38,10 +38,12 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
   }
 
   void _startEditingPayment() {
+    print('Starting payment editing. Current value: ${_paymentValueController.text}');
     setState(() {
       _isEditingPayment = true;
       _originalPaymentValue = double.tryParse(_paymentValueController.text);
     });
+    print('Editing state set to: $_isEditingPayment');
   }
 
   void _cancelEditingPayment() {
@@ -83,11 +85,15 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
         
         // Handle form reset - when parkingTime becomes null after being set
         if (state.parkingTime == null && _plateController.text.isNotEmpty) {
-          _clearForm();
+          //_clearForm();
         }
       },
-      buildWhen: (previous, current) => previous.vehicleLog != current.vehicleLog || previous.parkingTime != current.parkingTime || previous.paymentValue != current.paymentValue,
+      buildWhen: (previous, current) => 
+        previous.vehicleLog != current.vehicleLog || 
+        previous.parkingTime != current.parkingTime || 
+        (previous.paymentValue != current.paymentValue && !_isEditingPayment),
       builder: (context, state) {
+        print('Building CheckOutVehicleForm. Editing: $_isEditingPayment, PaymentValue: ${state.paymentValue}');
         // Update payment value controller when state changes
         if (state.paymentValue != null && !_isEditingPayment) {
           _paymentValueController.text = state.paymentValue!.toStringAsFixed(2);
@@ -154,22 +160,26 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
                             labelText: l10n.paymentValue,
                             border: const OutlineInputBorder(),
                             prefixText: '\$',
+                            suffixIcon: _isEditingPayment 
+                              ? const Icon(Icons.edit, color: Colors.blue)
+                              : null,
                           ),
                           keyboardType: const TextInputType.numberWithOptions(decimal: true),
                           readOnly: !_isEditingPayment,
+                          style: TextStyle(
+                            color: _isEditingPayment ? Colors.black : Colors.grey[600],
+                          ),
                         )),
                       ),
                       if (!_isEditingPayment)
-                        ElevatedButton(
+                        IconButton(
                           onPressed: _startEditingPayment,
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.blue,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              side: const BorderSide(color: Colors.blue),
-                            ),
+                          icon: const Icon(Icons.edit),
+                          tooltip: l10n.edit,
+                          style: IconButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            foregroundColor: Colors.white,
                           ),
-                          child: const Icon(Icons.edit),
                         )
                       else
                         Row(

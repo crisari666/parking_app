@@ -113,6 +113,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       VehicleLogResponseModel response =   await _vehicleRepository.checkoutVehicle(state.checkOutPlateNumber, state.paymentValue?.toInt() ?? 0);
       
       emit(state.copyWith(
+        isCheckout: true,
         message: 'Vehicle checked out successfully', 
         messageType: MessageType.success,
         isLoading: false
