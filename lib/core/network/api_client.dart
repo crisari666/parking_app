@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
 import 'package:quantum_parking_flutter/core/config/env.dart';
-import 'package:quantum_parking_flutter/core/utils/network_utils.dart';
 import 'package:hive/hive.dart';
 
 class ApiClient {
