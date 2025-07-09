@@ -92,7 +92,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   }
 
   void _handleClearMessage(ClearMessage event, Emitter<MainState> emit) {
-    emit(state.copyWith(message: null));
+    emit(state.copyWith(message: null, messageType: null));
   }
 
   void _checkOutRequested(CheckOutRequested event, Emitter<MainState> emit) async {

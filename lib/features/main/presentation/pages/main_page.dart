@@ -15,8 +15,14 @@ import 'package:quantum_parking_flutter/l10n/app_localizations_context.dart';
 import 'package:quantum_parking_flutter/routes/app_router.dart';
 
 @RoutePage()
-class MainPage extends StatelessWidget {
+class MainPage extends StatefulWidget {
   const MainPage({super.key});
+
+  @override
+  State<MainPage> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
 
   void _showSnackbarBasedOnMessageType(BuildContext context, MainState state) {
     if (state.message == null) return;
@@ -24,29 +30,56 @@ class MainPage extends StatelessWidget {
     final message = state.message!;
     final messageType = state.messageType;
     
+    // Auto-clear message after 4 seconds to prevent stale messages
+    Future.delayed(const Duration(seconds: 4), () {
+      if (mounted && context.mounted) {
+        context.read<MainBloc>().add(ClearMessage());
+      }
+    });
+    
     switch (messageType) {
       case MessageType.success:
         SnackbarService.instance.showSuccessSnackbar(
           context: context,
           message: message,
+          onDismiss: () {
+            if (mounted && context.mounted) {
+              context.read<MainBloc>().add(ClearMessage());
+            }
+          },
         );
         break;
       case MessageType.error:
         SnackbarService.instance.showErrorSnackbar(
           context: context,
           message: message,
+          onDismiss: () {
+            if (mounted && context.mounted) {
+              context.read<MainBloc>().add(ClearMessage());
+            }
+          },
         );
         break;
       case MessageType.warning:
         SnackbarService.instance.showWarningSnackbar(
           context: context,
           message: message,
+          onDismiss: () {
+            if (mounted && context.mounted) {
+              context.read<MainBloc>().add(ClearMessage());
+            }
+          },
         );
         break;
       case MessageType.info:
         SnackbarService.instance.showInfoSnackbar(
           context: context,
           message: message,
+          onDismiss: () {
+            if (mounted && context.mounted) {
+              context.read<MainBloc>().add(ClearMessage());
+            }
+          },
         );
         break;
       default:
@@ -54,17 +87,29 @@ class MainPage extends StatelessWidget {
         SnackbarService.instance.showInfoSnackbar(
           context: context,
           message: message,
+          onDismiss: () {
+            if (mounted && context.mounted) {
+              context.read<MainBloc>().add(ClearMessage());
+            }
+          },
         );
         break;
     }
   }
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     // Verify setup when page is loaded
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<MainBloc>().add(VerifySetupRequested());
+      if (mounted) {
+        context.read<MainBloc>().add(VerifySetupRequested());
+      }
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
 
     return Scaffold(
       appBar: const MainPageAppBar(),
@@ -77,10 +122,6 @@ class MainPage extends StatelessWidget {
               // Handle messages with centralized snackbar service
               if (state.message != null) {
                 _showSnackbarBasedOnMessageType(context, state);
-                // Clear message after a short delay to prevent multiple snackbars
-                Future.delayed(const Duration(milliseconds: 100), () {
-                  context.read<MainBloc>().add(ClearMessage());
-                });
               } else if (state.isSetupRequired) {
                 showDialog(
                   context: context,

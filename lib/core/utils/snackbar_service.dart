@@ -15,7 +15,11 @@ class SnackbarService {
     Color? backgroundColor,
     SnackBarBehavior behavior = SnackBarBehavior.floating,
     bool showDismissAction = true,
+    VoidCallback? onDismiss,
   }) {
+    // Check if context is still mounted
+    if (!context.mounted) return;
+    
     // Hide any existing snackbar first
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
@@ -30,7 +34,10 @@ class SnackbarService {
             ? SnackBarAction(
                 label: 'Dismiss',
                 onPressed: () {
-                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    onDismiss?.call();
+                  }
                 },
               )
             : null,
@@ -43,12 +50,14 @@ class SnackbarService {
     required BuildContext context,
     required String message,
     Duration duration = const Duration(seconds: 3),
+    VoidCallback? onDismiss,
   }) {
     showSnackbar(
       context: context,
       message: message,
       duration: duration,
       backgroundColor: Colors.green,
+      onDismiss: onDismiss,
     );
   }
 
@@ -57,12 +66,14 @@ class SnackbarService {
     required BuildContext context,
     required String message,
     Duration duration = const Duration(seconds: 5),
+    VoidCallback? onDismiss,
   }) {
     showSnackbar(
       context: context,
       message: message,
       duration: duration,
       backgroundColor: Colors.red,
+      onDismiss: onDismiss,
     );
   }
 
@@ -71,12 +82,14 @@ class SnackbarService {
     required BuildContext context,
     required String message,
     Duration duration = const Duration(seconds: 4),
+    VoidCallback? onDismiss,
   }) {
     showSnackbar(
       context: context,
       message: message,
       duration: duration,
       backgroundColor: Colors.orange,
+      onDismiss: onDismiss,
     );
   }
 
@@ -85,12 +98,14 @@ class SnackbarService {
     required BuildContext context,
     required String message,
     Duration duration = const Duration(seconds: 3),
+    VoidCallback? onDismiss,
   }) {
     showSnackbar(
       context: context,
       message: message,
       duration: duration,
       backgroundColor: Colors.blue,
+      onDismiss: onDismiss,
     );
   }
 } 

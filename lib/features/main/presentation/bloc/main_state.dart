@@ -104,6 +104,7 @@ class MainState extends Equatable {
 
   MainState copyWith({
     bool? isLoading,
+    bool? clearMessage,
     String? message,
     MessageType? messageType,
     bool? isCheckin,
@@ -127,8 +128,8 @@ class MainState extends Equatable {
   }) {
     return MainState(
       isLoading: isLoading ?? this.isLoading,
-      message: message ?? this.message,
-      messageType: messageType ?? this.messageType,
+      message: clearMessage == true ? null : message ?? this.message,
+      messageType: clearMessage == true ? null : messageType ?? this.messageType,
       isCheckin: isCheckin ?? this.isCheckin,
       isCheckout: isCheckout ?? this.isCheckout,
       parkingTime: clearParkingTime == true ? null : parkingTime ?? this.parkingTime,
