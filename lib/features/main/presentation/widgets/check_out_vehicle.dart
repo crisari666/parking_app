@@ -68,21 +68,22 @@ class CheckOutVehicle extends StatelessWidget {
         });
       },
       style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 32),
+        padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 40),
         backgroundColor: Colors.red,
         foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
         ),
+        minimumSize: const Size(200, 80),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.remove_circle_outline, size: 28),
-          const SizedBox(width: 12),
+          const Icon(Icons.remove_circle_outline, size: 36),
+          const SizedBox(width: 16),
           Text(
             context.loc.checkOutVehicle,
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
         ],
       ),
