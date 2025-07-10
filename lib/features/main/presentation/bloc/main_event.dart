@@ -140,3 +140,7 @@ class QRCodeScanned extends MainEvent {
   @override
   List<Object> get props => [plateNumber];
 }
+
+class CheckPrinterConnectionStatus extends MainEvent {}
+
+class PerformPrinterHardwareTest extends MainEvent {}

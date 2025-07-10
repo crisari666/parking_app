@@ -127,5 +127,7 @@
   "scanQRCode": "Escanear Código QR",
   "cameraPermissionRequired": "Se requiere permiso de cámara para escanear códigos QR",
   "grantPermission": "Conceder Permiso",
-  "pointCameraAtQRCode": "Apunte la cámara al código QR para escanear"
+  "pointCameraAtQRCode": "Apunte la cámara al código QR para escanear",
+  "printerConnected": "Impresora Conectada",
+  "printerDisconnected": "Impresora Desconectada"
 }

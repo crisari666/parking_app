@@ -1,7 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'dart:async';
 import 'package:quantum_parking_flutter/features/main/data/datasources/local_storage_service.dart';
 import 'package:quantum_parking_flutter/features/main/data/models/vehicle_log_response_model.dart';
 import 'package:quantum_parking_flutter/features/main/data/models/vehicle_model.dart';
+import 'package:quantum_parking_flutter/features/main/data/repositories/printer_repository.dart';
 import 'package:quantum_parking_flutter/features/main/domain/repositories/vehicle_repository.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_event.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_state.dart';
@@ -17,9 +19,9 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   final LocalStorageService _localStorageService;
   final SetupLocalDatasource _setupLocalDatasource;
   final BusinessRemoteDatasource _businessRemoteDatasource;
+  final PrinterRepository _printerRepository;
   final Logger _logger = Logger();
-  String? _printerName;
-  bool _isPrinterConnected = false;
+  StreamSubscription<PrinterConnectionState>? _printerConnectionSubscription;
   double? _paymentValue;
 
   MainBloc({
@@ -27,10 +29,12 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     required SetupLocalDatasource setupLocalDatasource,
     required BusinessRemoteDatasource businessRemoteDatasource,
     required VehicleRepository vehicleRepository,
+    required PrinterRepository printerRepository,
   }) : _localStorageService = localStorageService,
        _setupLocalDatasource = setupLocalDatasource,
        _businessRemoteDatasource = businessRemoteDatasource,
        _vehicleRepository = vehicleRepository,
+       _printerRepository = printerRepository,
        super(MainState.initial()) {
     on<PlateNumberChanged>(_handlePlateNumberChanged);
     on<VehicleTypeChanged>(_handleVehicleTypeChanged);
@@ -48,6 +52,27 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<ClearMessage>(_handleClearMessage);
     on<QRCodeScanned>(_handleQRCodeScanned);
     on<ClearChecksForm>(_handleClearChecksForm);
+    on<CheckPrinterConnectionStatus>(_handleCheckPrinterConnectionStatus);
+    on<PerformPrinterHardwareTest>(_handlePerformPrinterHardwareTest);
+    
+    // Listen to printer connection state changes
+    _printerConnectionSubscription = _printerRepository.connectionStateStream.listen(
+      (printerState) {
+        emit(state.copyWith(
+          isPrinterConnected: printerState.isConnected,
+          printerName: printerState.printerName,
+        ));
+      },
+      onError: (error) {
+        _logger.e('Error in printer connection stream: $error');
+      },
+    );
+  }
+
+  @override
+  Future<void> close() {
+    _printerConnectionSubscription?.cancel();
+    return super.close();
   }
 
   void _handleClearChecksForm(ClearChecksForm event, Emitter<MainState> emit) {
@@ -83,9 +108,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   }
 
   void _handlePrinterSetup(PrinterSetupRequested event, Emitter<MainState> emit) {
-    _printerName = event.printerName;
-    _isPrinterConnected = event.isConnected;
-    emit(state.copyWith(printerName: _printerName, isPrinterConnected: _isPrinterConnected));
+    // This method is now handled by the printer repository stream
+    // The printer connection state will be updated automatically via the stream
   }
 
   void _handleCheckOutPaymentValueChanged(CheckOutPaymentValueChanged event, Emitter<MainState> emit) {
@@ -377,5 +401,40 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     
     // Automatically find the vehicle in parking
     add(FindVehicleInParkingRequested(event.plateNumber));
+  }
+
+  Future<void> _handleCheckPrinterConnectionStatus(CheckPrinterConnectionStatus event, Emitter<MainState> emit) async {
+    try {
+      final bool isConnected = await _printerRepository.checkCurrentConnectionStatus();
+      
+      // The state will be updated automatically via the stream subscription
+      // No need to manually emit here as the stream will handle it
+    } catch (e) {
+      _logger.e('Error checking printer connection status: $e');
+    }
+  }
+
+  Future<void> _handlePerformPrinterHardwareTest(PerformPrinterHardwareTest event, Emitter<MainState> emit) async {
+    try {
+      final bool testPassed = await _printerRepository.checkCurrentConnectionStatus();
+      
+      if (testPassed) {
+        emit(state.copyWith(
+          message: 'Printer hardware test passed',
+          messageType: MessageType.success,
+        ));
+      } else {
+        emit(state.copyWith(
+          message: 'Printer hardware test failed - printer may be disconnected',
+          messageType: MessageType.warning,
+        ));
+      }
+    } catch (e) {
+      _logger.e('Error performing printer hardware test: $e');
+      emit(state.copyWith(
+        message: 'Error performing printer hardware test: $e',
+        messageType: MessageType.error,
+      ));
+    }
   }
 } 

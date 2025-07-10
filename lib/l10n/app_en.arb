@@ -127,5 +127,7 @@
   "scanQRCode": "Scan QR Code",
   "cameraPermissionRequired": "Camera permission is required to scan QR codes",
   "grantPermission": "Grant Permission",
-  "pointCameraAtQRCode": "Point camera at QR code to scan"
+  "pointCameraAtQRCode": "Point camera at QR code to scan",
+  "printerConnected": "Printer Connected",
+  "printerDisconnected": "Printer Disconnected"
 }

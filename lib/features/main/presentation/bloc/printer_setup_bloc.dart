@@ -2,13 +2,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:logger/logger.dart';
+import 'package:quantum_parking_flutter/features/main/data/repositories/printer_repository.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/printer_setup_event.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/printer_setup_state.dart';
 
 class PrinterSetupBloc extends Bloc<PrinterSetupEvent, PrinterSetupState> {
   final _logger = Logger();
+  final PrinterRepository _printerRepository;
 
-  PrinterSetupBloc() : super(PrinterSetupInitial()) {
+  PrinterSetupBloc({required PrinterRepository printerRepository}) 
+      : _printerRepository = printerRepository,
+        super(PrinterSetupInitial()) {
     on<PrinterSetupStarted>(_onStarted);
     on<PrinterSetupCheckPermissions>(_onCheckPermissions);
     on<PrinterSetupGetPairedDevices>(_onGetPairedDevices);
@@ -69,7 +73,7 @@ class PrinterSetupBloc extends Bloc<PrinterSetupEvent, PrinterSetupState> {
   ) async {
     try {
       final List<BluetoothInfo> pairedDevices = await PrintBluetoothThermal.pairedBluetooths;
-      final bool isConnected = await PrintBluetoothThermal.connectionStatus;
+      final bool isConnected = await _printerRepository.checkCurrentConnectionStatus();
       
       final List<String> printerNames = List<String>.from(pairedDevices.map((device) => '${device.name} - ${device.macAdress}')).toList();
       emit(PrinterSetupSuccess(
@@ -87,17 +91,14 @@ class PrinterSetupBloc extends Bloc<PrinterSetupEvent, PrinterSetupState> {
     Emitter<PrinterSetupState> emit,
   ) async {
     try {
-      final String macAddress = event.macAddress.split(' - ')[1];
-      final bool isConnected = await PrintBluetoothThermal.connectionStatus;
+      final bool isConnected = await _printerRepository.checkCurrentConnectionStatus();
       if (isConnected) {
         emit(PrinterSetupSuccess(
           pairedDevices: const [],
           isConnected: isConnected,
         ));
       } else {
-        final bool result = await PrintBluetoothThermal.connect(
-          macPrinterAddress: macAddress,
-        );
+        final bool result = await _printerRepository.connectToPrinter(event.macAddress);
 
         if (result == true) {
           final List pairedDevices = await PrintBluetoothThermal.pairedBluetooths;
@@ -121,7 +122,7 @@ class PrinterSetupBloc extends Bloc<PrinterSetupEvent, PrinterSetupState> {
     Emitter<PrinterSetupState> emit,
   ) async {
     try {
-      await PrintBluetoothThermal.disconnect;
+      await _printerRepository.disconnectPrinter();
       final List pairedDevices = await PrintBluetoothThermal.pairedBluetooths;
       
       emit(PrinterSetupSuccess(

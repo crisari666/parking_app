@@ -10,6 +10,7 @@ import 'package:quantum_parking_flutter/features/main/presentation/widgets/app_d
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/check_in_vehicle.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/check_out_vehicle.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/main_page_app_bar.dart';
+import 'package:quantum_parking_flutter/features/main/presentation/widgets/printer_connection_indicator.dart';
 import 'package:quantum_parking_flutter/l10n/app_localizations_context.dart';
 import 'package:quantum_parking_flutter/routes/app_router.dart';
 
@@ -22,7 +23,6 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-
   void _showSnackbarBasedOnMessageType(BuildContext context, MainState state) {
     if (state.message == null) return;
     
@@ -103,8 +103,16 @@ class _MainPageState extends State<MainPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         context.read<MainBloc>().add(VerifySetupRequested());
+        // Perform initial printer hardware check
+        _performPrinterHardwareCheck();
       }
     });
+  }
+
+  void _performPrinterHardwareCheck() {
+    // This will trigger a hardware check by attempting to feed paper
+    // The printer repository will handle the actual hardware communication
+    context.read<MainBloc>().add(CheckPrinterConnectionStatus());
   }
 
   @override
@@ -153,6 +161,11 @@ class _MainPageState extends State<MainPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: PrinterConnectionIndicator(),
+                    ),
+                    SizedBox(height: 16),
                     CheckInVehicle(),
                     SizedBox(height: 16),
                     CheckOutVehicle(),

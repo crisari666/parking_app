@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:quantum_parking_flutter/features/main/data/repositories/printer_repository.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/printer_setup_bloc.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/printer_setup_event.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/printer_setup_state.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/printer_setup/printer_setup_error_widget.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/printer_setup/printer_setup_success_widget.dart';
+import 'package:quantum_parking_flutter/injection/injection.dart';
 
 @RoutePage()
 class PrinterSetupPage extends StatelessWidget {
@@ -17,7 +19,9 @@ class PrinterSetupPage extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     
     return BlocProvider(
-      create: (context) => PrinterSetupBloc()..add(PrinterSetupStarted()),
+      create: (context) => PrinterSetupBloc(
+        printerRepository: getIt<PrinterRepository>(),
+      )..add(PrinterSetupStarted()),
       child: Scaffold(
         appBar: AppBar(
           title: Text(l10n.printerSetup),

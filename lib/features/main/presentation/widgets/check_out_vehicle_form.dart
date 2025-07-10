@@ -6,6 +6,7 @@ import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_eve
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/check_out_vehicel_form/payment_method_selector.dart';
+import 'package:quantum_parking_flutter/features/main/presentation/widgets/printer_connection_indicator.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/qr_scanner_widget.dart';
 
 class CheckOutVehicleForm extends StatefulWidget {
@@ -105,6 +106,11 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.min,
               children: [
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: PrinterConnectionIndicator(),
+                ),
+                const SizedBox(height: 16),
                 Row(
                   children: [
                     Expanded(

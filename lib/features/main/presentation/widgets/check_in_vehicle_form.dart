@@ -5,6 +5,7 @@ import 'package:quantum_parking_flutter/core/utils/snackbar_service.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_bloc.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_event.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_state.dart';
+import 'package:quantum_parking_flutter/features/main/presentation/widgets/printer_connection_indicator.dart';
 import 'package:quantum_parking_flutter/l10n/app_localizations_context.dart';
 
 class CheckInVehicleForm extends StatelessWidget {
@@ -29,6 +30,11 @@ class CheckInVehicleForm extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          const Align(
+            alignment: Alignment.centerRight,
+            child: PrinterConnectionIndicator(),
+          ),
+          const SizedBox(height: 16),
           TextField(
             controller: _textEditingController,
             decoration: InputDecoration(
