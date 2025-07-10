@@ -39,12 +39,12 @@ class PrinterRepository {
   }
 
   // Check current connection status from the printer library
-  Future<bool> checkCurrentConnectionStatus() async {
+  Future<bool> checkCurrentConnectionStatus({final bool override = false}) async {
     try {
       final bool isConnected = await PrintBluetoothThermal.connectionStatus;
       
       // Update internal state if it changed
-      if (isConnected != _isConnected) {
+      if (isConnected != _isConnected || override) {
         await updatePrinterConnection(
           printerName: _currentPrinterName,
           isConnected: isConnected,

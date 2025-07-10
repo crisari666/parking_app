@@ -9,6 +9,8 @@ import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_eve
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_state.dart';
 import 'package:quantum_parking_flutter/features/setup/data/datasources/business_remote_datasource.dart';
 import 'package:quantum_parking_flutter/features/setup/data/datasources/setup_local_datasource.dart';
+import 'package:quantum_parking_flutter/core/utils/date_time_service.dart';
+import 'package:quantum_parking_flutter/core/utils/date_time_extensions.dart';
 import 'package:logger/logger.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
@@ -118,7 +120,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   }
 
   void _handleResetCheckOutForm(ResetCheckOutForm event, Emitter<MainState> emit) {
-    emit(state.copyWith(
+    emit(state.copyWith( 
       checkOutPlateNumber: '',
       clearParkingTime: true,
       clearPaymentValue: true,
@@ -138,9 +140,6 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         emit(MainState.error(message: 'Placa requerida', isCheckout: false));
         return;
       }
-
-
-
       final setup = await _setupLocalDatasource.getSetup();
       if (setup == null) {
         emit(MainState.error(message: 'Configuración de negocio no encontrada', isCheckout: false));
@@ -171,7 +170,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       final vehicle = VehicleModel(
         plateNumber: state.plateNumber,
         vehicleType: state.vehicleType,
-        checkIn: DateTime.now(),
+        checkIn: DateTimeService.now(),
       );
 
       VehicleLogResponseModel vehicleLog = await _vehicleRepository.checkInVehicle(vehicle);
@@ -230,7 +229,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       }
 
 
-      final duration = DateTime.now().difference(parkingInfo.entryTime);
+      final duration = DateTimeService.now().difference(parkingInfo.entryTime);
       final totalMinutes = duration.inMinutes;
       
       // Business logic: Minimum charge is 1 hour, with 10 minutes grace period
@@ -328,9 +327,12 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           ));
 
       // Print date and time
-      final dateTime = event.vehicleLogDate ?? DateTime.now();
-      final formattedDate = '${dateTime.day.toString().padLeft(2, '0')}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.year}';
-      final formattedTime = '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+      final dateTime = event.vehicleLogDate != null 
+          ? DateTimeService.fromUtc(event.vehicleLogDate!) 
+          : DateTimeService.now();
+      
+      final formattedDate = dateTime.formatDate();
+      final formattedTime = dateTime.formatTime();
       
       bytes += generator.text('Fecha: $formattedDate',
           styles: const PosStyles(

@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quantum_parking_flutter/features/closure/presentation/bloc/closure_bloc.dart';
 import 'package:quantum_parking_flutter/features/closure/presentation/bloc/closure_event.dart';
+import 'package:quantum_parking_flutter/core/utils/date_time_service.dart';
+import 'package:quantum_parking_flutter/core/utils/date_time_extensions.dart';
 
 class ClosureDateSelector extends StatelessWidget {
   final DateTime selectedDate;
@@ -35,7 +37,7 @@ class ClosureDateSelector extends StatelessWidget {
                   context: context,
                   initialDate: selectedDate,
                   firstDate: DateTime(2020),
-                  lastDate: DateTime.now(),
+                  lastDate: DateTimeService.now(),
                 );
                 if (picked != null && picked != selectedDate) {
                   onDateChanged(picked);
@@ -45,7 +47,7 @@ class ClosureDateSelector extends StatelessWidget {
               },
               icon: const Icon(Icons.calendar_today),
               label: Text(
-                '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
+                selectedDate.formatDate(),
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
             ),

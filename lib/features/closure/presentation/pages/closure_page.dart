@@ -11,6 +11,8 @@ import 'package:quantum_parking_flutter/features/closure/presentation/widgets/fi
 import 'package:quantum_parking_flutter/features/closure/presentation/widgets/current_closure_details.dart';
 // esimport 'package:quantum_parking_flutter/features/closure/presentation/widgets/closure_date_selector.dart';
 import 'package:quantum_parking_flutter/injection/injection.dart';
+import 'package:quantum_parking_flutter/core/utils/date_time_service.dart';
+import 'package:quantum_parking_flutter/core/utils/date_time_extensions.dart';
 
 @RoutePage()
 class ClosurePage extends StatefulWidget {
@@ -26,7 +28,7 @@ class _ClosurePageState extends State<ClosurePage> {
   @override
   void initState() {
     super.initState();
-    selectedDate = DateTime.now();
+    selectedDate = DateTimeService.now();
   }
 
   @override
@@ -54,7 +56,7 @@ class _ClosurePageState extends State<ClosurePage> {
               return const Center(child: CircularProgressIndicator());
             } else if (state.status.isSuccess) {
               // Get selected day's logs
-              final startOfDay = DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
+              final startOfDay = selectedDate.startOfDay;
               final endOfDay = startOfDay.add(const Duration(days: 1));
               
               final selectedDayLogs = state.closure?.vehicleLogs.where((log) => 

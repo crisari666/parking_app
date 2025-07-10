@@ -10,10 +10,14 @@ import 'package:quantum_parking_flutter/features/config/presentation/bloc/config
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_bloc.dart';
 import 'package:quantum_parking_flutter/injection/injection.dart';
 import 'package:quantum_parking_flutter/routes/app_router.dart';
+import 'package:quantum_parking_flutter/core/utils/date_time_service.dart';
 import 'features/setup/data/models/business_setup_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize DateTime service
+  DateTimeService.initialize();
   
   // Initialize Hive
   

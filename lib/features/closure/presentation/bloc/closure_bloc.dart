@@ -4,6 +4,8 @@ import 'package:quantum_parking_flutter/features/closure/presentation/bloc/closu
 import 'package:quantum_parking_flutter/features/closure/presentation/bloc/closure_state.dart';
 import 'package:quantum_parking_flutter/features/records/data/models/daily_closure_model.dart';
 import 'package:quantum_parking_flutter/features/records/data/models/vehicle_log_model.dart';
+import 'package:quantum_parking_flutter/core/utils/date_time_service.dart';
+import 'package:quantum_parking_flutter/core/utils/date_time_extensions.dart';
 
 // Bloc
 class ClosureBloc extends Bloc<ClosureEvent, ClosureState> {
@@ -20,8 +22,8 @@ class ClosureBloc extends Bloc<ClosureEvent, ClosureState> {
   Future<void> _onGenerateDailyClosure(GenerateDailyClosureRequested event, Emitter<ClosureState> emit) async {
     emit(state.copyWith(status: ClosureStatus.loading));
     try {
-      final date = DateTime.now();
-      final startDate = DateTime(date.year, date.month, date.day);
+      final date = DateTimeService.now();
+      final startDate = date.startOfDay;
       final closure = await _vehicleRepository.getDailyClosure(startDate);
       final success = await _vehicleRepository.saveDailyClosure(closure);
       if (success) {
@@ -46,8 +48,8 @@ class ClosureBloc extends Bloc<ClosureEvent, ClosureState> {
   Future<void> _onLoadDailyClosures(LoadDailyClosuresRequested event, Emitter<ClosureState> emit) async {
     emit(state.copyWith(status: ClosureStatus.loading));
     try {
-      final date = DateTime.now();
-      final startDate = DateTime(date.year, date.month, date.day);
+      final date = DateTimeService.now();
+      final startDate = date.startOfDay;
       final endDate = startDate.add(const Duration(days: 1));
       final closures = await _vehicleRepository.getDailyClosures(
         startDate,
@@ -69,7 +71,7 @@ class ClosureBloc extends Bloc<ClosureEvent, ClosureState> {
     emit(state.copyWith(status: ClosureStatus.loading));
     try {
       final date = event.date;
-      final formattedDate = '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+      final formattedDate = date.formatDate(format: 'yyyy-MM-dd');
       final vehicleLogs = await _vehicleRepository.getVehicleLogsByDate(formattedDate);
       
       // Calculate totals and organize data

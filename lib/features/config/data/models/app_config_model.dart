@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:quantum_parking_flutter/core/utils/date_time_service.dart';
 
 part 'app_config_model.g.dart';
 
@@ -32,8 +33,8 @@ class AppConfigModel extends HiveObject {
       id: json['_id'] ?? '',
       key: json['key'] ?? '',
       value: json['value'] ?? '',
-      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
-      updatedAt: DateTime.parse(json['updatedAt'] ?? DateTime.now().toIso8601String()),
+      createdAt: DateTime.parse(json['createdAt'] ?? DateTimeService.now().toIso8601String()),
+      updatedAt: DateTime.parse(json['updatedAt'] ?? DateTimeService.now().toIso8601String()),
     );
   }
 

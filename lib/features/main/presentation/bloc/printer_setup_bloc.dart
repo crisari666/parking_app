@@ -74,7 +74,7 @@ class PrinterSetupBloc extends Bloc<PrinterSetupEvent, PrinterSetupState> {
     try {
       PrintBluetoothThermal.connect;
       final List<BluetoothInfo> pairedDevices = await PrintBluetoothThermal.pairedBluetooths;
-      final bool isConnected = await _printerRepository.checkCurrentConnectionStatus();      
+      final bool isConnected = await _printerRepository.checkCurrentConnectionStatus(override: true);      
       final List<String> printerNames = List<String>.from(pairedDevices.map((device) => '${device.name} - ${device.macAdress}')).toList();
       emit(PrinterSetupSuccess(
         pairedDevices: printerNames,
