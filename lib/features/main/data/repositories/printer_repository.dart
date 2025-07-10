@@ -51,7 +51,7 @@ class PrinterRepository {
         );
       }
       
-      return isConnected;
+      return isConnected; 
     } catch (e) {
       _logger.e('Error checking printer connection status: $e');
       return false;
@@ -59,7 +59,7 @@ class PrinterRepository {
   }
 
   // Connect to a specific printer
-  Future<bool> connectToPrinter(String printerInfo) async {
+  Future<bool>  connectToPrinter(String printerInfo) async {
     try {
       final String macAddress = printerInfo.split(' - ')[1];
       final bool result = await PrintBluetoothThermal.connect(

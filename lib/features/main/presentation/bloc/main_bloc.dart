@@ -135,7 +135,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     emit(state.copyWith(isLoading: true));
     try {
       if (state.vehicleLog == null) {
-        emit(MainState.error(message: 'Plate number is required', isCheckout: false));
+        emit(MainState.error(message: 'Placa requerida', isCheckout: false));
         return;
       }
 
@@ -143,7 +143,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
       final setup = await _setupLocalDatasource.getSetup();
       if (setup == null) {
-        emit(MainState.error(message: 'Business setup not found', isCheckout: false));
+        emit(MainState.error(message: 'Configuración de negocio no encontrada', isCheckout: false));
         return;
       }
 
@@ -151,7 +151,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       
       emit(state.copyWith(
         isCheckout: true,
-        message: 'Vehicle checked out successfully', 
+        message: 'Salida de vehiculo exitosa.', 
         messageType: MessageType.success,
         isLoading: false
       ));
@@ -164,7 +164,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     emit(state.copyWith(isLoading: true));
     try {
       if (state.plateNumber.isEmpty || state.vehicleType.isEmpty) {
-        emit(MainState.error(message: 'Plate number and vehicle type are required', isCheckin: true));
+        emit(MainState.error(message: 'Placa y tipo de vehiculo requeridos', isCheckin: true));
         return;
       }
 
@@ -180,7 +180,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       add(PrintQRCodeRequested(state.plateNumber, vehicleLogDate: vehicleLog.entryTime));
       
       emit(state.copyWith(
-        message: 'Vehicle checked in successfully',
+        message: 'Registro de ingreso exitoso.',
         messageType: MessageType.success,
         isLoading: false,
         isCheckin: true
@@ -219,15 +219,16 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     try {
       final setup = await _setupLocalDatasource.getSetup();
       if (setup == null) {
-        emit(MainState.error(message: 'Business setup not found', isCheckout: true));
+        emit(MainState.error(message: 'Configuración de negocio no encontrada', isCheckout: false));
         return;
       }
 
       final VehicleLogResponseModel? parkingInfo = await _vehicleRepository.getCurrentParkingDurationAndCost(event.plateNumber);
-      if (parkingInfo == null) {
-        emit(MainState.error(message: 'Vehicle not found', isCheckout: true));
+      if (parkingInfo == null || parkingInfo.exitTime != null) {
+        emit(MainState.error(message: 'Vehiculo no encontrado', isCheckout: false));
         return;
       }
+
 
       final duration = DateTime.now().difference(parkingInfo.entryTime);
       final totalMinutes = duration.inMinutes;
@@ -271,7 +272,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       // Get business setup from state (optimized to avoid local storage access)
       final businessSetup = state.businessSetup;
       if (businessSetup == null) {
-        emit(MainState.error(message: 'Business setup not found. Please verify setup first.'));
+        emit(MainState.error(message: 'Configuración de negocio no encontrada. Por favor, verifique la configuración primero.'));
         return;
       }
 
@@ -386,12 +387,12 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       await PrintBluetoothThermal.writeBytes(bytes);
 
       emit(state.copyWith(
-        message: 'Check-in QR code printed successfully for ${event.plateNumber}',
+        message: 'QR de entrada impreso correctamente para ${event.plateNumber}',
         messageType: MessageType.success
       ));
     } catch (e) {
       _logger.e('Error printing QR code: $e');
-      emit(MainState.error(message: 'Error printing QR code: $e'));
+      emit(MainState.error(message: 'Error al imprimir el QR: $e'));
     }
   }
 
@@ -420,12 +421,12 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       
       if (testPassed) {
         emit(state.copyWith(
-          message: 'Printer hardware test passed',
+          message: 'Prueba de hardware de impresora pasada',
           messageType: MessageType.success,
         ));
       } else {
         emit(state.copyWith(
-          message: 'Printer hardware test failed - printer may be disconnected',
+          message: 'Prueba de hardware de impresora fallida - la impresora puede estar desconectada',
           messageType: MessageType.warning,
         ));
       }

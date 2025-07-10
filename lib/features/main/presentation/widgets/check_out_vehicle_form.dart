@@ -106,11 +106,6 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: PrinterConnectionIndicator(),
-                ),
-                const SizedBox(height: 16),
                 Row(
                   children: [
                     Expanded(
