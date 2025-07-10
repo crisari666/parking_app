@@ -78,7 +78,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       await _authRepository.logout();
       await _setupLocalDatasource.clear();
-      emit(AuthInitial());
+      emit(const AuthInitial());
     } catch (e) {
       emit(AuthError(e.toString(), email: _email, password: _password));
     }

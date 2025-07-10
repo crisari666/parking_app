@@ -12,6 +12,18 @@ class RecordsList extends StatelessWidget {
     return BlocConsumer<RecordsBloc, RecordsState>(
       buildWhen: (previous, current) => previous.logs != current.logs,
       listener: (context, state) {
+        // Show success/error messages for printing
+        if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.errorMessage!),
+              backgroundColor: state.status == RecordsStatus.success 
+                  ? Colors.green 
+                  : Colors.red,
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
       },
       builder: (context, state) {
         if (state.status == RecordsStatus.success) {

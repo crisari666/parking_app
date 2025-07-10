@@ -1,10 +1,14 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quantum_parking_flutter/features/main/data/models/active_vehicle_log_model.dart';
 import 'package:quantum_parking_flutter/l10n/app_localizations_context.dart';
 import 'package:quantum_parking_flutter/routes/app_router.dart';
+import 'package:quantum_parking_flutter/core/utils/date_time_service.dart';
+import 'package:quantum_parking_flutter/features/records/presentation/bloc/records_bloc.dart';
+import 'package:quantum_parking_flutter/features/records/presentation/bloc/records_event.dart';
 
 class RecordItem extends StatelessWidget {
   final ActiveVehicleLogModel record;
@@ -102,7 +106,7 @@ class RecordItem extends StatelessWidget {
                       const Icon(Icons.login, size: 18, color: Colors.green),
                       const SizedBox(width: 4),
                       Text(
-                        DateFormat('MMM dd, yyyy HH:mm').format(record.entryTime),
+                        DateFormat('MMM dd, yyyy HH:mm').format(DateTimeService.fromUtc(record.entryTime)),
                         style: const TextStyle(fontSize: 14),
                       ),
                     ],
@@ -114,7 +118,7 @@ class RecordItem extends StatelessWidget {
                         const Icon(Icons.logout, size: 18, color: Colors.red),
                         const SizedBox(width: 4),
                         Text(
-                          DateFormat('MMM dd, yyyy HH:mm').format(record.exitTime!),
+                          DateFormat('MMM dd, yyyy HH:mm').format(DateTimeService.fromUtc(record.exitTime!)),
                           style: const TextStyle(fontSize: 14),
                         ),
                       ],
@@ -150,6 +154,27 @@ class RecordItem extends StatelessWidget {
                   ],
                 ),
               ],
+              // Print button
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      context.read<RecordsBloc>().add(PrintRecordTicketRequested(record));
+                    },
+                    icon: const Icon(Icons.print, size: 16),
+                    label: const Text(
+                      'Imprimir',
+                      style: TextStyle(fontSize: 12),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      minimumSize: const Size(0, 32),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

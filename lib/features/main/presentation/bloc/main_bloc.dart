@@ -10,10 +10,8 @@ import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_sta
 import 'package:quantum_parking_flutter/features/setup/data/datasources/business_remote_datasource.dart';
 import 'package:quantum_parking_flutter/features/setup/data/datasources/setup_local_datasource.dart';
 import 'package:quantum_parking_flutter/core/utils/date_time_service.dart';
-import 'package:quantum_parking_flutter/core/utils/date_time_extensions.dart';
+import 'package:quantum_parking_flutter/core/services/ticket_printer_service.dart';
 import 'package:logger/logger.dart';
-import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
-import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
 
 // Bloc
 class MainBloc extends Bloc<MainEvent, MainState> {
@@ -22,6 +20,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   final SetupLocalDatasource _setupLocalDatasource;
   final BusinessRemoteDatasource _businessRemoteDatasource;
   final PrinterRepository _printerRepository;
+  final TicketPrinterService _ticketPrinterService;
   final Logger _logger = Logger();
   StreamSubscription<PrinterConnectionState>? _printerConnectionSubscription;
   double? _paymentValue;
@@ -32,11 +31,13 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     required BusinessRemoteDatasource businessRemoteDatasource,
     required VehicleRepository vehicleRepository,
     required PrinterRepository printerRepository,
+    required TicketPrinterService ticketPrinterService,
   }) : _localStorageService = localStorageService,
        _setupLocalDatasource = setupLocalDatasource,
        _businessRemoteDatasource = businessRemoteDatasource,
        _vehicleRepository = vehicleRepository,
        _printerRepository = printerRepository,
+       _ticketPrinterService = ticketPrinterService,
        super(MainState.initial()) {
     on<PlateNumberChanged>(_handlePlateNumberChanged);
     on<VehicleTypeChanged>(_handleVehicleTypeChanged);
@@ -51,6 +52,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<CheckOutPaymentValueChanged>(_handleCheckOutPaymentValueChanged);
     on<ResetCheckOutForm>(_handleResetCheckOutForm);
     on<PrintQRCodeRequested>(_handlePrintQRCode);
+    on<PrintCheckOutReceiptRequested>(_handlePrintCheckOutReceipt);
     on<ClearMessage>(_handleClearMessage);
     on<QRCodeScanned>(_handleQRCodeScanned);
     on<ClearChecksForm>(_handleClearChecksForm);
@@ -146,7 +148,20 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         return;
       }
 
-      VehicleLogResponseModel response =   await _vehicleRepository.checkoutVehicle(state.checkOutPlateNumber, state.paymentValue?.toInt() ?? 0);
+      //VehicleLogResponseModel response = await _vehicleRepository.checkoutVehicle(state.checkOutPlateNumber, state.paymentValue?.toInt() ?? 0);
+      
+      // Print check-out receipt after successful check-out
+      // if (state.vehicleLog != null) {
+      //   add(PrintCheckOutReceiptRequested(
+      //     plateNumber: state.checkOutPlateNumber,
+      //     checkInTime: DateTimeService.fromUtc(state.vehicleLog!.entryTime),
+      //     checkOutTime: DateTimeService.now(),
+      //     totalCost: state.paymentValue ?? 0,
+      //     vehicleType: state.vehicleLog!.vehicleType,
+      //     discount: state.discount.isNotEmpty ? double.tryParse(state.discount) : null,
+      //     paymentMethod: state.paymentMethod,
+      //   ));
+      // }
       
       emit(state.copyWith(
         isCheckout: true,
@@ -275,126 +290,62 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         return;
       }
 
-      // Check if thermal printer is connected
-      final bool isConnected = await PrintBluetoothThermal.connectionStatus;
-      
-      if (!isConnected) {
-        //emit(MainState.error(message: 'Please connect to a thermal printer first'));
-        return;
+      // Use the centralized ticket printer service
+      final success = await _ticketPrinterService.printCheckInTicket(
+        plateNumber: event.plateNumber,
+        businessSetup: businessSetup,
+        checkInTime: event.vehicleLogDate != null 
+            ? DateTimeService.fromUtc(event.vehicleLogDate!) 
+            : null,
+        vehicleType: state.vehicleType.isNotEmpty ? state.vehicleType : null,
+      );
+
+      if (success) {
+        emit(state.copyWith(
+          message: 'QR de entrada impreso correctamente para ${event.plateNumber}',
+          messageType: MessageType.success
+        ));
+      } else {
+        emit(MainState.error(message: 'Error al imprimir el QR: No se pudo conectar con la impresora'));
       }
-
-      // Create a generator with default profile
-      final profile = await CapabilityProfile.load();
-      final generator = Generator(PaperSize.mm80, profile);
-      List<int> bytes = [];
-
-      // Print business name header
-      bytes += generator.text(businessSetup.businessName,
-          styles: const PosStyles(
-            align: PosAlign.center,
-            height: PosTextSize.size2,
-            width: PosTextSize.size2,
-          ));
-      
-      // Print business brand if available
-      if (businessSetup.businessBrand.isNotEmpty) {
-        bytes += generator.text(businessSetup.businessBrand,
-            styles: const PosStyles(
-              align: PosAlign.center,
-              height: PosTextSize.size1,
-              width: PosTextSize.size1,
-            ));
-      }
-      
-      bytes += generator.emptyLines(1);
-
-      // Print check-in header
-      bytes += generator.text('ENTRADA DE VEHICULO',
-          styles: const PosStyles(
-            align: PosAlign.center,
-            height: PosTextSize.size1,
-            width: PosTextSize.size1,
-          ));
-      
-      bytes += generator.emptyLines(1);
-
-      // Print plate number
-      bytes += generator.text('PLACA: ${event.plateNumber.toUpperCase()}',
-          styles: const PosStyles(
-            align: PosAlign.left,
-            height: PosTextSize.size1,
-            width: PosTextSize.size1,
-          ));
-
-      // Print date and time
-      final dateTime = event.vehicleLogDate != null 
-          ? DateTimeService.fromUtc(event.vehicleLogDate!) 
-          : DateTimeService.now();
-      
-      final formattedDate = dateTime.formatDate();
-      final formattedTime = dateTime.formatTime();
-      
-      bytes += generator.text('Fecha: $formattedDate',
-          styles: const PosStyles(
-            align: PosAlign.left,
-            height: PosTextSize.size1,
-            width: PosTextSize.size1,
-          ));
-      
-      bytes += generator.text('Hora: $formattedTime',
-          styles: const PosStyles(
-            align: PosAlign.left,
-            height: PosTextSize.size1,
-            width: PosTextSize.size1,
-          ));
-
-      bytes += generator.emptyLines(1);
-
-      // Print QR code
-      bytes += generator.qrcode(event.plateNumber,
-          size: QRSize.size6,
-          cor: QRCorrection.M);
-
-      bytes += generator.emptyLines(1);
-
-      // Print footer
-      bytes += generator.text('Bienvenido a nuestro parqueadero!',
-          styles: const PosStyles(
-            align: PosAlign.center,
-            height: PosTextSize.size1,
-            width: PosTextSize.size1,
-          ));
-      
-      bytes += generator.text('Por favor, mantenga este recibo para la salida',
-          styles: const PosStyles(
-            align: PosAlign.center,
-            height: PosTextSize.size1,
-            width: PosTextSize.size1,
-          ));
-      
-      bytes += generator.emptyLines(1);
-      
-      // Print powered by footer
-      bytes += generator.text('Powered by quantum-devs.xyz',
-          styles: const PosStyles(
-            align: PosAlign.center,
-            height: PosTextSize.size1,
-            width: PosTextSize.size1,
-          ));
-
-      // Cut paper
-      bytes += generator.cut();
-
-      // Send to printer
-      await PrintBluetoothThermal.writeBytes(bytes);
-
-      emit(state.copyWith(
-        message: 'QR de entrada impreso correctamente para ${event.plateNumber}',
-        messageType: MessageType.success
-      ));
     } catch (e) {
       _logger.e('Error printing QR code: $e');
       emit(MainState.error(message: 'Error al imprimir el QR: $e'));
+    }
+  }
+
+  Future<void> _handlePrintCheckOutReceipt(PrintCheckOutReceiptRequested event, Emitter<MainState> emit) async {
+    try {
+      // Get business setup from state
+      final businessSetup = state.businessSetup;
+      if (businessSetup == null) {
+        emit(MainState.error(message: 'Configuración de negocio no encontrada. Por favor, verifique la configuración primero.'));
+        return;
+      }
+
+      // Use the centralized ticket printer service
+      final success = await _ticketPrinterService.printCheckOutReceipt(
+        plateNumber: event.plateNumber,
+        businessSetup: businessSetup,
+        checkInTime: event.checkInTime,
+        checkOutTime: event.checkOutTime,
+        totalCost: event.totalCost,
+        vehicleType: event.vehicleType,
+        discount: event.discount,
+        paymentMethod: event.paymentMethod,
+      );
+
+      if (success) {
+        emit(state.copyWith(
+          message: 'Recibo de salida impreso correctamente para ${event.plateNumber}',
+          messageType: MessageType.success
+        ));
+      } else {
+        emit(MainState.error(message: 'Error al imprimir el recibo: No se pudo conectar con la impresora'));
+      }
+    } catch (e) {
+      _logger.e('Error printing check-out receipt: $e');
+      emit(MainState.error(message: 'Error al imprimir el recibo: $e'));
     }
   }
 

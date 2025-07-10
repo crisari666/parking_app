@@ -17,6 +17,8 @@ class RecordsPage extends StatelessWidget {
     if(!getIt.isRegistered<RecordsBloc>()) {
       getIt.registerSingleton<RecordsBloc>(RecordsBloc(
         vehicleRepository: getIt(),
+        ticketPrinterService: getIt(),
+        setupLocalDatasource: getIt(),
       ));
     } 
     final recordsBloc = getIt.get<RecordsBloc>();

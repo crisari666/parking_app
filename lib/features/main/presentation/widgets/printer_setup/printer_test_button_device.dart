@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:printing/printing.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:qr/qr.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'dart:ui' as ui;
 import 'dart:typed_data';
@@ -26,7 +25,9 @@ class PrinterTestButtonDevice extends StatelessWidget {
     final canvas = Canvas(recorder);
     final painter = QrPainter.withQr(
       qr: qrCode,
-      color: const Color(0xFF000000),
+      eyeStyle: const QrEyeStyle(
+        color: Color(0xFF000000),
+      ),
       gapless: true,
     );
 

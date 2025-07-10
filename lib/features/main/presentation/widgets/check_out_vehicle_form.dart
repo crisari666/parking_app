@@ -6,7 +6,6 @@ import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_eve
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/check_out_vehicel_form/payment_method_selector.dart';
-import 'package:quantum_parking_flutter/features/main/presentation/widgets/printer_connection_indicator.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/qr_scanner_widget.dart';
 
 class CheckOutVehicleForm extends StatefulWidget {
@@ -39,12 +38,12 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
   }
 
   void _startEditingPayment() {
-    print('Starting payment editing. Current value: ${_paymentValueController.text}');
+    //print('Starting payment editing. Current value: ${_paymentValueController.text}');
     setState(() {
       _isEditingPayment = true;
       _originalPaymentValue = double.tryParse(_paymentValueController.text);
     });
-    print('Editing state set to: $_isEditingPayment');
+    //print('Editing state set to: $_isEditingPayment');
   }
 
   void _cancelEditingPayment() {
@@ -94,7 +93,7 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
         previous.parkingTime != current.parkingTime || 
         (previous.paymentValue != current.paymentValue && !_isEditingPayment),
       builder: (context, state) {
-        print('Building CheckOutVehicleForm. Editing: $_isEditingPayment, PaymentValue: ${state.paymentValue}');
+        //print('Building CheckOutVehicleForm. Editing: $_isEditingPayment, PaymentValue: ${state.paymentValue}');
         // Update payment value controller when state changes
         if (state.paymentValue != null && !_isEditingPayment) {
           _paymentValueController.text = state.paymentValue!.toStringAsFixed(2);

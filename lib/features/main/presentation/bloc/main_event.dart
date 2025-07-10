@@ -144,3 +144,26 @@ class QRCodeScanned extends MainEvent {
 class CheckPrinterConnectionStatus extends MainEvent {}
 
 class PerformPrinterHardwareTest extends MainEvent {}
+
+class PrintCheckOutReceiptRequested extends MainEvent {
+  final String plateNumber;
+  final DateTime checkInTime;
+  final DateTime checkOutTime;
+  final double totalCost;
+  final String vehicleType;
+  final double? discount;
+  final String? paymentMethod;
+
+  const PrintCheckOutReceiptRequested({
+    required this.plateNumber,
+    required this.checkInTime,
+    required this.checkOutTime,
+    required this.totalCost,
+    required this.vehicleType,
+    this.discount,
+    this.paymentMethod,
+  });
+
+  @override
+  List<Object?> get props => [plateNumber, checkInTime, checkOutTime, totalCost, vehicleType, discount, paymentMethod];
+}
