@@ -282,7 +282,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
             ));
       }
       
-      bytes += generator.hr();
+      bytes += generator.emptyLines(1);
 
       // Print check-in header
       bytes += generator.text('ENTRADA DE VEHICULO',
@@ -292,7 +292,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
             width: PosTextSize.size1,
           ));
       
-      bytes += generator.hr();
+      bytes += generator.emptyLines(1);
 
       // Print plate number
       bytes += generator.text('PLACA: ${event.plateNumber.toUpperCase()}',
@@ -321,14 +321,14 @@ class MainBloc extends Bloc<MainEvent, MainState> {
             width: PosTextSize.size1,
           ));
 
-      bytes += generator.hr();
+      bytes += generator.emptyLines(1);
 
       // Print QR code
       bytes += generator.qrcode(event.plateNumber,
           size: QRSize.size6,
           cor: QRCorrection.M);
 
-      bytes += generator.hr();
+      bytes += generator.emptyLines(1);
 
       // Print footer
       bytes += generator.text('Bienvenido a nuestro parqueadero!',
@@ -345,7 +345,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
             width: PosTextSize.size1,
           ));
       
-      bytes += generator.hr();
+      bytes += generator.emptyLines(1);
       
       // Print powered by footer
       bytes += generator.text('Powered by quantum-devs.xyz',
