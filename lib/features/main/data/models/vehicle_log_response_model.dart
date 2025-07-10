@@ -27,6 +27,7 @@ enum PaymentMethod {
 class VehicleLogResponseModel {
   final String vehicleId;
   final String businessId;
+  final String vehicleType;
   final DateTime entryTime;
   final DateTime? exitTime;
   final int duration;
@@ -40,6 +41,7 @@ class VehicleLogResponseModel {
   VehicleLogResponseModel({
     required this.vehicleId,
     required this.businessId,
+    required this.vehicleType,
     required this.entryTime,
     this.exitTime,
     required this.duration,
@@ -55,6 +57,7 @@ class VehicleLogResponseModel {
     return VehicleLogResponseModel(
       vehicleId: json['vehicleId'] as String,
       businessId: json['businessId'] as String,
+      vehicleType: json['vehicleType'] as String,
       entryTime: DateTime.parse(json['entryTime'] as String),
       exitTime: json['exitTime'] != null ? DateTime.parse(json['exitTime'] as String) : null,
       duration: json['duration'] as int,
@@ -72,6 +75,7 @@ class VehicleLogResponseModel {
   Map<String, dynamic> toJson() => {
     'vehicleId': vehicleId,
     'businessId': businessId,
+    'vehicleType': vehicleType,
     'entryTime': entryTime.toIso8601String(),
     'exitTime': exitTime?.toIso8601String(),
     'duration': duration,

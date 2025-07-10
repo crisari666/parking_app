@@ -223,7 +223,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       }
       
       // Get rate from business setup based on vehicle type
-      final ratePerHour = parkingInfo.vehicleId.toLowerCase().contains('car') 
+      final ratePerHour = parkingInfo.vehicleType.toLowerCase().contains('car') 
           ? setup.carHourCost 
           : setup.motorcycleHourCost;
       
@@ -241,8 +241,6 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       emit(MainState.error(message: e.toString()));
     }
   }
-
-
 
   Future<void> _handlePrintQRCode(PrintQRCodeRequested event, Emitter<MainState> emit) async {
     try {

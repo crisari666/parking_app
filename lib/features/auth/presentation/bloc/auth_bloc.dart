@@ -18,7 +18,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required SetupLocalDatasource setupLocalDatasource,
   })  : _authRepository = authRepository,
         _setupLocalDatasource = setupLocalDatasource,
-        super(AuthInitial()) {
+        super(const AuthInitial()) {
     on<EmailChanged>(_onEmailChanged);
     on<PasswordChanged>(_onPasswordChanged);
     on<LoginRequested>(_onLoginRequested);
