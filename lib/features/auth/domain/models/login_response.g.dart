@@ -8,7 +8,7 @@ part of 'login_response.dart';
 
 class LoginResponseAdapter extends TypeAdapter<LoginResponse> {
   @override
-  final int typeId = 4;
+  final int typeId = 5;
 
   @override
   LoginResponse read(BinaryReader reader) {

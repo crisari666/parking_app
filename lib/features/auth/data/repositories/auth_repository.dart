@@ -6,6 +6,7 @@ import 'package:quantum_parking_flutter/features/auth/domain/models/login_respon
 abstract class AuthRepository {
   Future<void> saveUser(User user);
   Future<User?> getCurrentUser();
+  Future<LoginResponse?> getCurrentLoginResponse();
   Future<void> logout();
   Future<LoginResponse> login(String email, String password);
 }
@@ -15,6 +16,7 @@ class AuthRepositoryImpl implements AuthRepository {
   
   static const String _boxName = 'authBox';
   static const String _userKey = 'currentUser';
+  static const String _loginResponseKey = 'loginResponse';
   static const String _tokenKey = 'authToken';
 
   AuthRepositoryImpl(this._remoteDataSource);
@@ -42,7 +44,15 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<void> logout() async {
     final box = await _box;
     await box.delete(_userKey);
+    await box.delete(_loginResponseKey);
     await box.delete(_tokenKey);
+  }
+
+  @override
+  Future<LoginResponse?> getCurrentLoginResponse() async {
+    final box = await _box;
+    final LoginResponse? loginResponse = box.get(_loginResponseKey);
+    return loginResponse;
   }
 
   @override
@@ -51,9 +61,11 @@ class AuthRepositoryImpl implements AuthRepository {
 
     // Save the token
     await _remoteDataSource.setAuthToken(response.token);
+    
+    // Save the login response
+    final box = await _box;
+    await box.put(_loginResponseKey, response);
 
     return response;
   }
-
-  
 } 

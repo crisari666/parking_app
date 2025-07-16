@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 
 part 'login_response.g.dart';
 
-@HiveType(typeId: 4)
+@HiveType(typeId: 5)
 class LoginResponse {
   @HiveField(0)
   final String id;

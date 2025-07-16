@@ -12,3 +12,4 @@ targets:
             - lib/features/auth/domain/models/login_response.dart
             - lib/features/main/data/models/vehicle_log_response_model.dart
             - lib/features/config/data/models/app_config_model.dart
+            - lib/features/user/data/models/user_data_model.dart

@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quantum_parking_flutter/features/auth/data/repositories/auth_repository.dart';
 import 'package:quantum_parking_flutter/features/auth/domain/models/user.dart';
+import 'package:quantum_parking_flutter/features/auth/domain/models/login_response.dart';
 import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_event.dart';
 import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_state.dart';
 import 'package:quantum_parking_flutter/features/setup/data/datasources/setup_local_datasource.dart';
@@ -12,6 +13,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SetupLocalDatasource _setupLocalDatasource;
   String _email = '';
   String _password = '';
+  String? _userRole;
 
     AuthBloc({
     required AuthRepository authRepository,
@@ -36,7 +38,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   Future<void> _onLoginRequested(LoginRequested event, Emitter<AuthState> emit) async {
-    emit(AuthLoading(email: _email, password: _password));
+    emit(AuthLoading(email: _email, password: _password, userRole: _userRole));
     try {
       final loginResponse = await _authRepository.login(_email, _password);
       final user = User(
@@ -44,33 +46,37 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         password: _password,
       );
       await _authRepository.saveUser(user);
-      emit(AuthSuccess(email: _email, password: _password));
+      _userRole = loginResponse.role;
+      emit(AuthSuccess(email: _email, password: _password, userRole: _userRole));
     } catch (e) {
-      emit(AuthError(e.toString(), email: _email, password: _password));
+      emit(AuthError(e.toString(), email: _email, password: _password, userRole: _userRole));
     }
   }
 
   Future<void> _onRegisterRequested(RegisterRequested event, Emitter<AuthState> emit) async {
-    emit(AuthLoading(email: _email, password: _password));
+    emit(AuthLoading(email: _email, password: _password, userRole: _userRole));
     try {
       final user = User(email: _email, password: _password);
       await _authRepository.saveUser(user);
-      emit(AuthSuccess(email: _email, password: _password));
+      emit(AuthSuccess(email: _email, password: _password, userRole: _userRole));
     } catch (e) {
-      emit(AuthError(e.toString(), email: _email, password: _password));
+      emit(AuthError(e.toString(), email: _email, password: _password, userRole: _userRole));
     }
   }
 
   Future<void> _onCheckAuthStatus(CheckAuthStatus event, Emitter<AuthState> emit) async {
     try {
       final user = await _authRepository.getCurrentUser();
-      if (user != null) {
-        emit(AuthSuccess(email: _email, password: _password));
+      final loginResponse = await _authRepository.getCurrentLoginResponse();
+      
+      if (user != null && loginResponse != null) {
+        _userRole = loginResponse.role;
+        emit(AuthSuccess(email: _email, password: _password, userRole: _userRole));
       } else {
-        emit(AuthInitial(email: _email, password: _password));
+        emit(AuthInitial(email: _email, password: _password, userRole: _userRole));
       }
     } catch (e) {
-      emit(AuthError(e.toString(), email: _email, password: _password));
+      emit(AuthError(e.toString(), email: _email, password: _password, userRole: _userRole));
     }
   }
 
@@ -78,9 +84,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       await _authRepository.logout();
       await _setupLocalDatasource.clear();
+      _userRole = null;
       emit(const AuthInitial());
     } catch (e) {
-      emit(AuthError(e.toString(), email: _email, password: _password));
+      emit(AuthError(e.toString(), email: _email, password: _password, userRole: _userRole));
     }
   }
 } 

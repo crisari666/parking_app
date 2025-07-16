@@ -22,6 +22,11 @@ import 'package:quantum_parking_flutter/core/services/ticket_printer_service.dar
 import 'package:quantum_parking_flutter/features/setup/data/datasources/business_remote_datasource.dart';
 import 'package:quantum_parking_flutter/features/records/presentation/bloc/records_bloc.dart';
 import 'package:quantum_parking_flutter/features/setup/data/datasources/setup_local_datasource.dart';
+import 'package:quantum_parking_flutter/features/user/data/datasources/user_remote_datasource.dart';
+import 'package:quantum_parking_flutter/features/user/data/repositories/user_repository_impl.dart';
+import 'package:quantum_parking_flutter/features/user/domain/repositories/user_repository.dart';
+import 'package:quantum_parking_flutter/features/user/domain/services/user_service.dart';
+import 'package:quantum_parking_flutter/features/user/presentation/bloc/user_bloc.dart';
 import 'injection.config.dart';
 
 final getIt = GetIt.instance;
@@ -103,7 +108,18 @@ Future<void> registerMainDependencies() async {
     apiClient: getIt(),
   ));
 
-  
+  // User dependencies
+  getIt.registerSingleton<UserRemoteDataSource>(UserRemoteDataSourceImpl(
+    getIt(),
+  ));
+
+  getIt.registerSingleton<UserRepository>(UserRepositoryImpl(
+    getIt(),
+  ));
+
+  getIt.registerSingleton<UserService>(UserService(
+    getIt(),
+  ));
 
   
   //Blocs
@@ -128,6 +144,11 @@ Future<void> registerMainDependencies() async {
     vehicleRepository: getIt(),
     ticketPrinterService: getIt(),
     setupLocalDatasource: getIt(),
+  ));
+
+  // User Bloc
+  getIt.registerSingleton<UserBloc>(UserBloc(
+    userRepository: getIt(),
   ));
 }
 

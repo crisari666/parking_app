@@ -1,5 +1,6 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:quantum_parking_flutter/core/contants/hive_constants.dart';
+import 'package:quantum_parking_flutter/features/auth/domain/models/login_response.dart';
 import 'package:quantum_parking_flutter/features/auth/domain/models/user.dart';
 import 'package:quantum_parking_flutter/features/config/data/models/app_config_model.dart';
 import 'package:quantum_parking_flutter/features/main/data/models/vehicle_model.dart';
@@ -27,6 +28,10 @@ class HiveAdapter {
     if (!Hive.isAdapterRegistered(10)) {
       Hive.registerAdapter(AppConfigModelAdapter());
     }
+    if (!Hive.isAdapterRegistered(5)) {
+      Hive.registerAdapter(LoginResponseAdapter());
+    }
+    
   }
 
   static Future<void> openBoxes() async {
