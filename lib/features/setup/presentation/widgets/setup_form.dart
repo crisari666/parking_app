@@ -6,6 +6,10 @@ import 'package:quantum_parking_flutter/features/setup/presentation/bloc/setup_s
 import 'package:quantum_parking_flutter/features/setup/presentation/widgets/setup_submit_button.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/widgets/business_name_field.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/widgets/business_brand_field.dart';
+import 'package:quantum_parking_flutter/features/setup/presentation/widgets/business_nit_field.dart';
+import 'package:quantum_parking_flutter/features/setup/presentation/widgets/business_resolution_field.dart';
+import 'package:quantum_parking_flutter/features/setup/presentation/widgets/address_field.dart';
+import 'package:quantum_parking_flutter/features/setup/presentation/widgets/schedule_field.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/widgets/car_hour_cost_field.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/widgets/motorcycle_hour_cost_field.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/widgets/car_monthly_cost_field.dart';
@@ -45,80 +49,132 @@ class SetupForm extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         const Gap(32),
-                        BusinessNameField(
-                          initialValue: setup?.businessName ?? '',
-                          label: l10n.businessName,
+                        
+                        // Business Data Section
+                        ExpansionTile(
+                          title: Text(
+                            l10n.businessData,
+                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          initiallyExpanded: true,
+                          children: [
+                            const Gap(16),
+                            BusinessNameField(
+                              initialValue: setup?.businessName ?? '',
+                              label: l10n.businessName,
+                            ),
+                            const Gap(16),
+                            BusinessBrandField(
+                              initialValue: setup?.businessBrand ?? '',
+                              label: l10n.businessBrand,
+                            ),
+                            const Gap(16),
+                            BusinessNitField(
+                              initialValue: setup?.businessNit ?? '',
+                              label: l10n.businessNit,
+                            ),
+                            const Gap(16),
+                            BusinessResolutionField(
+                              initialValue: setup?.businessResolution ?? '',
+                              label: l10n.businessResolution,
+                            ),
+                            const Gap(16),
+                            AddressField(
+                              initialValue: setup?.address ?? '',
+                              label: l10n.address,
+                            ),
+                            const Gap(16),
+                            ScheduleField(
+                              initialValue: setup?.schedule ?? '',
+                              label: l10n.schedule,
+                            ),
+                            const Gap(16),
+                          ],
                         ),
-                        const Gap(16),
-                         BusinessBrandField(
-                          initialValue: setup?.businessBrand ?? '',
-                          label: l10n.businessBrand,
-                        ),
+                        
                         const Gap(24),
-                        Text(
-                          l10n.hourlyRates,
-                          style: Theme.of(context).textTheme.titleLarge,
+                        
+                        // Rates Section
+                        ExpansionTile(
+                          title: Text(
+                            l10n.rates,
+                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          initiallyExpanded: true,
+                          children: [
+                            const Gap(16),
+                            Text(
+                              l10n.hourlyRates,
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            const Gap(16),
+                            CarHourCostField(
+                              initialValue: setup?.carHourCost.toString() ?? '',  
+                              label: l10n.carHourCost,
+                            ),
+                            const Gap(16),
+                            MotorcycleHourCostField(
+                              initialValue: setup?.motorcycleHourCost.toString() ?? '',
+                              label: l10n.motorcycleHourCost,
+                            ),
+                            const Gap(16),
+                            StudentMotorcycleHourCostField(
+                              initialValue: setup?.studentMotorcycleHourCost.toString() ?? '',
+                              label: l10n.studentMotorcycleHourCost,
+                            ),
+                            const Gap(24),
+                            Text(
+                              l10n.monthlyRates,
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            const Gap(16),
+                            CarMonthlyCostField(
+                              initialValue: setup?.carMonthlyCost.toString() ?? '',
+                              label: l10n.carMonthlyCost,
+                            ),
+                            const Gap(16),
+                            MotorcycleMonthlyCostField(
+                              initialValue: setup?.motorcycleMonthlyCost.toString() ?? '',
+                              label: l10n.motorcycleMonthlyCost,
+                            ),
+                            const Gap(24),
+                            Text(
+                              l10n.dailyRates,
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            const Gap(16),
+                            CarDayCostField(
+                              initialValue: setup?.carDayCost.toString() ?? '',
+                              label: l10n.carDayCost,
+                            ), 
+                            const Gap(16),
+                            MotorcycleDayCostField(
+                              initialValue: setup?.motorcycleDayCost.toString() ?? '',
+                              label: l10n.motorcycleDayCost,
+                            ),
+                            const Gap(24),
+                            Text(
+                              l10n.nightRates,
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            const Gap(16),
+                            CarNightCostField(
+                              initialValue: setup?.carNightCost.toString() ?? '',
+                              label: l10n.carNightCost,
+                            ),
+                            const Gap(16),
+                            MotorcycleNightCostField(
+                              initialValue: setup?.motorcycleNightCost.toString() ?? '',
+                              label: l10n.motorcycleNightCost,
+                            ),
+                            const Gap(16),
+                          ],
                         ),
-                        const Gap(16),
-                        CarHourCostField(
-                          initialValue: setup?.carHourCost.toString() ?? '',  
-                          label: l10n.carHourCost,
-                        ),
-                        const Gap(16),
-                        MotorcycleHourCostField(
-                          initialValue: setup?.motorcycleHourCost.toString() ?? '',
-                          label: l10n.motorcycleHourCost,
-                        ),
-                        const Gap(16),
-                        StudentMotorcycleHourCostField(
-                          initialValue: setup?.studentMotorcycleHourCost.toString() ?? '',
-                          label: l10n.studentMotorcycleHourCost,
-                        ),
-                        const Gap(24),
-                        Text(
-                          l10n.monthlyRates,
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        const Gap(16),
-                        CarMonthlyCostField(
-                          initialValue: setup?.carMonthlyCost.toString() ?? '',
-                          label: l10n.carMonthlyCost,
-                        ),
-                        const Gap(16),
-                        MotorcycleMonthlyCostField(
-                          initialValue: setup?.motorcycleMonthlyCost.toString() ?? '',
-                          label: l10n.motorcycleMonthlyCost,
-                        ),
-                        const Gap(24),
-                        Text(
-                          l10n.dailyRates,
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        const Gap(16),
-                        CarDayCostField(
-                          initialValue: setup?.carDayCost.toString() ?? '',
-                          label: l10n.carDayCost,
-                        ), 
-                        const Gap(16),
-                        MotorcycleDayCostField(
-                          initialValue: setup?.motorcycleDayCost.toString() ?? '',
-                          label: l10n.motorcycleDayCost,
-                        ),
-                        const Gap(24),
-                        Text(
-                          l10n.nightRates,
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        const Gap(16),
-                        CarNightCostField(
-                          initialValue: setup?.carNightCost.toString() ?? '',
-                          label: l10n.carNightCost,
-                        ),
-                        const Gap(16),
-                        MotorcycleNightCostField(
-                          initialValue: setup?.motorcycleNightCost.toString() ?? '',
-                          label: l10n.motorcycleNightCost,
-                        ),
+                        
                         const Gap(32),
                         const SetupSubmitButton(),
                       ],

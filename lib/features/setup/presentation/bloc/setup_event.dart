@@ -110,4 +110,40 @@ class SetupStudentMotorcycleHourCostChanged extends SetupEvent {
   List<Object> get props => [cost];
 }
 
-class SetupFetchBusinesses extends SetupEvent {} 
+class SetupFetchBusinesses extends SetupEvent {}
+
+class SetupBusinessNitChanged extends SetupEvent {
+  final String nit;
+
+  const SetupBusinessNitChanged({required this.nit});
+
+  @override
+  List<Object> get props => [nit];
+}
+
+class SetupBusinessResolutionChanged extends SetupEvent {
+  final String resolution;
+
+  const SetupBusinessResolutionChanged({required this.resolution});
+
+  @override
+  List<Object> get props => [resolution];
+}
+
+class SetupAddressChanged extends SetupEvent {
+  final String address;
+
+  const SetupAddressChanged({required this.address});
+
+  @override
+  List<Object> get props => [address];
+}
+
+class SetupScheduleChanged extends SetupEvent {
+  final String schedule;
+
+  const SetupScheduleChanged({required this.schedule});
+
+  @override
+  List<Object> get props => [schedule];
+} 

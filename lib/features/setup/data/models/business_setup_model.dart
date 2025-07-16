@@ -43,6 +43,18 @@ class BusinessSetupModel extends HiveObject {
   @HiveField(12)
   final String? businessId;
 
+  @HiveField(13)
+  final String businessNit;
+
+  @HiveField(14)
+  final String businessResolution;
+
+  @HiveField(15)
+  final String address;
+
+  @HiveField(16)
+  final String schedule;
+
   BusinessSetupModel({
     this.name,
     required this.businessName,
@@ -57,6 +69,10 @@ class BusinessSetupModel extends HiveObject {
     required this.motorcycleNightCost,
     required this.studentMotorcycleHourCost,
     this.businessId,
+    required this.businessNit,
+    required this.businessResolution,
+    required this.address,
+    required this.schedule,
   });
 
   factory BusinessSetupModel.empty() {
@@ -72,6 +88,10 @@ class BusinessSetupModel extends HiveObject {
       carNightCost: 0,
       motorcycleNightCost: 0,
       studentMotorcycleHourCost: 0,
+      businessNit: '',
+      businessResolution: '',
+      address: '',
+      schedule: '',
     );
 
   }
@@ -91,6 +111,10 @@ class BusinessSetupModel extends HiveObject {
       'motorcycleNightCost': motorcycleNightCost,
       'studentMotorcycleHourCost': studentMotorcycleHourCost,
       'businessId': businessId ?? '',
+      'businessNit': businessNit,
+      'businessResolution': businessResolution,
+      'address': address,
+      'schedule': schedule,
     };
   }
 
@@ -109,6 +133,10 @@ class BusinessSetupModel extends HiveObject {
       motorcycleNightCost: (json['motorcycleNightCost'] as num).toDouble(),
       studentMotorcycleHourCost: (json['studentMotorcycleHourCost'] as num).toDouble(),
       businessId: json['_id'],
+      businessNit: json['businessNit'] ?? '',
+      businessResolution: json['businessResolution'] ?? '',
+      address: json['address'] ?? '',
+      schedule: json['schedule'] ?? '',
     );
   }
 } 

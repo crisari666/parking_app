@@ -129,5 +129,11 @@
   "grantPermission": "Grant Permission",
   "pointCameraAtQRCode": "Point camera at QR code to scan",
   "printerConnected": "Printer Connected",
-  "printerDisconnected": "Printer Disconnected"
+  "printerDisconnected": "Printer Disconnected",
+  "businessData": "Business Data",
+  "rates": "Rates",
+  "businessNit": "Business NIT",
+  "businessResolution": "Business Resolution",
+  "address": "Address",
+  "schedule": "Schedule"
 }

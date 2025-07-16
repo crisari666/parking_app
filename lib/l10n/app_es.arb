@@ -129,5 +129,11 @@
   "grantPermission": "Conceder Permiso",
   "pointCameraAtQRCode": "Apunte la cámara al código QR para escanear",
   "printerConnected": "Impresora Conectada",
-  "printerDisconnected": "Impresora Desconectada"
+  "printerDisconnected": "Impresora Desconectada",
+  "businessData": "Datos del Negocio",
+  "rates": "Tarifas",
+  "businessNit": "NIT del Negocio",
+  "businessResolution": "Resolución del Negocio",
+  "address": "Dirección",
+  "schedule": "Horario"
 }

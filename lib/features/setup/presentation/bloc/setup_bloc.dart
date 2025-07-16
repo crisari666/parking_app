@@ -21,6 +21,10 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
   double _carNightCost = 0.0;
   double _motorcycleNightCost = 0.0;
   double _studentMotorcycleHourCost = 0.0;
+  String _businessNit = '';
+  String _businessResolution = '';
+  String _address = '';
+  String _schedule = '';
   SetupBloc({
     required SetupLocalDatasource localDatasource, 
     required BusinessRemoteDatasource businessRemoteDatasource,
@@ -41,6 +45,10 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
     on<SetupCarNightCostChanged>(_onCarNightCostChanged);
     on<SetupMotorcycleNightCostChanged>(_onMotorcycleNightCostChanged);
     on<SetupFetchBusinesses>(_onFetchBusinesses);
+    on<SetupBusinessNitChanged>(_onBusinessNitChanged);
+    on<SetupBusinessResolutionChanged>(_onBusinessResolutionChanged);
+    on<SetupAddressChanged>(_onAddressChanged);
+    on<SetupScheduleChanged>(_onScheduleChanged);
   }
 
   Future<void> _onSetupStarted(SetupStarted event, Emitter<SetupState> emit) async {
@@ -56,6 +64,13 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
         _motorcycleMonthlyCost = setup.motorcycleMonthlyCost;
         _carDayCost = setup.carDayCost;
         _motorcycleDayCost = setup.motorcycleDayCost;
+        _carNightCost = setup.carNightCost;
+        _motorcycleNightCost = setup.motorcycleNightCost;
+        _studentMotorcycleHourCost = setup.studentMotorcycleHourCost;
+        _businessNit = setup.businessNit;
+        _businessResolution = setup.businessResolution;
+        _address = setup.address;
+        _schedule = setup.schedule;
         emit(SetupSuccess(setup, isFromSave: false));
       } else {
         emit(const SetupSuccess(null, isFromSave: false));
@@ -141,7 +156,11 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
         motorcycleDayCost: _motorcycleDayCost,
         carNightCost: _carNightCost,
         motorcycleNightCost: _motorcycleNightCost,
-        studentMotorcycleHourCost: _studentMotorcycleHourCost
+        studentMotorcycleHourCost: _studentMotorcycleHourCost,
+        businessNit: _businessNit,
+        businessResolution: _businessResolution,
+        address: _address,
+        schedule: _schedule,
       );
       final savedSetup = await _localDatasource.saveSetup(newSetup);
       if(savedSetup.businessId == null) {
@@ -160,6 +179,10 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
           motorcycleNightCost: savedSetup.motorcycleNightCost,
           studentMotorcycleHourCost: savedSetup.studentMotorcycleHourCost,
           businessId: createdBusiness.businessId,
+          businessNit: savedSetup.businessNit,
+          businessResolution: savedSetup.businessResolution,
+          address: savedSetup.address,
+          schedule: savedSetup.schedule,
         );
         await _localDatasource.saveSetup(updatedSetup);
         emit(SetupSuccess(updatedSetup, isFromSave: true));
@@ -179,6 +202,10 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
           motorcycleNightCost: savedSetup.motorcycleNightCost,
           studentMotorcycleHourCost: savedSetup.studentMotorcycleHourCost,
           businessId: updatedBusiness.businessId,
+          businessNit: savedSetup.businessNit,
+          businessResolution: savedSetup.businessResolution,
+          address: savedSetup.address,
+          schedule: savedSetup.schedule,
         );
         await _localDatasource.saveSetup(updatedSetup);
         emit(SetupSuccess(updatedSetup, isFromSave: true));
@@ -198,5 +225,21 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
 
   void _onMotorcycleNightCostChanged(SetupMotorcycleNightCostChanged event, Emitter<SetupState> emit) {
     _motorcycleNightCost = double.tryParse(event.cost) ?? 0.0;
+  }
+
+  void _onBusinessNitChanged(SetupBusinessNitChanged event, Emitter<SetupState> emit) {
+    _businessNit = event.nit;
+  }
+
+  void _onBusinessResolutionChanged(SetupBusinessResolutionChanged event, Emitter<SetupState> emit) {
+    _businessResolution = event.resolution;
+  }
+
+  void _onAddressChanged(SetupAddressChanged event, Emitter<SetupState> emit) {
+    _address = event.address;
+  }
+
+  void _onScheduleChanged(SetupScheduleChanged event, Emitter<SetupState> emit) {
+    _schedule = event.schedule;
   }
 } 
