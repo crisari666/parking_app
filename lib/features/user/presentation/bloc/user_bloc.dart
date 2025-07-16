@@ -43,18 +43,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     emit(state.copyWith(isLoading: true, error: null));
     
     try {
-      final newUser = UserModel(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        user: event.user,
-        name: event.name,
-        lastName: event.lastName,
-        email: event.email,
-        role: event.role,
-        business: event.business,
-        createdAt: DateTime.now(),
-      );
-      
-      await _userRepository.createUser(newUser);
+      await _userRepository.createUserWithCredentials(event.email, event.password);
       final updatedUsers = await _userRepository.getUsers();
       
       emit(state.copyWith(

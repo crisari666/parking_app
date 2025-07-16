@@ -4,6 +4,7 @@ import 'package:quantum_parking_flutter/features/user/data/models/user_data_mode
 abstract class UserRemoteDataSource {
   Future<List<UserDataModel>> getUsers();
   Future<UserDataModel> createUser(UserDataModel user);
+  Future<UserDataModel> createUserWithCredentials(String email, String password);
   Future<UserDataModel> updateUser(UserDataModel user);
   Future<void> deleteUser(String userId);
   Future<UserDataModel?> getUserById(String userId);
@@ -31,7 +32,19 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   @override
   Future<UserDataModel> createUser(UserDataModel user) async {
     try {
-      final response = await _apiClient.dio.post('/users', data: user.toJson());
+      final response = await _apiClient.dio.post('/users/create-by-user', data: user.toCreateUserJson());
+      return UserDataModel.fromJson(response.data);
+    } catch (e) {
+      throw Exception('Failed to create user: $e');
+    }
+  }
+
+  Future<UserDataModel> createUserWithCredentials(String email, String password) async {
+    try {
+      final response = await _apiClient.dio.post(
+        '/users/create-by-user', 
+        data: UserDataModel.createUserRequest(email, password)
+      );
       return UserDataModel.fromJson(response.data);
     } catch (e) {
       throw Exception('Failed to create user: $e');

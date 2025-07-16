@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quantum_parking_flutter/features/user/domain/models/user_model.dart';
 
 class UserListTile extends StatelessWidget {
@@ -17,11 +18,13 @@ class UserListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     final displayName = user.name.isNotEmpty || user.lastName.isNotEmpty
         ? '${user.name} ${user.lastName}'.trim()
         : user.user;
     
-    final displayEmail = user.email ?? 'No email';
+    final displayEmail = user.email ?? l10n.noEmail;
 
     return ListTile(
       leading: CircleAvatar(
@@ -31,9 +34,9 @@ class UserListTile extends StatelessWidget {
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('User: ${user.user}'),
-          Text('Email: $displayEmail'),
-          Text('Role: ${user.role}'),
+          Text('${l10n.user}: ${user.user}'),
+          Text('${l10n.email}: $displayEmail'),
+          Text('${l10n.role}: ${user.role}'),
         ],
       ),
       trailing: Row(

@@ -30,6 +30,16 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
+  Future<UserModel> createUserWithCredentials(String email, String password) async {
+    try {
+      final createdUserDataModel = await _remoteDataSource.createUserWithCredentials(email, password);
+      return createdUserDataModel.toDomain();
+    } catch (e) {
+      throw Exception('Failed to create user: $e');
+    }
+  }
+
+  @override
   Future<UserModel> updateUser(UserModel user) async {
     try {
       final userDataModel = UserDataModel.fromDomain(user);

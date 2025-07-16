@@ -53,11 +53,40 @@ class UserDataModel extends UserModel {
       email: json['email'] as String?,
       role: json['role'] as String,
       business: json['business'] as String,
-      isActive: json['isActive'] as bool? ?? true,
+      isActive: json['enabled'] as bool? ?? true,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: json['updatedAt'] != null 
           ? DateTime.parse(json['updatedAt'] as String)
           : null,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'user': user,
+      'name': name,
+      'lastName': lastName,
+      'email': email,
+      'role': role,
+      'business': business,
+      'isActive': isActive,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt?.toIso8601String(),
+    };
+  }
+
+  Map<String, dynamic> toCreateUserJson() {
+    return {
+      'email': email,
+      'password': user, // Using user field as password for now
+    };
+  }
+
+  static Map<String, dynamic> createUserRequest(String email, String password) {
+    return {
+      'email': email,
+      'password': password,
+    };
   }
 } 

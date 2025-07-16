@@ -3,6 +3,7 @@ import 'package:quantum_parking_flutter/features/user/domain/models/user_model.d
 abstract class UserRepository {
   Future<List<UserModel>> getUsers();
   Future<UserModel> createUser(UserModel user);
+  Future<UserModel> createUserWithCredentials(String email, String password);
   Future<UserModel> updateUser(UserModel user);
   Future<void> deleteUser(String userId);
   Future<UserModel?> getUserById(String userId);

@@ -18,8 +18,8 @@ class UpdateDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.loc;
     
-    return WillPopScope(
-      onWillPop: () async => false, // Prevent back button from closing dialog
+    return PopScope(
+      canPop: false, // Prevent back button from closing dialog
       child: AlertDialog(
         title: Text(l10n.updateRequired),
         content: Column(

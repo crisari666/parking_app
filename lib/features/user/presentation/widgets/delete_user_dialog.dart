@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quantum_parking_flutter/features/user/domain/models/user_model.dart';
 
 class DeleteUserDialog extends StatelessWidget {
@@ -13,20 +14,22 @@ class DeleteUserDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return AlertDialog(
-      title: const Text('Delete User'),
-      content: Text('Are you sure you want to delete ${user.user}?'),
+      title: Text(l10n.deleteUser),
+      content: Text(l10n.areYouSureYouWantToDelete(user.user)),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(l10n.cancel),
         ),
         TextButton(
           onPressed: () {
             Navigator.of(context).pop();
             onConfirm();
           },
-          child: const Text('Delete'),
+          child: Text(l10n.delete),
         ),
       ],
     );
