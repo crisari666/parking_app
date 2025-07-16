@@ -45,9 +45,12 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     try {
       final newUser = UserModel(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
+        user: event.user,
         name: event.name,
+        lastName: event.lastName,
         email: event.email,
         role: event.role,
+        business: event.business,
         createdAt: DateTime.now(),
       );
       

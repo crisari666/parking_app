@@ -3,9 +3,12 @@ import 'package:quantum_parking_flutter/features/user/domain/models/user_model.d
 class UserDataModel extends UserModel {
   const UserDataModel({
     required super.id,
+    required super.user,
     required super.name,
-    required super.email,
+    required super.lastName,
+    super.email,
     required super.role,
+    required super.business,
     super.isActive = true,
     required super.createdAt,
     super.updatedAt,
@@ -14,9 +17,12 @@ class UserDataModel extends UserModel {
   factory UserDataModel.fromDomain(UserModel user) {
     return UserDataModel(
       id: user.id,
+      user: user.user,
       name: user.name,
+      lastName: user.lastName,
       email: user.email,
       role: user.role,
+      business: user.business,
       isActive: user.isActive,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
@@ -26,9 +32,12 @@ class UserDataModel extends UserModel {
   UserModel toDomain() {
     return UserModel(
       id: id,
+      user: user,
       name: name,
+      lastName: lastName,
       email: email,
       role: role,
+      business: business,
       isActive: isActive,
       createdAt: createdAt,
       updatedAt: updatedAt,
@@ -37,10 +46,13 @@ class UserDataModel extends UserModel {
 
   factory UserDataModel.fromJson(Map<String, dynamic> json) {
     return UserDataModel(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      email: json['email'] as String,
+      id: json['_id'] as String,
+      user: json['user'] as String,
+      name: json['name'] as String? ?? '',
+      lastName: json['lastName'] as String? ?? '',
+      email: json['email'] as String?,
       role: json['role'] as String,
+      business: json['business'] as String,
       isActive: json['isActive'] as bool? ?? true,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: json['updatedAt'] != null 

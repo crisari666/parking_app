@@ -11,18 +11,24 @@ abstract class UserEvent extends Equatable {
 class LoadUsers extends UserEvent {}
 
 class CreateUser extends UserEvent {
+  final String user;
   final String name;
-  final String email;
+  final String lastName;
+  final String? email;
   final String role;
+  final String business;
 
   const CreateUser({
+    required this.user,
     required this.name,
-    required this.email,
+    required this.lastName,
+    this.email,
     required this.role,
+    required this.business,
   });
 
   @override
-  List<Object> get props => [name, email, role];
+  List<Object> get props => [user, name, lastName, email ?? '', role, business];
 }
 
 class UpdateUser extends UserEvent {

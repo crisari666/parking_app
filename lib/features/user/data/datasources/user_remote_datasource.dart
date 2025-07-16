@@ -17,8 +17,8 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   @override
   Future<List<UserDataModel>> getUsers() async {
     try {
-      final response = await _apiClient.dio.get('/users');
-      final List<dynamic> usersJson = response.data['users'] ?? [];
+      final response = await _apiClient.dio.get('/users/my-business');
+      final List<dynamic> usersJson = response.data;
       
       return usersJson
           .map((json) => UserDataModel.fromJson(json))

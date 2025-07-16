@@ -19,12 +19,8 @@ class _UserListPageState extends State<UserListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) {
-        final bloc = getIt<UserBloc>();
-        bloc.add(LoadUsers());
-        return bloc;
-      },
+    return BlocProvider.value(
+      value: getIt<UserBloc>()..add(LoadUsers()),
       child: Scaffold(
       appBar: AppBar(
         title: const Text('Users'),
@@ -101,7 +97,7 @@ class _UserListPageState extends State<UserListPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Delete User'),
-          content: Text('Are you sure you want to delete ${user.name}?'),
+          content: Text('Are you sure you want to delete ${user.user}?'),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -137,12 +133,25 @@ class UserListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final displayName = user.name.isNotEmpty || user.lastName.isNotEmpty
+        ? '${user.name} ${user.lastName}'.trim()
+        : user.user;
+    
+    final displayEmail = user.email ?? 'No email';
+
     return ListTile(
       leading: CircleAvatar(
-        child: Text(user.name[0].toUpperCase()),
+        child: Text(displayName[0].toUpperCase()),
       ),
-      title: Text(user.name),
-      subtitle: Text(user.email),
+      title: Text(displayName),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('User: ${user.user}'),
+          Text('Email: $displayEmail'),
+          Text('Role: ${user.role}'),
+        ],
+      ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
