@@ -5,6 +5,9 @@ import 'package:quantum_parking_flutter/features/user/presentation/bloc/user_blo
 import 'package:quantum_parking_flutter/features/user/presentation/bloc/user_event.dart';
 import 'package:quantum_parking_flutter/features/user/presentation/bloc/user_state.dart';
 import 'package:quantum_parking_flutter/features/user/domain/models/user_model.dart';
+import 'package:quantum_parking_flutter/features/user/presentation/widgets/user_list_tile.dart';
+import 'package:quantum_parking_flutter/features/user/presentation/widgets/delete_user_dialog.dart';
+import 'package:quantum_parking_flutter/features/user/presentation/widgets/empty_users_widget.dart';
 import 'package:quantum_parking_flutter/injection/injection.dart';
 
 @RoutePage()
@@ -61,9 +64,7 @@ class _UserListPageState extends State<UserListPage> {
           }
 
           if (state.users.isEmpty) {
-            return const Center(
-              child: Text('No users found'),
-            );
+            return const EmptyUsersWidget();
           }
 
           return ListView.builder(
@@ -95,77 +96,13 @@ class _UserListPageState extends State<UserListPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Delete User'),
-          content: Text('Are you sure you want to delete ${user.user}?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                context.read<UserBloc>().add(DeleteUser(user.id));
-              },
-              child: const Text('Delete'),
-            ),
-          ],
+        return DeleteUserDialog(
+          user: user,
+          onConfirm: () {
+            context.read<UserBloc>().add(DeleteUser(user.id));
+          },
         );
       },
-    );
-  }
-}
-
-class UserListTile extends StatelessWidget {
-  final UserModel user;
-  final VoidCallback onTap;
-  final Function(bool) onToggleStatus;
-  final VoidCallback onDelete;
-
-  const UserListTile({
-    super.key,
-    required this.user,
-    required this.onTap,
-    required this.onToggleStatus,
-    required this.onDelete,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final displayName = user.name.isNotEmpty || user.lastName.isNotEmpty
-        ? '${user.name} ${user.lastName}'.trim()
-        : user.user;
-    
-    final displayEmail = user.email ?? 'No email';
-
-    return ListTile(
-      leading: CircleAvatar(
-        child: Text(displayName[0].toUpperCase()),
-      ),
-      title: Text(displayName),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('User: ${user.user}'),
-          Text('Email: $displayEmail'),
-          Text('Role: ${user.role}'),
-        ],
-      ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Switch(
-            value: user.isActive,
-            onChanged: onToggleStatus,
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: onDelete,
-          ),
-        ],
-      ),
-      onTap: onTap,
     );
   }
 } 
