@@ -61,6 +61,7 @@ class UserDataModel extends UserModel {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'id': id,

@@ -39,6 +39,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
     }
   }
 
+  @override
   Future<UserDataModel> createUserWithCredentials(String email, String password) async {
     try {
       final response = await _apiClient.dio.post(

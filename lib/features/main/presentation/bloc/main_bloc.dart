@@ -16,7 +16,6 @@ import 'package:logger/logger.dart';
 // Bloc
 class MainBloc extends Bloc<MainEvent, MainState> {
   final VehicleRepository _vehicleRepository;
-  final LocalStorageService _localStorageService;
   final SetupLocalDatasource _setupLocalDatasource;
   final BusinessRemoteDatasource _businessRemoteDatasource;
   final PrinterRepository _printerRepository;
@@ -32,7 +31,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     required VehicleRepository vehicleRepository,
     required PrinterRepository printerRepository,
     required TicketPrinterService ticketPrinterService,
-  }) : _localStorageService = localStorageService,
+  }) : 
        _setupLocalDatasource = setupLocalDatasource,
        _businessRemoteDatasource = businessRemoteDatasource,
        _vehicleRepository = vehicleRepository,

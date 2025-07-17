@@ -24,7 +24,7 @@ class _UserListPageState extends State<UserListPage> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     
     return BlocProvider.value(
       value: getIt<UserBloc>()..add(LoadUsers()),

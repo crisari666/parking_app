@@ -18,7 +18,7 @@ class UserListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     
     final displayName = user.name.isNotEmpty || user.lastName.isNotEmpty
         ? '${user.name} ${user.lastName}'.trim()

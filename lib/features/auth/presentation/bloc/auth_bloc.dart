@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quantum_parking_flutter/features/auth/data/repositories/auth_repository.dart';
 import 'package:quantum_parking_flutter/features/auth/domain/models/user.dart';
-import 'package:quantum_parking_flutter/features/auth/domain/models/login_response.dart';
 import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_event.dart';
 import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_state.dart';
 import 'package:quantum_parking_flutter/features/setup/data/datasources/setup_local_datasource.dart';

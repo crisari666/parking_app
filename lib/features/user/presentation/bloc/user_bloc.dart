@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quantum_parking_flutter/features/user/domain/models/user_model.dart';
 import 'package:quantum_parking_flutter/features/user/domain/repositories/user_repository.dart';
 import 'package:quantum_parking_flutter/features/user/presentation/bloc/user_event.dart';
 import 'package:quantum_parking_flutter/features/user/presentation/bloc/user_state.dart';
