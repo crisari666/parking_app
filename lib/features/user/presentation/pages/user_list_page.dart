@@ -139,8 +139,9 @@ class _UserListPageState extends State<UserListPage> {
                 user: user,
                 isCurrentUser: _currentUserId == user.id,
                 onTap: () {
-                  context.read<UserBloc>().add(SelectUser(user));
-                  // TODO: Navigate to user details page
+                  if (_currentUserId != user.id) {
+                    _showUpdateUserDialog(context, user);
+                  } 
                 },
                 onToggleStatus: (isActive) {
                   context.read<UserBloc>().add(ToggleUserStatus(user.id, isActive));
@@ -182,6 +183,56 @@ class _UserListPageState extends State<UserListPage> {
               password: password,
             ));
           },
+        );
+      },
+    );
+  }
+
+  void _showUpdateUserDialog(BuildContext context, UserModel user) {
+    final emailController = TextEditingController(text: user.email);
+    final passwordController = TextEditingController();
+    final l10n = AppLocalizations.of(context);
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(l10n.edit),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: emailController,
+                decoration: InputDecoration(
+                  labelText: l10n.email,
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: passwordController,
+                decoration: InputDecoration(
+                  labelText: l10n.password,
+                ),
+                obscureText: true,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(l10n.cancel),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                context.read<UserBloc>().add(UpdateUserWithCredentials(
+                  userId: user.id,
+                  email: emailController.text.trim(),
+                  password: passwordController.text,
+                ));
+                Navigator.of(context).pop();
+              },
+              child: Text(l10n.save),
+            ),
+          ],
         );
       },
     );

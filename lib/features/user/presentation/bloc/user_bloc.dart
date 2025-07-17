@@ -22,6 +22,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<ClearSelectedUser>(_onClearSelectedUser);
     on<ToggleUserStatus>(_onToggleUserStatus);
     on<ClearUserMessage>(_onClearUserMessage);
+    on<UpdateUserWithCredentials>(_onUpdateUserWithCredentials);
   }
 
   Future<void> _onLoadUsers(LoadUsers event, Emitter<UserState> emit) async {
@@ -74,6 +75,31 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       await _userRepository.updateUser(updatedUser);
       final updatedUsers = await _userRepository.getUsers();
       
+      emit(state.copyWith(
+        isLoading: false,
+        users: updatedUsers,
+        selectedUser: updatedUser,
+        isUserUpdated: true,
+        message: 'User updated successfully',
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        isLoading: false,
+        error: e.toString(),
+      ));
+    }
+  }
+
+  Future<void> _onUpdateUserWithCredentials(UpdateUserWithCredentials event, Emitter<UserState> emit) async {
+    emit(state.copyWith(isLoading: true, error: null));
+    try {
+      final updatedUser = await _userRepository.updateUserWithCredentials(event.userId, event.email, event.password);
+      final updatedUsers = state.users.map((user) {
+        if (user.id == event.userId) {
+          return updatedUser;
+        }
+        return user;
+      }).toList();
       emit(state.copyWith(
         isLoading: false,
         users: updatedUsers,

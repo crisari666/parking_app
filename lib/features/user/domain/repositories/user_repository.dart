@@ -9,4 +9,5 @@ abstract class UserRepository {
   Future<UserModel?> getUserById(String userId);
   Future<List<UserModel>> getUsersByRole(String role);
   Future<UserModel> toggleUserStatus(String userId, bool enabled);
+  Future<UserModel> updateUserWithCredentials(String userId, String email, String password);
 } 

@@ -51,6 +51,16 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
+  Future<UserModel> updateUserWithCredentials(String userId, String email, String password) async {
+    try {
+      final userDataModel = await _remoteDataSource.updateUserWithCredentials(userId, email, password);
+      return userDataModel.toDomain();
+    } catch (e) {
+      throw Exception('Failed to update user: $e');
+    }
+  }
+
+  @override
   Future<void> deleteUser(String userId) async {
     try {
       await _remoteDataSource.deleteUser(userId);

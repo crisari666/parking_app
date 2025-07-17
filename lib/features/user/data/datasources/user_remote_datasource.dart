@@ -6,6 +6,7 @@ abstract class UserRemoteDataSource {
   Future<UserDataModel> createUser(UserDataModel user);
   Future<UserDataModel> createUserWithCredentials(String email, String password);
   Future<UserDataModel> updateUser(UserDataModel user);
+  Future<UserDataModel> updateUserWithCredentials(String userId, String email, String password);
   Future<void> deleteUser(String userId);
   Future<UserDataModel?> getUserById(String userId);
   Future<UserDataModel> toggleUserStatus(String userId, bool enabled);
@@ -57,6 +58,22 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   Future<UserDataModel> updateUser(UserDataModel user) async {
     try {
       final response = await _apiClient.dio.put('/users/${user.id}', data: user.toJson());
+      return UserDataModel.fromJson(response.data);
+    } catch (e) {
+      throw Exception('Failed to update user: $e');
+    }
+  }
+
+  @override
+  Future<UserDataModel> updateUserWithCredentials(String userId, String email, String password) async {
+    try {
+      final response = await _apiClient.dio.patch(
+        '/users/$userId/update-by-user',
+        data: {
+          'email': email,
+          'password': password,
+        },
+      );
       return UserDataModel.fromJson(response.data);
     } catch (e) {
       throw Exception('Failed to update user: $e');
