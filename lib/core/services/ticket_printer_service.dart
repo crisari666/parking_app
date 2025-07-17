@@ -173,7 +173,7 @@ class TicketPrinterService {
             width: PosTextSize.size1,
           ));
 
-      // Time details
+      // Time details 
       final formattedCheckInDate = checkInTime.formatDate();
       final formattedCheckInTime = checkInTime.formatTime();
       final formattedCheckOutDate = checkOutTime.formatDate();

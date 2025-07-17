@@ -37,6 +37,8 @@ class CheckInVehicleForm extends StatelessWidget {
           const SizedBox(height: 16),
           TextField(
             controller: _textEditingController,
+            keyboardType: TextInputType.visiblePassword,
+            textCapitalization: TextCapitalization.characters,
             decoration: InputDecoration(
               labelText: context.loc.licensePlate,
               border: const OutlineInputBorder(),

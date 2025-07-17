@@ -110,6 +110,8 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
                     Expanded(
                       child: TextField(
                         controller: _plateController,
+                        keyboardType: TextInputType.visiblePassword,
+                        textCapitalization: TextCapitalization.characters,
                         decoration: InputDecoration(
                           labelText: l10n.licensePlate,
                           border: const OutlineInputBorder(),
