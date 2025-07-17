@@ -93,6 +93,28 @@ class TicketPrinterService {
 
       bytes += generator.emptyLines(1);
 
+      // Business resolution
+      if (businessSetup.businessResolution.isNotEmpty) {
+        bytes += generator.text('Resolución: ${businessSetup.businessResolution}',
+            styles: const PosStyles(
+              align: PosAlign.center,
+              height: PosTextSize.size1,
+              width: PosTextSize.size1,
+            ));
+        bytes += generator.emptyLines(1);
+      }
+
+      // Address
+      if (businessSetup.address.isNotEmpty) {
+        bytes += generator.text(businessSetup.address,
+            styles: const PosStyles(
+              align: PosAlign.center,
+              height: PosTextSize.size1,
+              width: PosTextSize.size1,
+            ));
+        bytes += generator.emptyLines(1);
+      }
+
       // Footer
       bytes += _generateFooter(generator);
 
@@ -334,6 +356,28 @@ class TicketPrinterService {
 
       bytes += generator.emptyLines(1);
 
+      // Business resolution
+      if (businessSetup.businessResolution.isNotEmpty) {
+        bytes += generator.text('Resolución: ${businessSetup.businessResolution}',
+            styles: const PosStyles(
+              align: PosAlign.center,
+              height: PosTextSize.size1,
+              width: PosTextSize.size1,
+            ));
+        bytes += generator.emptyLines(1);
+      }
+
+      // Address
+      if (businessSetup.address.isNotEmpty) {
+        bytes += generator.text(businessSetup.address,
+            styles: const PosStyles(
+              align: PosAlign.center,
+              height: PosTextSize.size1,
+              width: PosTextSize.size1,
+            ));
+        bytes += generator.emptyLines(1);
+      }
+
       // Footer
       bytes += _generateFooter(generator);
 
@@ -398,9 +442,9 @@ class TicketPrinterService {
           width: PosTextSize.size2,
         ));
     
-    // Business brand if available
-    if (businessSetup.businessBrand.isNotEmpty) {
-      bytes += generator.text(businessSetup.businessBrand,
+    // Business NIT
+    if (businessSetup.businessNit.isNotEmpty) {
+      bytes += generator.text('NIT: ${businessSetup.businessNit}',
           styles: const PosStyles(
             align: PosAlign.center,
             height: PosTextSize.size1,
