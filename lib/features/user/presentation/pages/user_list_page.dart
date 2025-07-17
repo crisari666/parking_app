@@ -156,7 +156,7 @@ class _UserListPageState extends State<UserListPage> {
       builder: (BuildContext context) {
         return CreateUserDialog(
           onCreateUser: (email, password) {
-            context.read<UserBloc>().add(CreateUser(
+            getIt<UserBloc>().add(CreateUser(
               email: email,
               password: password,
             ));
