@@ -165,5 +165,6 @@
   "failedToGetUsers": "Error al obtener usuarios",
   "failedToGetUsersByRole": "Error al obtener usuarios por rol",
   "cannotDisableOwnAccount": "No puedes deshabilitar tu propia cuenta",
-  "failedToToggleUserStatus": "Error al cambiar el estado del usuario"
+  "failedToToggleUserStatus": "Error al cambiar el estado del usuario",
+  "youAreLoggedInAsWorker": "Estás conectado como trabajador. Puedes ver la configuración pero no puedes modificarla."
 }

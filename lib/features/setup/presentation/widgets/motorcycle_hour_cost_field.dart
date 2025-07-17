@@ -6,17 +6,20 @@ import 'package:quantum_parking_flutter/features/setup/presentation/bloc/setup_e
 class MotorcycleHourCostField extends StatelessWidget {
   final String initialValue;
   final String label;
+  final bool enabled;
 
   const MotorcycleHourCostField({
     super.key,
     required this.initialValue,
     required this.label,
+    this.enabled = true,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       initialValue: initialValue,
+      enabled: enabled,
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
         labelText: label,

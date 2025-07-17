@@ -6,11 +6,13 @@ import 'package:quantum_parking_flutter/features/setup/presentation/bloc/setup_e
 class AddressField extends StatelessWidget {
   final String initialValue;
   final String label;
+  final bool enabled;
 
   const AddressField({
     super.key,
     required this.initialValue,
     required this.label,
+    this.enabled = true,
   });
 
   @override
@@ -18,6 +20,7 @@ class AddressField extends StatelessWidget {
     return TextFormField(
       initialValue: initialValue,
       maxLines: 3,
+      enabled: enabled,
       decoration: InputDecoration(
         labelText: label,
         border: const OutlineInputBorder(),
