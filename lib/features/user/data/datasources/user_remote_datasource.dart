@@ -8,6 +8,7 @@ abstract class UserRemoteDataSource {
   Future<UserDataModel> updateUser(UserDataModel user);
   Future<void> deleteUser(String userId);
   Future<UserDataModel?> getUserById(String userId);
+  Future<UserDataModel> toggleUserStatus(String userId, bool enabled);
 }
 
 class UserRemoteDataSourceImpl implements UserRemoteDataSource {
@@ -78,6 +79,19 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       return UserDataModel.fromJson(response.data);
     } catch (e) {
       throw Exception('Failed to get user: $e');
+    }
+  }
+
+  @override
+  Future<UserDataModel> toggleUserStatus(String userId, bool enabled) async {
+    try {
+      final response = await _apiClient.dio.patch(
+        '/users/$userId/status',
+        data: {'enabled': enabled},
+      );
+      return UserDataModel.fromJson(response.data);
+    } catch (e) {
+      throw Exception('Failed to toggle user status: $e');
     }
   }
 } 

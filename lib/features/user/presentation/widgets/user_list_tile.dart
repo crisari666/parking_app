@@ -7,6 +7,7 @@ class UserListTile extends StatelessWidget {
   final VoidCallback onTap;
   final Function(bool) onToggleStatus;
   final VoidCallback onDelete;
+  final bool isCurrentUser;
 
   const UserListTile({
     super.key,
@@ -14,6 +15,7 @@ class UserListTile extends StatelessWidget {
     required this.onTap,
     required this.onToggleStatus,
     required this.onDelete,
+    this.isCurrentUser = false,
   });
 
   @override
@@ -44,7 +46,7 @@ class UserListTile extends StatelessWidget {
         children: [
           Switch(
             value: user.isActive,
-            onChanged: onToggleStatus,
+            onChanged: isCurrentUser ? null : onToggleStatus,
           ),
         ],
       ),

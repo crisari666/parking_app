@@ -163,5 +163,7 @@
   "inactive": "Inactivo",
   "failedToGetUser": "Error al obtener usuario",
   "failedToGetUsers": "Error al obtener usuarios",
-  "failedToGetUsersByRole": "Error al obtener usuarios por rol"
+  "failedToGetUsersByRole": "Error al obtener usuarios por rol",
+  "cannotDisableOwnAccount": "No puedes deshabilitar tu propia cuenta",
+  "failedToToggleUserStatus": "Error al cambiar el estado del usuario"
 }

@@ -10,6 +10,7 @@ import 'package:quantum_parking_flutter/features/user/presentation/widgets/user_
 import 'package:quantum_parking_flutter/features/user/presentation/widgets/delete_user_dialog.dart';
 import 'package:quantum_parking_flutter/features/user/presentation/widgets/empty_users_widget.dart';
 import 'package:quantum_parking_flutter/features/user/presentation/widgets/create_user_dialog.dart';
+import 'package:quantum_parking_flutter/features/user/domain/services/user_service.dart';
 import 'package:quantum_parking_flutter/injection/injection.dart';
 
 @RoutePage()
@@ -21,6 +22,21 @@ class UserListPage extends StatefulWidget {
 }
 
 class _UserListPageState extends State<UserListPage> {
+  String? _currentUserId;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCurrentUserId();
+  }
+
+  Future<void> _loadCurrentUserId() async {
+    final userService = getIt<UserService>();
+    final currentUserId = await userService.getCurrentUserId();
+    setState(() {
+      _currentUserId = currentUserId;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +105,10 @@ class _UserListPageState extends State<UserListPage> {
               localizedError = l10n.failedToGetUsers;
             } else if (state.error!.contains('Failed to get users by role')) {
               localizedError = l10n.failedToGetUsersByRole;
+            } else if (state.error!.contains('You cannot disable your own account')) {
+              localizedError = l10n.cannotDisableOwnAccount;
+            } else if (state.error!.contains('Failed to toggle user status')) {
+              localizedError = l10n.failedToToggleUserStatus;
             } else {
               localizedError = state.error!;
             }
@@ -117,6 +137,7 @@ class _UserListPageState extends State<UserListPage> {
               final user = state.users[index];
               return UserListTile(
                 user: user,
+                isCurrentUser: _currentUserId == user.id,
                 onTap: () {
                   context.read<UserBloc>().add(SelectUser(user));
                   // TODO: Navigate to user details page

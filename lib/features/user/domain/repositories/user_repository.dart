@@ -8,4 +8,5 @@ abstract class UserRepository {
   Future<void> deleteUser(String userId);
   Future<UserModel?> getUserById(String userId);
   Future<List<UserModel>> getUsersByRole(String role);
+  Future<UserModel> toggleUserStatus(String userId, bool enabled);
 } 

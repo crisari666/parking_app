@@ -149,6 +149,7 @@ Future<void> registerMainDependencies() async {
   // User Bloc
   getIt.registerSingleton<UserBloc>(UserBloc(
     userRepository: getIt(),
+    userService: getIt(),
   ));
 }
 

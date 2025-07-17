@@ -38,4 +38,13 @@ class UserService {
     final role = await getCurrentUserRole();
     return requiredRoles.contains(role);
   }
+
+  Future<String?> getCurrentUserId() async {
+    try {
+      final loginResponse = await _authRepository.getCurrentLoginResponse();
+      return loginResponse?.id;
+    } catch (e) {
+      return null;
+    }
+  }
 } 

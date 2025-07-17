@@ -1,14 +1,18 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quantum_parking_flutter/features/user/domain/repositories/user_repository.dart';
+import 'package:quantum_parking_flutter/features/user/domain/services/user_service.dart';
 import 'package:quantum_parking_flutter/features/user/presentation/bloc/user_event.dart';
 import 'package:quantum_parking_flutter/features/user/presentation/bloc/user_state.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
   final UserRepository _userRepository;
+  final UserService _userService;
 
   UserBloc({
     required UserRepository userRepository,
+    required UserService userService,
   })  : _userRepository = userRepository,
+        _userService = userService,
         super(const UserState()) {
     on<LoadUsers>(_onLoadUsers);
     on<CreateUser>(_onCreateUser);
@@ -119,14 +123,28 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     emit(state.copyWith(isLoading: true, error: null));
     
     try {
-      final userToUpdate = state.users.firstWhere((user) => user.id == event.userId);
-      final updatedUser = userToUpdate.copyWith(
-        isActive: event.isActive,
-        updatedAt: DateTime.now(),
-      );
+      // Get current user ID to prevent self-disabling
+      final currentUserId = await _userService.getCurrentUserId();
       
-      await _userRepository.updateUser(updatedUser);
-      final updatedUsers = await _userRepository.getUsers();
+      // Check if user is trying to disable themselves
+      if (currentUserId == event.userId && !event.isActive) {
+        emit(state.copyWith(
+          isLoading: false,
+          error: 'You cannot disable your own account',
+        ));
+        return;
+      }
+      
+      // Use the new API endpoint to toggle user status
+      final updatedUser = await _userRepository.toggleUserStatus(event.userId, event.isActive);
+      
+      // Update the users list with the new user data
+      final updatedUsers = state.users.map((user) {
+        if (user.id == event.userId) {
+          return updatedUser;
+        }
+        return user;
+      }).toList();
       
       emit(state.copyWith(
         isLoading: false,

@@ -163,5 +163,7 @@
   "inactive": "Inactive",
   "failedToGetUser": "Failed to get user",
   "failedToGetUsers": "Failed to get users",
-  "failedToGetUsersByRole": "Failed to get users by role"
+  "failedToGetUsersByRole": "Failed to get users by role",
+  "cannotDisableOwnAccount": "You cannot disable your own account",
+  "failedToToggleUserStatus": "Failed to toggle user status"
 }

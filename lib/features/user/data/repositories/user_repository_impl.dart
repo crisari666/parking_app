@@ -78,4 +78,14 @@ class UserRepositoryImpl implements UserRepository {
       throw Exception('Failed to get users by role: $e');
     }
   }
+
+  @override
+  Future<UserModel> toggleUserStatus(String userId, bool enabled) async {
+    try {
+      final userDataModel = await _remoteDataSource.toggleUserStatus(userId, enabled);
+      return userDataModel.toDomain();
+    } catch (e) {
+      throw Exception('Failed to toggle user status: $e');
+    }
+  }
 } 
