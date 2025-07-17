@@ -223,7 +223,7 @@ class _UserListPageState extends State<UserListPage> {
             ),
             ElevatedButton(
               onPressed: () {
-                context.read<UserBloc>().add(UpdateUserWithCredentials(
+                getIt<UserBloc>().add(UpdateUserWithCredentials(
                   userId: user.id,
                   email: emailController.text.trim(),
                   password: passwordController.text,
