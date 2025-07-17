@@ -19,6 +19,7 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
   final TextEditingController _paymentValueController = TextEditingController();
   bool _isEditingPayment = false;
   double? _originalPaymentValue;
+  bool _shouldPrintReceipt = false;
 
   @override
   void dispose() {
@@ -250,14 +251,29 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
                         Text(l10n.student),
                       ],
                     ),
+                 // Print receipt checkbox
+                 Row(
+                   children: [
+                     Checkbox(
+                       value: _shouldPrintReceipt,
+                       onChanged: (checked) {
+                         setState(() {
+                           _shouldPrintReceipt = checked ?? false;
+                         });
+                       },
+                     ),
+                     Text(l10n.printCheckOutReceipt),
+                   ],
+                 ),
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
-                      context.read<MainBloc>().add(CheckOutRequested(
-                        plate: _plateController.text,
-                        paymentMethod: state.paymentMethod ?? 'cash',
-                        paymentValue: state.paymentValue,
-                      ));
+                     context.read<MainBloc>().add(CheckOutRequested(
+                       plate: _plateController.text,
+                       paymentMethod: state.paymentMethod ?? 'cash',
+                       paymentValue: state.paymentValue,
+                       shouldPrint: _shouldPrintReceipt,
+                     ));
                     },
                     child: Text(l10n.checkOut),
                   ),

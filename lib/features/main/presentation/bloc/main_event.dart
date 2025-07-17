@@ -81,15 +81,17 @@ class CheckOutRequested extends MainEvent {
   final String plate;
   final String paymentMethod;
   final double? paymentValue;
+  final bool shouldPrint;
 
   const CheckOutRequested({
     required this.plate,
     required this.paymentMethod,
     this.paymentValue,
+    this.shouldPrint = false,
   });
 
   @override
-  List<Object> get props => [plate, paymentMethod];
+  List<Object?> get props => [plate, paymentMethod, shouldPrint];
 }
 
 class PaymentMethodChanged extends MainEvent {

@@ -167,5 +167,6 @@
   "cannotDisableOwnAccount": "No puedes deshabilitar tu propia cuenta",
   "failedToToggleUserStatus": "Error al cambiar el estado del usuario",
   "youAreLoggedInAsWorker": "Estás conectado como trabajador. Puedes ver la configuración pero no puedes modificarla.",
-  "student": "Estudiante"
+  "student": "Estudiante",
+  "printCheckOutReceipt": "Imprimir recibo de salida"
 }

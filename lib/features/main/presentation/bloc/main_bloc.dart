@@ -154,25 +154,24 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
       //VehicleLogResponseModel response = await _vehicleRepository.checkoutVehicle(state.checkOutPlateNumber, state.paymentValue?.toInt() ?? 0);
       
-      // Print check-out receipt after successful check-out
-      // if (state.vehicleLog != null) {
-      //   add(PrintCheckOutReceiptRequested(
-      //     plateNumber: state.checkOutPlateNumber,
-      //     checkInTime: DateTimeService.fromUtc(state.vehicleLog!.entryTime),
-      //     checkOutTime: DateTimeService.now(),
-      //     totalCost: state.paymentValue ?? 0,
-      //     vehicleType: state.vehicleLog!.vehicleType,
-      //     discount: state.discount.isNotEmpty ? double.tryParse(state.discount) : null,
-      //     paymentMethod: state.paymentMethod,
-      //   ));
-      // }
-      
       emit(state.copyWith(
         isCheckout: true,
         message: 'Salida de vehiculo exitosa.', 
         messageType: MessageType.success,
         isLoading: false
       ));
+      // Print check-out receipt after successful check-out if requested
+      if (event.shouldPrint && state.vehicleLog != null) {
+        add(PrintCheckOutReceiptRequested(
+          plateNumber: state.checkOutPlateNumber,
+          checkInTime: DateTimeService.fromUtc(state.vehicleLog!.entryTime),
+          checkOutTime: DateTimeService.now(),
+          totalCost: state. paymentValue ?? 0,
+          vehicleType: state.vehicleLog!.vehicleType,
+          discount: state.discount.isNotEmpty ? double.tryParse(state.discount) : null,
+          paymentMethod: state.paymentMethod,
+        ));
+      }
     } catch (e) {
       emit(MainState.error(message: e.toString(), isCheckout: false));
     }

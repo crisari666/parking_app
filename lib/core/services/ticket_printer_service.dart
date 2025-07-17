@@ -203,11 +203,8 @@ class TicketPrinterService {
             height: PosTextSize.size1,
             width: PosTextSize.size1,
           ));
-
-      bytes += generator.hr();
-
       // Cost breakdown
-      bytes += generator.text('TOTAL A PAGAR:',
+      bytes += generator.text('TOTAL:',
           styles: const PosStyles(
             align: PosAlign.center,
             height: PosTextSize.size1,
@@ -221,14 +218,14 @@ class TicketPrinterService {
             width: PosTextSize.size2,
           ));
 
-      if (discount != null && discount > 0) {
-        bytes += generator.text('Descuento: -\$${discount.toStringAsFixed(2)}',
-            styles: const PosStyles(
-              align: PosAlign.left,
-              height: PosTextSize.size1,
-              width: PosTextSize.size1,
-            ));
-      }
+      // if (discount != null && discount > 0) {
+      //   bytes += generator.text('Descuento: -\$${discount.toStringAsFixed(2)}',
+      //       styles: const PosStyles(
+      //         align: PosAlign.left,
+      //         height: PosTextSize.size1,
+      //         width: PosTextSize.size1,
+      //       ));
+      // }
 
       if (paymentMethod != null) {
         bytes += generator.text('Método: ${paymentMethod.toUpperCase()}',
