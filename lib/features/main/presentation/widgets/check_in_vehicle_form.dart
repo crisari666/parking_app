@@ -47,27 +47,58 @@ class CheckInVehicleForm extends StatelessWidget {
               context.read<MainBloc>().add(PlateNumberChanged(value));
             },
           ),
-          const SizedBox(height: 16), 
-          DropdownButtonFormField<String>(
-            decoration: InputDecoration(
-              labelText: context.loc.vehicleType,
-              border: const OutlineInputBorder(),
+          const SizedBox(height: 16),
+          // Vehicle Type Selection with Radio Buttons
+          Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey.shade400),
+              borderRadius: BorderRadius.circular(4),
             ),
-            items: [
-              DropdownMenuItem(
-                value: 'car',
-                child: Text(context.loc.vehicleTypeCar),
-              ),
-              DropdownMenuItem(
-                value: 'motorcycle',
-                child: Text(context.loc.vehicleTypeMotorcycle),
-              ),
-            ],
-            onChanged: (value) {
-              if (value != null) {
-                context.read<MainBloc>().add(VehicleTypeChanged(value));
-              }
-            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 12, top: 8),
+                  child: Text(
+                    context.loc.vehicleType,
+                    style: TextStyle(
+                      color: Colors.grey.shade700,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+                BlocBuilder<MainBloc, MainState>(
+                  builder: (context, state) {
+                    return Column(
+                      children: [
+                        RadioListTile<String>(
+                          title: Text(context.loc.vehicleTypeCar),
+                          value: 'car',
+                          groupValue: state.vehicleType.isEmpty ? 'car' : state.vehicleType,
+                          onChanged: (value) {
+                            if (value != null) {
+                              context.read<MainBloc>().add(VehicleTypeChanged(value));
+                            }
+                          },
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                        ),
+                        RadioListTile<String>(
+                          title: Text(context.loc.vehicleTypeMotorcycle),
+                          value: 'motorcycle',
+                          groupValue: state.vehicleType.isEmpty ? 'car' : state.vehicleType,
+                          onChanged: (value) {
+                            if (value != null) {
+                              context.read<MainBloc>().add(VehicleTypeChanged(value));
+                            }
+                          },
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 16),
           ElevatedButton(

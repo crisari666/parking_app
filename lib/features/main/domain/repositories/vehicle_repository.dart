@@ -4,8 +4,8 @@ import 'package:quantum_parking_flutter/features/main/data/models/active_vehicle
 import 'package:quantum_parking_flutter/features/main/data/models/vehicle_log_response_model.dart';
 import 'package:quantum_parking_flutter/features/records/data/models/vehicle_log_model.dart';
 import 'package:quantum_parking_flutter/features/records/data/models/daily_closure_model.dart';
-
 import '../../data/models/vehicle_model.dart';
+// Removed: import '../../data/models/check_out_data.dart';
 
 abstract class VehicleRepository {
   Future<VehicleLogResponseModel> checkInVehicle(VehicleModel vehicle);
@@ -18,6 +18,8 @@ abstract class VehicleRepository {
   Future<bool> isVehicleCheckedIn(String plateNumber);
   Future<List<VehicleLogResponseModel>> getVehicleLogs(String plateNumber);
   Future<VehicleLogResponseModel> checkoutVehicle(String plateNumber, int cost);
+  // New method for consolidated checkout data
+  Future<CheckOutData> checkoutVehicleWithData(String plateNumber, int cost, {double? discount, String? paymentMethod});
   // Daily closure methods
   Future<DailyClosureModel> getDailyClosure(DateTime date);
   Future<bool> saveDailyClosure(DailyClosureModel closure);
@@ -162,6 +164,21 @@ class VehicleRepositoryImpl implements VehicleRepository {
   @override
   Future<VehicleLogResponseModel> checkoutVehicle(String plateNumber, int cost) async {
     return await _vehicleLogRemoteDatasource.checkoutVehicle(plateNumber, cost);
+  }
+
+  @override
+  Future<CheckOutData> checkoutVehicleWithData(String plateNumber, int cost, {double? discount, String? paymentMethod}) async {
+    final response = await _vehicleLogRemoteDatasource.checkoutVehicle(plateNumber, cost);
+    // For parking time string, you may want to use a utility, here we use duration in minutes
+    final parkingTimeString = '${response.duration ~/ 60}h ${response.duration % 60}m';
+    final checkOutTime = response.exitTime ?? DateTime.now();
+    return CheckOutData.fromVehicleLogResponse(
+      response,
+      checkOutTime,
+      discount,
+      paymentMethod,
+      parkingTimeString,
+    );
   }
 
   @override

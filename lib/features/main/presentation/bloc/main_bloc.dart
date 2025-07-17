@@ -153,7 +153,13 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         return;
       }
 
-      //VehicleLogResponseModel response = await _vehicleRepository.checkoutVehicle(state.checkOutPlateNumber, state.paymentValue?.toInt() ?? 0);
+      // Use the new consolidated checkout method that returns CheckOutData
+      final checkOutData = await _vehicleRepository.checkoutVehicleWithData(
+        state.checkOutPlateNumber, 
+        state.paymentValue?.toInt() ?? 0,
+        discount: state.discount.isNotEmpty ? double.tryParse(state.discount) : null,
+        paymentMethod: state.paymentMethod,
+      );
       
       emit(state.copyWith(
         isCheckout: true,
@@ -161,16 +167,18 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         messageType: MessageType.success,
         isLoading: false
       ));
+      
       // Print check-out receipt after successful check-out if requested
-      if (event.shouldPrint && state.vehicleLog != null) {
+      // Use the consistent data from the backend response
+      if (event.shouldPrint) {
         add(PrintCheckOutReceiptRequested(
-          plateNumber: state.checkOutPlateNumber,
-          checkInTime: DateTimeService.fromUtc(state.vehicleLog!.entryTime),
-          checkOutTime: DateTimeService.now(),
-          totalCost: state. paymentValue ?? 0,
-          vehicleType: state.vehicleLog!.vehicleType,
-          discount: state.discount.isNotEmpty ? double.tryParse(state.discount) : null,
-          paymentMethod: state.paymentMethod,
+          plateNumber: checkOutData.plateNumber,
+          checkInTime: checkOutData.checkInTime,
+          checkOutTime: checkOutData.checkOutTime,
+          totalCost: checkOutData.finalCost,
+          vehicleType: checkOutData.vehicleType,
+          discount: checkOutData.discount,
+          paymentMethod: checkOutData.paymentMethodDisplay,
         ));
       }
     } catch (e) {

@@ -86,4 +86,91 @@ class VehicleLogResponseModel {
     '__v': v,
     'paymentMethod': paymentMethod?.value,
   };
+}
+
+/// Consolidated data structure for checkout operations
+/// This ensures consistent data for printing and UI display
+class CheckOutData {
+  final String plateNumber;
+  final String vehicleType;
+  final DateTime checkInTime;
+  final DateTime checkOutTime;
+  final int durationMinutes;
+  final double totalCost;
+  final double? discount;
+  final String? paymentMethod;
+  final String parkingTimeString;
+  final VehicleLogResponseModel originalResponse;
+
+  CheckOutData({
+    required this.plateNumber,
+    required this.vehicleType,
+    required this.checkInTime,
+    required this.checkOutTime,
+    required this.durationMinutes,
+    required this.totalCost,
+    this.discount,
+    this.paymentMethod,
+    required this.parkingTimeString,
+    required this.originalResponse,
+  });
+
+  /// Create CheckOutData from VehicleLogResponseModel and additional checkout info
+  factory CheckOutData.fromVehicleLogResponse(
+    VehicleLogResponseModel response,
+    DateTime checkOutTime,
+    double? discount,
+    String? paymentMethod,
+    String parkingTimeString,
+  ) {
+    return CheckOutData(
+      plateNumber: response.vehicleId,
+      vehicleType: response.vehicleType,
+      checkInTime: response.entryTime,
+      checkOutTime: checkOutTime,
+      durationMinutes: response.duration,
+      totalCost: response.cost.toDouble(),
+      discount: discount,
+      paymentMethod: paymentMethod ?? response.paymentMethod?.name,
+      parkingTimeString: parkingTimeString,
+      originalResponse: response,
+    );
+  }
+
+  /// Get the final cost after discount
+  double get finalCost {
+    if (discount != null && discount! > 0) {
+      return totalCost - discount!;
+    }
+    return totalCost;
+  }
+
+  /// Get formatted duration string
+  String get formattedDuration {
+    final hours = durationMinutes ~/ 60;
+    final minutes = durationMinutes % 60;
+    if (hours > 0) {
+      return '${hours}h ${minutes}m';
+    } else {
+      return '${minutes}m';
+    }
+  }
+
+  /// Get payment method display name
+  String get paymentMethodDisplay {
+    switch (paymentMethod?.toLowerCase()) {
+      case 'cash':
+        return 'EFECTIVO';
+      case 'transfer':
+        return 'TRANSFERENCIA';
+      case 'credit':
+        return 'CREDITO';
+      case 'debit':
+        return 'DEBITO';
+      case 'other':
+        return 'OTRO';
+      default:
+        return paymentMethod?.toUpperCase() ?? 'EFECTIVO';
+    }
+  }
 } 
