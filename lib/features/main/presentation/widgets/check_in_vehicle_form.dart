@@ -15,6 +15,7 @@ class CheckInVehicleForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.read<MainBloc>().add(const VehicleTypeChanged('motorcycle'));
     return BlocListener<MainBloc, MainState>(
       listener: (context, state) {
         // Handle check-in success
