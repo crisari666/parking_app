@@ -6,6 +6,7 @@ import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_eve
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/qr_scanner_widget.dart';
+import 'package:quantum_parking_flutter/core/utils/parking_rate_calculator.dart';
 
 class CheckOutVehicleForm extends StatefulWidget {
   const CheckOutVehicleForm({super.key});
@@ -227,22 +228,21 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
                           value: state.isStudentRate,
                           onChanged: (checked) {
                             context.read<MainBloc>().add(StudentRateChanged(checked ?? false));
-                            // Calculate new payment value locally without service call
+                            // Calculate new payment value locally using ParkingRateCalculator
                             if (state.paymentValue != null && state.businessSetup != null) {
                               final isMotorcycle = state.vehicleLog!.vehicleType.toLowerCase().contains('motor');
                               if (isMotorcycle) {
-                                final newRate = (checked ?? false) 
-                                    ? state.businessSetup!.studentMotorcycleHourCost 
+                                final currentRate = state.isStudentRate
+                                    ? state.businessSetup!.studentMotorcycleHourCost
                                     : state.businessSetup!.motorcycleHourCost;
-                                
-                                // Calculate billable hours from current payment value
-                                final currentRate = state.isStudentRate 
-                                    ? state.businessSetup!.studentMotorcycleHourCost 
+                                final newRate = (checked ?? false)
+                                    ? state.businessSetup!.studentMotorcycleHourCost
                                     : state.businessSetup!.motorcycleHourCost;
-                                final billableHours = state.paymentValue! / currentRate;
-                                
-                                // Calculate new payment value
-                                final newPaymentValue = billableHours * newRate;
+                                final newPaymentValue = ParkingRateCalculator.recalculatePaymentValue(
+                                  currentPaymentValue: state.paymentValue!,
+                                  currentRatePerHour: currentRate,
+                                  newRatePerHour: newRate,
+                                );
                                 context.read<MainBloc>().add(CheckOutPaymentValueChanged(newPaymentValue));
                               }
                             }

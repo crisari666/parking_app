@@ -12,6 +12,7 @@ import 'package:quantum_parking_flutter/features/setup/data/datasources/setup_lo
 import 'package:quantum_parking_flutter/core/utils/date_time_service.dart';
 import 'package:quantum_parking_flutter/core/services/ticket_printer_service.dart';
 import 'package:logger/logger.dart';
+import 'package:quantum_parking_flutter/core/utils/parking_rate_calculator.dart';
 
 // Bloc
 class MainBloc extends Bloc<MainEvent, MainState> {
@@ -246,37 +247,18 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         return;
       }
 
-
       final duration = DateTimeService.now().difference(parkingInfo.entryTime);
       final totalMinutes = duration.inMinutes;
-      
-      // Business logic: Minimum charge is 1 hour, with 10 minutes grace period
-      int billableHours;
-      if (totalMinutes <= 70) {
-        // If total time is 70 minutes or less (1 hour + 10 minutes grace), charge 1 hour
-        billableHours = 1;
-      } else {
-        // For times over 70 minutes, calculate additional hours
-        // Subtract the first 70 minutes (1 hour + 10 minutes grace)
-        final remainingMinutes = totalMinutes - 70;
-        // Calculate additional hours needed (rounding up)
-        final additionalHours = (remainingMinutes / 60).ceil();
-        billableHours = 1 + additionalHours;
-      }
-      
-      // Get rate from business setup based on vehicle type and student rate
-      double ratePerHour;
-      if (parkingInfo.vehicleType.toLowerCase().contains('car')) {
-        ratePerHour = setup.carHourCost;
-      } else {
-        // For motorcycles, check if student rate should be applied
-        ratePerHour = state.isStudentRate 
-            ? setup.studentMotorcycleHourCost 
-            : setup.motorcycleHourCost;
-      }
-      
-      final paymentValue = billableHours * ratePerHour;
-      final parkingTime = '${totalMinutes}m';
+
+      // Use ParkingRateCalculator for billable hours and cost
+      final billableHours = ParkingRateCalculator.calculateBillableHours(totalMinutes);
+      final paymentValue = ParkingRateCalculator.calculateParkingCost(
+        totalMinutes: totalMinutes,
+        vehicleType: parkingInfo.vehicleType,
+        businessSetup: setup,
+        isStudentRate: state.isStudentRate,
+      );
+      final parkingTime = ParkingRateCalculator.getParkingTimeString(totalMinutes);
 
       emit(state.copyWith(
         parkingTime: parkingTime,
