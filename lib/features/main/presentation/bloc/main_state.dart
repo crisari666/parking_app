@@ -52,6 +52,7 @@ class MainState extends Equatable {
   final String vehicleType;
   final String checkOutPlateNumber;
   final String discount;
+  final bool isStudentRate;
   final VehicleLogResponseModel? vehicleLog;
   final BusinessSetupModel? businessSetup;
 
@@ -73,6 +74,7 @@ class MainState extends Equatable {
     this.vehicleType = '',
     this.checkOutPlateNumber = '',
     this.discount = '0',
+    this.isStudentRate = false,
     this.vehicleLog,
     this.businessSetup,
   });
@@ -122,6 +124,7 @@ class MainState extends Equatable {
     String? vehicleType,
     String? checkOutPlateNumber,
     String? discount,
+    bool? isStudentRate,
     VehicleLogResponseModel? vehicleLog,
     bool? clearVehicleLog,
     BusinessSetupModel? businessSetup,
@@ -143,6 +146,7 @@ class MainState extends Equatable {
       vehicleType: vehicleType ?? this.vehicleType,
       checkOutPlateNumber: checkOutPlateNumber ?? this.checkOutPlateNumber,
       discount: discount ?? this.discount,
+      isStudentRate: isStudentRate ?? this.isStudentRate,
       vehicleLog: clearVehicleLog == true ? null : vehicleLog ?? this.vehicleLog,
       businessSetup: businessSetup ?? this.businessSetup,
     );
@@ -166,6 +170,7 @@ class MainState extends Equatable {
     vehicleType,
     checkOutPlateNumber,
     discount,
+    isStudentRate,
     vehicleLog,
     businessSetup,
   ];

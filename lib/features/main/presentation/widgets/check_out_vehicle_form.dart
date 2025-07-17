@@ -5,7 +5,6 @@ import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_blo
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_event.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:quantum_parking_flutter/features/main/presentation/widgets/check_out_vehicel_form/payment_method_selector.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/qr_scanner_widget.dart';
 
 class CheckOutVehicleForm extends StatefulWidget {
@@ -61,6 +60,20 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
     setState(() {
       _isEditingPayment = false;
     });
+  }
+
+  String _formatParkingTime(String? parkingTime) {
+    if (parkingTime == null) return '';
+    
+    // Extract minutes from the parking time string (e.g., "45m -> 45)
+    final minutesMatch = RegExp(r'(\d+)m').firstMatch(parkingTime);
+    if (minutesMatch == null) return parkingTime;
+    
+    final totalMinutes = int.parse(minutesMatch.group(1)!);
+    final hours = totalMinutes ~/ 60;
+    final minutes = totalMinutes % 60;
+    
+    return '${hours}h, ${minutes.toString().padLeft(2, '0')}m';
   }
 
   @override
@@ -148,7 +161,7 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
                 ),
                 const SizedBox(height: 16),
                 if (state.parkingTime != null) ...[
-                  Text('${l10n.parkingTime}: ${state.parkingTime}'),
+                  Text('${l10n.parkingTime}: ${_formatParkingTime(state.parkingTime)}'),
                   const SizedBox(height: 16),
                   Row(
                     children: [
@@ -205,8 +218,38 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
                         ),
                     ],
                   ),
-                  const SizedBox(height: 16),
-                  const PaymentMethodSelector(),
+                  // Student Rate Checkbox for motorcycles
+                  if (state.vehicleLog != null && state.vehicleLog!.vehicleType.toLowerCase().contains('motor'))
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: state.isStudentRate,
+                          onChanged: (checked) {
+                            context.read<MainBloc>().add(StudentRateChanged(checked ?? false));
+                            // Calculate new payment value locally without service call
+                            if (state.paymentValue != null && state.businessSetup != null) {
+                              final isMotorcycle = state.vehicleLog!.vehicleType.toLowerCase().contains('motor');
+                              if (isMotorcycle) {
+                                final newRate = (checked ?? false) 
+                                    ? state.businessSetup!.studentMotorcycleHourCost 
+                                    : state.businessSetup!.motorcycleHourCost;
+                                
+                                // Calculate billable hours from current payment value
+                                final currentRate = state.isStudentRate 
+                                    ? state.businessSetup!.studentMotorcycleHourCost 
+                                    : state.businessSetup!.motorcycleHourCost;
+                                final billableHours = state.paymentValue! / currentRate;
+                                
+                                // Calculate new payment value
+                                final newPaymentValue = billableHours * newRate;
+                                context.read<MainBloc>().add(CheckOutPaymentValueChanged(newPaymentValue));
+                              }
+                            }
+                          },
+                        ),
+                        Text(l10n.student),
+                      ],
+                    ),
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {

@@ -133,7 +133,7 @@
   "businessData": "Datos del Negocio",
   "rates": "Tarifas",
   "businessNit": "NIT del Negocio",
-  "businessResolution": "Resolución del Negocio",
+  "businessResolution": "Resolucion del Negocio",
   "address": "Dirección",
   "schedule": "Horario",
   "users": "Usuarios",
@@ -166,5 +166,6 @@
   "failedToGetUsersByRole": "Error al obtener usuarios por rol",
   "cannotDisableOwnAccount": "No puedes deshabilitar tu propia cuenta",
   "failedToToggleUserStatus": "Error al cambiar el estado del usuario",
-  "youAreLoggedInAsWorker": "Estás conectado como trabajador. Puedes ver la configuración pero no puedes modificarla."
+  "youAreLoggedInAsWorker": "Estás conectado como trabajador. Puedes ver la configuración pero no puedes modificarla.",
+  "student": "Estudiante"
 }

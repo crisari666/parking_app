@@ -166,5 +166,6 @@
   "failedToGetUsersByRole": "Failed to get users by role",
   "cannotDisableOwnAccount": "You cannot disable your own account",
   "failedToToggleUserStatus": "Failed to toggle user status",
-  "youAreLoggedInAsWorker": "You are logged in as a worker. You can view the setup but cannot modify it."
+  "youAreLoggedInAsWorker": "You are logged in as a worker. You can view the setup but cannot modify it.",
+  "student": "Student"
 }

@@ -47,7 +47,7 @@ class CheckInVehicleForm extends StatelessWidget {
               context.read<MainBloc>().add(PlateNumberChanged(value));
             },
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 16), 
           DropdownButtonFormField<String>(
             decoration: InputDecoration(
               labelText: context.loc.vehicleType,

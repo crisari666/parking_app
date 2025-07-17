@@ -43,6 +43,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<CheckInRequested>(_checkInRequested);
     on<CheckOutPlateNumberChanged>(_handleCheckOutPlateNumberChanged);
     on<DiscountChanged>(_handleDiscountChanged);
+    on<StudentRateChanged>(_handleStudentRateChanged);
     on<CheckOutRequested>(_checkOutRequested);
     on<VerifySetupRequested>(_verifySetup);
     on<PaymentMethodChanged>(_handlePaymentMethodChanged);
@@ -104,6 +105,10 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
   void _handleDiscountChanged(DiscountChanged event, Emitter<MainState> emit) {
     emit(state.copyWith(discount: event.discount));
+  }
+
+  void _handleStudentRateChanged(StudentRateChanged event, Emitter<MainState> emit) {
+    emit(state.copyWith(isStudentRate: event.isStudentRate));
   }
 
   void _handlePaymentMethodChanged(PaymentMethodChanged event, Emitter<MainState> emit) {
@@ -260,10 +265,16 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         billableHours = 1 + additionalHours;
       }
       
-      // Get rate from business setup based on vehicle type
-      final ratePerHour = parkingInfo.vehicleType.toLowerCase().contains('car') 
-          ? setup.carHourCost 
-          : setup.motorcycleHourCost;
+      // Get rate from business setup based on vehicle type and student rate
+      double ratePerHour;
+      if (parkingInfo.vehicleType.toLowerCase().contains('car')) {
+        ratePerHour = setup.carHourCost;
+      } else {
+        // For motorcycles, check if student rate should be applied
+        ratePerHour = state.isStudentRate 
+            ? setup.studentMotorcycleHourCost 
+            : setup.motorcycleHourCost;
+      }
       
       final paymentValue = billableHours * ratePerHour;
       final parkingTime = '${totalMinutes}m';

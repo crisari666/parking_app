@@ -46,6 +46,15 @@ class DiscountChanged extends MainEvent {
   List<Object> get props => [discount];
 }
 
+class StudentRateChanged extends MainEvent {
+  final bool isStudentRate;
+
+  const StudentRateChanged(this.isStudentRate);
+
+  @override
+  List<Object> get props => [isStudentRate];
+}
+
 class FindVehicleInParkingRequested extends MainEvent {
   final String plateNumber;
 
