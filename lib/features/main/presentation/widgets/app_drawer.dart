@@ -3,6 +3,7 @@ import 'package:quantum_parking_flutter/routes/app_router.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/app_drawer/language_selector.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/app_drawer/users_drawer_option.dart';
+import 'package:quantum_parking_flutter/features/main/presentation/widgets/app_drawer/user_membership_drawer_option.dart';
 import 'package:quantum_parking_flutter/l10n/app_localizations_context.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -29,6 +30,7 @@ class AppDrawer extends StatelessWidget {
           ),
           const LanguageSelector(),
           const UsersDrawerOption(),
+          const UserMembershipDrawerOption(),
           ListTile(
             leading: const Icon(Icons.settings),
             title: Text(l10n.setup),

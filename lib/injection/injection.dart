@@ -27,6 +27,10 @@ import 'package:quantum_parking_flutter/features/user/data/repositories/user_rep
 import 'package:quantum_parking_flutter/features/user/domain/repositories/user_repository.dart';
 import 'package:quantum_parking_flutter/features/user/domain/services/user_service.dart';
 import 'package:quantum_parking_flutter/features/user/presentation/bloc/user_bloc.dart';
+import 'package:quantum_parking_flutter/features/user_membership/data/datasources/user_membership_remote_datasource.dart';
+import 'package:quantum_parking_flutter/features/user_membership/data/repositories/user_membership_repository_impl.dart';
+import 'package:quantum_parking_flutter/features/user_membership/domain/repositories/user_membership_repository.dart';
+import 'package:quantum_parking_flutter/features/user_membership/presentation/bloc/user_membership_bloc.dart';
 import 'injection.config.dart';
 
 final getIt = GetIt.instance;
@@ -150,6 +154,20 @@ Future<void> registerMainDependencies() async {
   getIt.registerSingleton<UserBloc>(UserBloc(
     userRepository: getIt(),
     userService: getIt(),
+  ));
+
+  // User Membership dependencies
+  getIt.registerSingleton<UserMembershipRemoteDataSource>(UserMembershipRemoteDataSourceImpl(
+    getIt(),
+  ));
+
+  getIt.registerSingleton<UserMembershipRepository>(UserMembershipRepositoryImpl(
+    getIt(),
+  ));
+
+  // User Membership Bloc
+  getIt.registerSingleton<UserMembershipBloc>(UserMembershipBloc(
+    userMembershipRepository: getIt(),
   ));
 }
 

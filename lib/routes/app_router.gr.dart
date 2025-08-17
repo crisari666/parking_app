@@ -181,6 +181,25 @@ class UserListRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [UserMembershipPage]
+class UserMembershipRoute extends PageRouteInfo<void> {
+  const UserMembershipRoute({List<PageRouteInfo>? children})
+      : super(
+          UserMembershipRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'UserMembershipRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const UserMembershipPage();
+    },
+  );
+}
+
+/// generated route for
 /// [VehicleLogsPage]
 class VehicleLogsRoute extends PageRouteInfo<VehicleLogsRouteArgs> {
   VehicleLogsRoute({
