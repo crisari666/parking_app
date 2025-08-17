@@ -1,5 +1,6 @@
 import 'package:quantum_parking_flutter/core/network/api_client.dart';
 import 'package:quantum_parking_flutter/features/user_membership/domain/models/user_membership_model.dart';
+import 'package:quantum_parking_flutter/features/user_membership/domain/models/membership_model.dart';
 
 abstract class UserMembershipRemoteDataSource {
   Future<List<UserMembershipModel>> getUserMemberships();
@@ -7,6 +8,7 @@ abstract class UserMembershipRemoteDataSource {
   Future<UserMembershipModel> updateUserMembership(UserMembershipModel membership);
   Future<void> deleteUserMembership(String membershipId);
   Future<UserMembershipModel?> getUserMembershipById(String membershipId);
+  Future<List<MembershipModel>> getActiveMemberships();
 }
 
 class UserMembershipRemoteDataSourceImpl implements UserMembershipRemoteDataSource {
@@ -61,6 +63,17 @@ class UserMembershipRemoteDataSourceImpl implements UserMembershipRemoteDataSour
       return UserMembershipModel.fromJson(response.data['data']);
     } catch (e) {
       throw Exception('Failed to get user membership: $e');
+    }
+  }
+
+  @override
+  Future<List<MembershipModel>> getActiveMemberships() async {
+    try {
+      final response = await _apiClient.dio.get('/membership/active');
+      final List<dynamic> data = response.data;
+      return data.map((json) => MembershipModel.fromJson(json)).toList();
+    } catch (e) {
+      throw Exception('Failed to load active memberships: $e');
     }
   }
 } 

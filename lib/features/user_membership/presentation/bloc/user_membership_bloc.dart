@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quantum_parking_flutter/features/user_membership/data/repositories/user_membership_repository_impl.dart';
-import 'package:quantum_parking_flutter/features/user_membership/domain/models/user_membership_model.dart';import 'package:quantum_parking_flutter/features/user_membership/presentation/bloc/user_membership_event.dart';
+import 'package:quantum_parking_flutter/features/user_membership/domain/models/user_membership_model.dart';
+import 'package:quantum_parking_flutter/features/user_membership/presentation/bloc/user_membership_event.dart';
 import 'package:quantum_parking_flutter/features/user_membership/presentation/bloc/user_membership_state.dart';
 
 class UserMembershipBloc extends Bloc<UserMembershipEvent, UserMembershipState> {

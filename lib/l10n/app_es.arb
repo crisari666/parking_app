@@ -191,5 +191,9 @@
   "failedToUpdateUserMembership": "Error al actualizar membresía de usuario",
   "failedToDeleteUserMembership": "Error al eliminar membresía de usuario",
   "editAction": "editar",
-  "deleteAction": "eliminar"
+  "deleteAction": "eliminar",
+  "value": "Valor",
+  "startDate": "Fecha de Inicio",
+  "endDate": "Fecha de Fin",
+  "vehicleId": "ID del Vehículo"
 }

@@ -191,5 +191,9 @@
   "failedToUpdateUserMembership": "Failed to update user membership",
   "failedToDeleteUserMembership": "Failed to delete user membership",
   "editAction": "edit",
-  "deleteAction": "delete"
+  "deleteAction": "delete",
+  "value": "Value",
+  "startDate": "Start Date",
+  "endDate": "End Date",
+  "vehicleId": "Vehicle ID"
 }
