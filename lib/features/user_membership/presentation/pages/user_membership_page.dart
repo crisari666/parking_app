@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quantum_parking_flutter/features/user_membership/presentation/bloc/user_membership_bloc.dart';
-import 'package:quantum_parking_flutter/features/user_membership/presentation/widgets/user_membership_form.dart';
-import 'package:quantum_parking_flutter/features/user_membership/presentation/widgets/user_membership_list.dart';
+import 'package:quantum_parking_flutter/features/user_membership/presentation/widgets/user_membership_form_tab.dart';
+import 'package:quantum_parking_flutter/features/user_membership/presentation/widgets/user_membership_finder_tab.dart';
 import 'package:quantum_parking_flutter/injection/injection.dart';
 
 @RoutePage()
@@ -15,11 +15,20 @@ class UserMembershipPage extends StatefulWidget {
   State<UserMembershipPage> createState() => _UserMembershipPageState();
 }
 
-class _UserMembershipPageState extends State<UserMembershipPage> {
+class _UserMembershipPageState extends State<UserMembershipPage> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
     //getIt<UserMembershipBloc>().add(LoadUserMemberships());
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
@@ -29,43 +38,34 @@ class _UserMembershipPageState extends State<UserMembershipPage> {
     return BlocProvider.value(
       value: getIt<UserMembershipBloc>(),
       child: Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.userMemberships),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              //context.read<UserMembershipBloc>().add(LoadUserMemberships());
-            },
+        appBar: AppBar(
+          title: Text(l10n.userMemberships),
+          bottom: TabBar(
+            controller: _tabController,
+            tabs: [
+              Tab(text: l10n.createMembership),
+              Tab(text: l10n.findMemberships),
+            ],
           ),
-        ],
-      ),
-      body: Column(
-        children: [
-          // Form section
-          const UserMembershipForm(),
-          
-          // Divider
-          const Divider(height: 1),
-          
-          // List section
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    l10n.existingMemberships,
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                ),
-                const Expanded(child: UserMembershipList()),
-              ],
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              onPressed: () {
+                //context.read<UserMembershipBloc>().add(LoadUserMemberships());
+              },
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
+        body: TabBarView(
+          controller: _tabController,
+          children: const [
+            // First tab: User Membership Form
+            UserMembershipFormTab(),
+            
+            // Second tab: User Membership Finder
+            UserMembershipFinderTab(),
+          ],
+        ),
       ),
     );
   }

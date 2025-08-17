@@ -181,6 +181,7 @@
   "pleaseEnterAName": "Please enter a name",
   "pleaseEnterAPhoneNumber": "Please enter a phone number",
   "createMembership": "Create Membership",
+  "findMemberships": "Find Memberships",
   "userMembershipCreatedSuccessfully": "User membership created successfully",
   "userMembershipsLoadedSuccessfully": "User memberships loaded successfully",
   "userMembershipUpdatedSuccessfully": "User membership updated successfully",
