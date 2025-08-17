@@ -3,11 +3,7 @@ import 'package:quantum_parking_flutter/features/user_membership/domain/models/u
 import 'package:quantum_parking_flutter/features/user_membership/domain/models/membership_model.dart';
 
 abstract class UserMembershipRepository {
-  Future<List<UserMembershipModel>> getUserMemberships();
   Future<UserMembershipModel> createUserMembership(UserMembershipModel membership);
-  Future<UserMembershipModel> updateUserMembership(UserMembershipModel membership);
-  Future<void> deleteUserMembership(String membershipId);
-  Future<UserMembershipModel?> getUserMembershipById(String membershipId);
   Future<List<MembershipModel>> getActiveMemberships();
 } 
 
@@ -16,14 +12,6 @@ class UserMembershipRepositoryImpl implements UserMembershipRepository {
 
   UserMembershipRepositoryImpl(this._remoteDataSource);
 
-  @override
-  Future<List<UserMembershipModel>> getUserMemberships() async {
-    try {
-      return await _remoteDataSource.getUserMemberships();
-    } catch (e) {
-      throw Exception('Failed to get user memberships: $e');
-    }
-  }
 
   @override
   Future<UserMembershipModel> createUserMembership(UserMembershipModel membership) async {
@@ -34,32 +22,7 @@ class UserMembershipRepositoryImpl implements UserMembershipRepository {
     }
   }
 
-  @override
-  Future<UserMembershipModel> updateUserMembership(UserMembershipModel membership) async {
-    try {
-      return await _remoteDataSource.updateUserMembership(membership);
-    } catch (e) {
-      throw Exception('Failed to update user membership: $e');
-    }
-  }
-
-  @override
-  Future<void> deleteUserMembership(String membershipId) async {
-    try {
-      await _remoteDataSource.deleteUserMembership(membershipId);
-    } catch (e) {
-      throw Exception('Failed to delete user membership: $e');
-    }
-  }
-
-  @override
-  Future<UserMembershipModel?> getUserMembershipById(String membershipId) async {
-    try {
-      return await _remoteDataSource.getUserMembershipById(membershipId);
-    } catch (e) {
-      throw Exception('Failed to get user membership: $e');
-    }
-  }
+  
 
   @override
   Future<List<MembershipModel>> getActiveMemberships() async {

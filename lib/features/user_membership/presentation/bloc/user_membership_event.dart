@@ -8,7 +8,8 @@ abstract class UserMembershipEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class LoadUserMemberships extends UserMembershipEvent {}
+
+class LoadActiveMemberships extends UserMembershipEvent {}
 
 class CreateUserMembership extends UserMembershipEvent {
   final String name;
@@ -23,24 +24,6 @@ class CreateUserMembership extends UserMembershipEvent {
 
   @override
   List<Object> get props => [name, email, phoneNumber];
-}
-
-class UpdateUserMembership extends UserMembershipEvent {
-  final UserMembershipModel membership;
-
-  const UpdateUserMembership(this.membership);
-
-  @override
-  List<Object> get props => [membership];
-}
-
-class DeleteUserMembership extends UserMembershipEvent {
-  final String membershipId;
-
-  const DeleteUserMembership(this.membershipId);
-
-  @override
-  List<Object> get props => [membershipId];
 }
 
 class SelectUserMembership extends UserMembershipEvent {

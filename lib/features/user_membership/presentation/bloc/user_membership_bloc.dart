@@ -11,24 +11,22 @@ class UserMembershipBloc extends Bloc<UserMembershipEvent, UserMembershipState> 
     required UserMembershipRepository userMembershipRepository,
   })  : _userMembershipRepository = userMembershipRepository,
         super(const UserMembershipState()) {
-    on<LoadUserMemberships>(_onLoadUserMemberships);
+    on<LoadActiveMemberships>(_onLoadActiveMemberships);
     on<CreateUserMembership>(_onCreateUserMembership);
-    on<UpdateUserMembership>(_onUpdateUserMembership);
-    on<DeleteUserMembership>(_onDeleteUserMembership);
     on<SelectUserMembership>(_onSelectUserMembership);
     on<ClearSelectedUserMembership>(_onClearSelectedUserMembership);
     on<ClearUserMembershipMessage>(_onClearUserMembershipMessage);
   }
 
-  Future<void> _onLoadUserMemberships(LoadUserMemberships event, Emitter<UserMembershipState> emit) async {
+  Future<void> _onLoadActiveMemberships(LoadActiveMemberships event, Emitter<UserMembershipState> emit) async {
     emit(state.copyWith(isLoading: true, error: null));
     
     try {
-      final memberships = await _userMembershipRepository.getUserMemberships();
+      final activeMemberships = await _userMembershipRepository.getActiveMemberships();
       emit(state.copyWith(
         isLoading: false,
-        memberships: memberships,
-        message: 'User memberships loaded successfully', // This will be localized in the UI
+        activeMemberships: activeMemberships,
+        message: 'Active memberships loaded successfully', // This will be localized in the UI
       ));
     } catch (e) {
       emit(state.copyWith(
@@ -49,61 +47,11 @@ class UserMembershipBloc extends Bloc<UserMembershipEvent, UserMembershipState> 
       );
       
       await _userMembershipRepository.createUserMembership(membership);
-      final updatedMemberships = await _userMembershipRepository.getUserMemberships();
       
       emit(state.copyWith(
         isLoading: false,
-        memberships: updatedMemberships,
         isMembershipCreated: true,
         message: 'User membership created successfully', // This will be localized in the UI
-      ));
-    } catch (e) {
-      emit(state.copyWith(
-        isLoading: false,
-        error: e.toString(),
-      ));
-    }
-  }
-
-  Future<void> _onUpdateUserMembership(UpdateUserMembership event, Emitter<UserMembershipState> emit) async {
-    emit(state.copyWith(isLoading: true, error: null));
-    
-    try {
-      final updatedMembership = event.membership.copyWith(
-        updatedAt: DateTime.now(),
-      );
-      
-      await _userMembershipRepository.updateUserMembership(updatedMembership);
-      final updatedMemberships = await _userMembershipRepository.getUserMemberships();
-      
-      emit(state.copyWith(
-        isLoading: false,
-        memberships: updatedMemberships,
-        selectedMembership: updatedMembership,
-        isMembershipUpdated: true,
-        message: 'User membership updated successfully', // This will be localized in the UI
-      ));
-    } catch (e) {
-      emit(state.copyWith(
-        isLoading: false,
-        error: e.toString(),
-      ));
-    }
-  }
-
-  Future<void> _onDeleteUserMembership(DeleteUserMembership event, Emitter<UserMembershipState> emit) async {
-    emit(state.copyWith(isLoading: true, error: null));
-    
-    try {
-      await _userMembershipRepository.deleteUserMembership(event.membershipId);
-      final updatedMemberships = await _userMembershipRepository.getUserMemberships();
-      
-      emit(state.copyWith(
-        isLoading: false,
-        memberships: updatedMemberships,
-        selectedMembership: null,
-        isMembershipDeleted: true,
-        message: 'User membership deleted successfully', // This will be localized in the UI
       ));
     } catch (e) {
       emit(state.copyWith(

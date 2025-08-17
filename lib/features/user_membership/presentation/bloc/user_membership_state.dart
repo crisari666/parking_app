@@ -1,10 +1,13 @@
 import 'package:equatable/equatable.dart';
 import 'package:quantum_parking_flutter/features/user_membership/domain/models/user_membership_model.dart';
+import 'package:quantum_parking_flutter/features/user_membership/domain/models/membership_model.dart';
 
 class UserMembershipState extends Equatable {
   final bool isLoading;
   final List<UserMembershipModel> memberships;
+  final List<MembershipModel> activeMemberships;
   final UserMembershipModel? selectedMembership;
+  final MembershipModel? selectedActiveMembership;
   final String? message;
   final String? error;
   final bool isMembershipCreated;
@@ -14,7 +17,9 @@ class UserMembershipState extends Equatable {
   const UserMembershipState({
     this.isLoading = false,
     this.memberships = const [],
+    this.activeMemberships = const [],
     this.selectedMembership,
+    this.selectedActiveMembership,
     this.message,
     this.error,
     this.isMembershipCreated = false,
@@ -25,7 +30,9 @@ class UserMembershipState extends Equatable {
   UserMembershipState copyWith({
     bool? isLoading,
     List<UserMembershipModel>? memberships,
+    List<MembershipModel>? activeMemberships,
     UserMembershipModel? selectedMembership,
+    MembershipModel? selectedActiveMembership,
     String? message,
     String? error,
     bool? isMembershipCreated,
@@ -35,7 +42,9 @@ class UserMembershipState extends Equatable {
     return UserMembershipState(
       isLoading: isLoading ?? this.isLoading,
       memberships: memberships ?? this.memberships,
+      activeMemberships: activeMemberships ?? this.activeMemberships,
       selectedMembership: selectedMembership ?? this.selectedMembership,
+      selectedActiveMembership: selectedActiveMembership ?? this.selectedActiveMembership,
       message: message ?? this.message,
       error: error ?? this.error,
       isMembershipCreated: isMembershipCreated ?? this.isMembershipCreated,
@@ -48,7 +57,9 @@ class UserMembershipState extends Equatable {
   List<Object?> get props => [
         isLoading,
         memberships,
+        activeMemberships,
         selectedMembership,
+        selectedActiveMembership,
         message,
         error,
         isMembershipCreated,
