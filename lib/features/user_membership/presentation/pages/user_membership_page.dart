@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quantum_parking_flutter/features/user_membership/presentation/bloc/user_membership_bloc.dart';
-import 'package:quantum_parking_flutter/features/user_membership/presentation/bloc/user_membership_event.dart';
 import 'package:quantum_parking_flutter/features/user_membership/presentation/widgets/user_membership_form.dart';
 import 'package:quantum_parking_flutter/features/user_membership/presentation/widgets/user_membership_list.dart';
 import 'package:quantum_parking_flutter/injection/injection.dart';
@@ -19,21 +19,23 @@ class _UserMembershipPageState extends State<UserMembershipPage> {
   @override
   void initState() {
     super.initState();
-    getIt<UserMembershipBloc>().add(LoadUserMemberships());
+    //getIt<UserMembershipBloc>().add(LoadUserMemberships());
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    
     return BlocProvider.value(
       value: getIt<UserMembershipBloc>(),
       child: Scaffold(
       appBar: AppBar(
-        title: const Text('User Memberships'),
+        title: Text(l10n.userMemberships),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
-              context.read<UserMembershipBloc>().add(LoadUserMemberships());
+              //context.read<UserMembershipBloc>().add(LoadUserMemberships());
             },
           ),
         ],
@@ -54,7 +56,7 @@ class _UserMembershipPageState extends State<UserMembershipPage> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    'Existing Memberships',
+                    l10n.existingMemberships,
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),

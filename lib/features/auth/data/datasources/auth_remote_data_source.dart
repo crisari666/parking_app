@@ -6,6 +6,7 @@ abstract class AuthRemoteDataSource {
   Future<LoginResponse> login(String user, String password);
   Future<void> setAuthToken(String token);
   Future<void> loadAuthToken();
+  Future<bool> validateSession();
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -40,4 +41,16 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     await _apiClient.loadAuthToken();
   }
 
+  @override
+  Future<bool> validateSession() async {
+    try {
+      final response = await _apiClient.dio.get('/auth/validate');
+      return response.data['valid'] == true;
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        return false;
+      }
+      throw Exception(e.response?.data['message'] ?? 'Session validation failed');
+    }
+  }
 } 

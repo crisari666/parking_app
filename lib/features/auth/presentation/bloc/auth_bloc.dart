@@ -26,6 +26,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<RegisterRequested>(_onRegisterRequested);
     on<CheckAuthStatus>(_onCheckAuthStatus);
     on<LogoutRequested>(_onLogoutRequested);
+    on<ValidateSession>(_onValidateSession);
   }
 
   void _onEmailChanged(EmailChanged event, Emitter<AuthState> emit) {
@@ -87,6 +88,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(const AuthInitial());
     } catch (e) {
       emit(AuthError(e.toString(), email: _email, password: _password, userRole: _userRole));
+    }
+  }
+
+  Future<void> _onValidateSession(ValidateSession event, Emitter<AuthState> emit) async {
+    try {
+      final isValid = await _authRepository.validateSession();
+      if (!isValid) {
+        // If session is invalid, trigger logout
+        add(LogoutRequested());
+      }
+    } catch (e) {
+      // If validation fails, trigger logout
+      add(LogoutRequested());
     }
   }
 } 

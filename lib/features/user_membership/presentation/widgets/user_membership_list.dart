@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quantum_parking_flutter/features/user_membership/domain/models/user_membership_model.dart';
 import 'package:quantum_parking_flutter/features/user_membership/presentation/bloc/user_membership_bloc.dart';
 import 'package:quantum_parking_flutter/features/user_membership/presentation/bloc/user_membership_event.dart';
@@ -10,6 +11,8 @@ class UserMembershipList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    
     return BlocBuilder<UserMembershipBloc, UserMembershipState>(
       builder: (context, state) {
         if (state.isLoading) {
@@ -17,10 +20,10 @@ class UserMembershipList extends StatelessWidget {
         }
 
         if (state.memberships.isEmpty) {
-          return const Center(
+          return Center(
             child: Text(
-              'No user memberships found',
-              style: TextStyle(fontSize: 16, color: Colors.grey),
+              l10n.noUserMembershipsFound,
+              style: const TextStyle(fontSize: 16, color: Colors.grey),
             ),
           );
         }
@@ -47,6 +50,8 @@ class UserMembershipCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: ListTile(
@@ -68,7 +73,7 @@ class UserMembershipCard extends StatelessWidget {
             Text(membership.phoneNumber),
             if (membership.createdAt != null)
               Text(
-                'Created: ${_formatDate(membership.createdAt!)}',
+                '${l10n.created}: ${_formatDate(membership.createdAt!)}',
                 style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
           ],
@@ -85,23 +90,23 @@ class UserMembershipCard extends StatelessWidget {
             }
           },
           itemBuilder: (context) => [
-            const PopupMenuItem(
+            PopupMenuItem(
               value: 'edit',
               child: Row(
                 children: [
-                  Icon(Icons.edit),
-                  SizedBox(width: 8),
-                  Text('Edit'),
+                  const Icon(Icons.edit),
+                  const SizedBox(width: 8),
+                  Text(l10n.edit),
                 ],
               ),
             ),
-            const PopupMenuItem(
+            PopupMenuItem(
               value: 'delete',
               child: Row(
                 children: [
-                  Icon(Icons.delete, color: Colors.red),
-                  SizedBox(width: 8),
-                  Text('Delete', style: TextStyle(color: Colors.red)),
+                  const Icon(Icons.delete, color: Colors.red),
+                  const SizedBox(width: 8),
+                  Text(l10n.delete, style: const TextStyle(color: Colors.red)),
                 ],
               ),
             ),
@@ -112,15 +117,17 @@ class UserMembershipCard extends StatelessWidget {
   }
 
   void _showDeleteDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Membership'),
-        content: Text('Are you sure you want to delete ${membership.name}?'),
+        title: Text(l10n.deleteMembership),
+        content: Text(l10n.areYouSureYouWantToDeleteMembership(membership.name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           TextButton(
             onPressed: () {
@@ -128,7 +135,7 @@ class UserMembershipCard extends StatelessWidget {
               context.read<UserMembershipBloc>().add(DeleteUserMembership(membership.id!));
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete'),
+            child: Text(l10n.delete),
           ),
         ],
       ),

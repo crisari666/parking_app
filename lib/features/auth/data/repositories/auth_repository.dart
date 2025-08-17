@@ -9,6 +9,7 @@ abstract class AuthRepository {
   Future<LoginResponse?> getCurrentLoginResponse();
   Future<void> logout();
   Future<LoginResponse> login(String email, String password);
+  Future<bool> validateSession();
 }
 
 class AuthRepositoryImpl implements AuthRepository {
@@ -67,5 +68,10 @@ class AuthRepositoryImpl implements AuthRepository {
     await box.put(_loginResponseKey, response);
 
     return response;
+  }
+
+  @override
+  Future<bool> validateSession() async {
+    return await _remoteDataSource.validateSession();
   }
 } 

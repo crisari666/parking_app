@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quantum_parking_flutter/features/user_membership/presentation/bloc/user_membership_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quantum_parking_flutter/features/user_membership/presentation/bloc/user_membership_event.dart';
 import 'package:quantum_parking_flutter/features/user_membership/presentation/bloc/user_membership_state.dart';
 
@@ -44,12 +45,14 @@ class _UserMembershipFormState extends State<UserMembershipForm> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    
     return BlocListener<UserMembershipBloc, UserMembershipState>(
       listener: (context, state) {
         if (state.isMembershipCreated) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.message ?? 'User membership created successfully'),
+              content: Text(state.message ?? l10n.userMembershipCreatedSuccessfully),
               backgroundColor: Colors.green,
             ),
           );
@@ -76,21 +79,21 @@ class _UserMembershipFormState extends State<UserMembershipForm> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  'Create User Membership',
+                  l10n.createUserMembership,
                   style: Theme.of(context).textTheme.headlineSmall,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 24),
                 TextFormField(
                   controller: _nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Full Name',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.person),
+                  decoration: InputDecoration(
+                    labelText: l10n.fullName,
+                    border: const OutlineInputBorder(),
+                    prefixIcon: const Icon(Icons.person),
                   ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Please enter a name';
+                      return l10n.pleaseEnterAName;
                     }
                     return null;
                   },
@@ -98,18 +101,18 @@ class _UserMembershipFormState extends State<UserMembershipForm> {
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.email),
+                  decoration: InputDecoration(
+                    labelText: l10n.email,
+                    border: const OutlineInputBorder(),
+                    prefixIcon: const Icon(Icons.email),
                   ),
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Please enter an email';
+                      return l10n.pleaseEnterAnEmail;
                     }
                     if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                      return 'Please enter a valid email';
+                      return l10n.pleaseEnterAValidEmail;
                     }
                     return null;
                   },
@@ -117,15 +120,15 @@ class _UserMembershipFormState extends State<UserMembershipForm> {
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _phoneController,
-                  decoration: const InputDecoration(
-                    labelText: 'Phone Number',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.phone),
+                  decoration: InputDecoration(
+                    labelText: l10n.phoneNumber,
+                    border: const OutlineInputBorder(),
+                    prefixIcon: const Icon(Icons.phone),
                   ),
                   keyboardType: TextInputType.phone,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Please enter a phone number';
+                      return l10n.pleaseEnterAPhoneNumber;
                     }
                     return null;
                   },
@@ -141,7 +144,7 @@ class _UserMembershipFormState extends State<UserMembershipForm> {
                               width: 20,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : const Text('Create Membership'),
+                          : Text(l10n.createMembership),
                     );
                   },
                 ),

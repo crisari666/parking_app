@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quantum_parking_flutter/features/user_membership/domain/models/user_membership_model.dart';
-import 'package:quantum_parking_flutter/features/user_membership/domain/repositories/user_membership_repository.dart';
-import 'package:quantum_parking_flutter/features/user_membership/presentation/bloc/user_membership_event.dart';
+import 'package:quantum_parking_flutter/features/user_membership/data/repositories/user_membership_repository_impl.dart';
+import 'package:quantum_parking_flutter/features/user_membership/domain/models/user_membership_model.dart';import 'package:quantum_parking_flutter/features/user_membership/presentation/bloc/user_membership_event.dart';
 import 'package:quantum_parking_flutter/features/user_membership/presentation/bloc/user_membership_state.dart';
 
 class UserMembershipBloc extends Bloc<UserMembershipEvent, UserMembershipState> {
@@ -28,7 +27,7 @@ class UserMembershipBloc extends Bloc<UserMembershipEvent, UserMembershipState> 
       emit(state.copyWith(
         isLoading: false,
         memberships: memberships,
-        message: 'User memberships loaded successfully',
+        message: 'User memberships loaded successfully', // This will be localized in the UI
       ));
     } catch (e) {
       emit(state.copyWith(
@@ -55,7 +54,7 @@ class UserMembershipBloc extends Bloc<UserMembershipEvent, UserMembershipState> 
         isLoading: false,
         memberships: updatedMemberships,
         isMembershipCreated: true,
-        message: 'User membership created successfully',
+        message: 'User membership created successfully', // This will be localized in the UI
       ));
     } catch (e) {
       emit(state.copyWith(
@@ -81,7 +80,7 @@ class UserMembershipBloc extends Bloc<UserMembershipEvent, UserMembershipState> 
         memberships: updatedMemberships,
         selectedMembership: updatedMembership,
         isMembershipUpdated: true,
-        message: 'User membership updated successfully',
+        message: 'User membership updated successfully', // This will be localized in the UI
       ));
     } catch (e) {
       emit(state.copyWith(
@@ -103,7 +102,7 @@ class UserMembershipBloc extends Bloc<UserMembershipEvent, UserMembershipState> 
         memberships: updatedMemberships,
         selectedMembership: null,
         isMembershipDeleted: true,
-        message: 'User membership deleted successfully',
+        message: 'User membership deleted successfully', // This will be localized in the UI
       ));
     } catch (e) {
       emit(state.copyWith(

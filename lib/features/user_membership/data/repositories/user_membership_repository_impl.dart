@@ -1,6 +1,13 @@
 import 'package:quantum_parking_flutter/features/user_membership/data/datasources/user_membership_remote_datasource.dart';
 import 'package:quantum_parking_flutter/features/user_membership/domain/models/user_membership_model.dart';
-import 'package:quantum_parking_flutter/features/user_membership/domain/repositories/user_membership_repository.dart';
+
+abstract class UserMembershipRepository {
+  Future<List<UserMembershipModel>> getUserMemberships();
+  Future<UserMembershipModel> createUserMembership(UserMembershipModel membership);
+  Future<UserMembershipModel> updateUserMembership(UserMembershipModel membership);
+  Future<void> deleteUserMembership(String membershipId);
+  Future<UserMembershipModel?> getUserMembershipById(String membershipId);
+} 
 
 class UserMembershipRepositoryImpl implements UserMembershipRepository {
   final UserMembershipRemoteDataSource _remoteDataSource;
