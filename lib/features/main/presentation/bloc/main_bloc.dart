@@ -258,14 +258,15 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       final duration = DateTimeService.now().difference(parkingInfo.entryTime);
       final totalMinutes = duration.inMinutes;
 
-      // Use ParkingRateCalculator for billable hours and cost
-      final billableHours = ParkingRateCalculator.calculateBillableHours(totalMinutes);
-      final paymentValue = ParkingRateCalculator.calculateParkingCost(
-        totalMinutes: totalMinutes,
-        vehicleType: parkingInfo.vehicleType,
-        businessSetup: setup,
-        isStudentRate: state.isStudentRate,
-      );
+      // Calculate payment value - no charge for vehicles with active membership
+      final paymentValue = parkingInfo.hasMembership 
+          ? 0.0  // No charge for vehicles with active membership
+          : ParkingRateCalculator.calculateParkingCost(
+              totalMinutes: totalMinutes,
+              vehicleType: parkingInfo.vehicleType,
+              businessSetup: setup,
+              isStudentRate: state.isStudentRate,
+            );
       final parkingTime = ParkingRateCalculator.getParkingTimeString(totalMinutes);
 
       emit(state.copyWith(

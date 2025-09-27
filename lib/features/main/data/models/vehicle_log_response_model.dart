@@ -37,6 +37,8 @@ class VehicleLogResponseModel {
   final DateTime updatedAt;
   final int v;
   final PaymentMethod? paymentMethod;
+  final bool hasMembership;
+  final String? membershipId;
 
   VehicleLogResponseModel({
     required this.vehicleId,
@@ -51,6 +53,8 @@ class VehicleLogResponseModel {
     required this.updatedAt,
     required this.v,
     this.paymentMethod,
+    required this.hasMembership,
+    this.membershipId,
   });
 
   factory VehicleLogResponseModel.fromJson(Map<String, dynamic> json) {
@@ -69,6 +73,8 @@ class VehicleLogResponseModel {
       paymentMethod: json['paymentMethod'] != null 
           ? PaymentMethod.fromValue(json['paymentMethod'] as int)
           : null,
+      hasMembership: json['hasMembership'] as bool? ?? false,
+      membershipId: json['membershipId'] as String?,
     );
   }
 
@@ -85,6 +91,8 @@ class VehicleLogResponseModel {
     'updatedAt': updatedAt.toIso8601String(),
     '__v': v,
     'paymentMethod': paymentMethod?.value,
+    'hasMembership': hasMembership,
+    'membershipId': membershipId,
   };
 }
 

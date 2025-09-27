@@ -164,6 +164,32 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
                 const SizedBox(height: 16),
                 if (state.parkingTime != null) ...[
                   Text('${l10n.parkingTime}: ${_formatParkingTime(state.parkingTime)}'),
+                  const SizedBox(height: 8),
+                  // Show membership message if vehicle has active membership
+                  if (state.vehicleLog?.hasMembership == true)
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.green.shade50,
+                        border: Border.all(color: Colors.green.shade200),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.check_circle, color: Colors.green.shade600, size: 20),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'El vehículo cuenta con una mensualidad activa - No se aplicará cobro',
+                              style: TextStyle(
+                                color: Colors.green.shade700,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   const SizedBox(height: 16),
                   Row(
                     children: [
@@ -182,13 +208,13 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
                               : null,
                           ),
                           keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                          readOnly: !_isEditingPayment,
+                          readOnly: !_isEditingPayment || state.vehicleLog?.hasMembership == true,
                           style: TextStyle(
                             color: _isEditingPayment ? Colors.black : Colors.grey[600],
                           ),
                         )),
                       ),
-                      if (!_isEditingPayment)
+                      if (!_isEditingPayment && state.vehicleLog?.hasMembership != true)
                         IconButton(
                           onPressed: _startEditingPayment,
                           icon: const Icon(Icons.edit),
@@ -220,8 +246,10 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
                         ),
                     ],
                   ),
-                  // Student Rate Checkbox for motorcycles
-                  if (state.vehicleLog != null && state.vehicleLog!.vehicleType.toLowerCase().contains('motor'))
+                  // Student Rate Checkbox for motorcycles (only show if no membership)
+                  if (state.vehicleLog != null && 
+                      state.vehicleLog!.vehicleType.toLowerCase().contains('motor') &&
+                      state.vehicleLog!.hasMembership != true)
                     Row(
                       children: [
                         Checkbox(

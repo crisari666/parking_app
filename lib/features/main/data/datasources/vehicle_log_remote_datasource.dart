@@ -40,6 +40,9 @@ class VehicleLogRemoteDatasourceImpl implements VehicleLogRemoteDatasource {
         if(e.response?.statusCode == 400 && e.response?.data['message'] == 'Vehicle is already in parking'){
           throw Exception('El Vehiculo ya esta en el parqueadero');
         }
+        if(e.response?.statusCode == 200 && e.response?.data['message'].toLowerCase() == 'Vehicle has active membership - no charge applied'){
+          throw Exception('El vehiculo cuenta con una mensualidad activa');
+        }
       }
       throw Exception('Failed to create vehicle log: $e');
     }
