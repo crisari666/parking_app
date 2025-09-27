@@ -33,7 +33,9 @@ class _UserMembershipFinderTabState extends State<UserMembershipFinderTab> {
       return memberships;
     }
     return memberships.where((membership) {
-      return membership.vehicleId.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+      return membership.vehicleId.plateNumber.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+             membership.vehicleId.userName.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+             membership.vehicleId.vehicleType.toLowerCase().contains(_searchQuery.toLowerCase()) ||
              membership.businessId.toLowerCase().contains(_searchQuery.toLowerCase()) ||
              (membership.value / 100).toString().contains(_searchQuery);
     }).toList();

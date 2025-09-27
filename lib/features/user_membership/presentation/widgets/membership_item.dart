@@ -43,7 +43,21 @@ class MembershipItem extends StatelessWidget {
             if (membership.dateEnd != null)
               Text('${l10n.endDate}: ${_formatDate(membership.dateEnd!)}'),
             Text(
-              '${l10n.vehicleId}: ${membership.vehicleId}',
+              '${l10n.plateNumber}: ${membership.vehicleId.plateNumber}',
+              style: TextStyle(
+                color: Colors.grey[600],
+                fontSize: 12,
+              ),
+            ),
+            Text(
+              '${l10n.userName}: ${membership.vehicleId.userName}',
+              style: TextStyle(
+                color: Colors.grey[600],
+                fontSize: 12,
+              ),
+            ),
+            Text(
+              '${l10n.vehicleType}: ${membership.vehicleId.vehicleType}',
               style: TextStyle(
                 color: Colors.grey[600],
                 fontSize: 12,

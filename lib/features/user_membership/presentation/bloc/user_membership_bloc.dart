@@ -41,9 +41,15 @@ class UserMembershipBloc extends Bloc<UserMembershipEvent, UserMembershipState> 
     
     try {
       final membership = UserMembershipModel(
-        name: event.name,
-        email: event.email,
-        phoneNumber: event.phoneNumber,
+        dateStart: event.dateStart,
+        dateEnd: event.dateEnd,
+        value: event.value,
+        businessId: event.businessId,
+        enable: event.enable,
+        plateNumber: event.plateNumber,
+        userName: event.userName,
+        phone: event.phone,
+        vehicleType: event.vehicleType,
       );
       
       await _userMembershipRepository.createUserMembership(membership);

@@ -22,8 +22,6 @@ class UserMembershipRepositoryImpl implements UserMembershipRepository {
     }
   }
 
-  
-
   @override
   Future<List<MembershipModel>> getActiveMemberships() async {
     try {

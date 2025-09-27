@@ -12,18 +12,40 @@ abstract class UserMembershipEvent extends Equatable {
 class LoadActiveMemberships extends UserMembershipEvent {}
 
 class CreateUserMembership extends UserMembershipEvent {
-  final String name;
-  final String email;
-  final String phoneNumber;
+  final String dateStart;
+  final String dateEnd;
+  final int value;
+  final String businessId;
+  final bool enable;
+  final String plateNumber;
+  final String userName;
+  final String phone;
+  final String vehicleType;
 
   const CreateUserMembership({
-    required this.name,
-    required this.email,
-    required this.phoneNumber,
+    required this.dateStart,
+    required this.dateEnd,
+    required this.value,
+    required this.businessId,
+    required this.enable,
+    required this.plateNumber,
+    required this.userName,
+    required this.phone,
+    required this.vehicleType,
   });
 
   @override
-  List<Object> get props => [name, email, phoneNumber];
+  List<Object> get props => [
+    dateStart,
+    dateEnd,
+    value,
+    businessId,
+    enable,
+    plateNumber,
+    userName,
+    phone,
+    vehicleType,
+  ];
 }
 
 class SelectUserMembership extends UserMembershipEvent {

@@ -64,6 +64,7 @@
   "noRecordsAvailable": "No hay registros disponibles",
   "pastLogsFor": "Registros anteriores de {plateNumber}",
   "plateNumber": "Número de Placa",
+  "userName": "Nombre de Usuario",
   "type": "Tipo",
   "checkIn": "Entrada",
   "duration": "Duración",
@@ -195,5 +196,10 @@
   "value": "Valor",
   "startDate": "Fecha de Inicio",
   "endDate": "Fecha de Fin",
-  "vehicleId": "ID del Vehículo"
+  "vehicleId": "ID del Vehículo",
+  "pleaseSelectStartAndEndDates": "Por favor seleccione fechas de inicio y fin",
+  "pleaseEnterAPlateNumber": "Por favor ingrese un número de placa",
+  "pleaseEnterACost": "Por favor ingrese un costo",
+  "pleaseEnterAValidCost": "Por favor ingrese un costo válido",
+  "enable": "Habilitar"
 }

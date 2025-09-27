@@ -16,8 +16,8 @@ class UserMembershipRemoteDataSourceImpl implements UserMembershipRemoteDataSour
   @override
   Future<UserMembershipModel> createUserMembership(UserMembershipModel membership) async {
     try {
-      final response = await _apiClient.dio.post('/user-memberships', data: membership.toJson());
-      return UserMembershipModel.fromJson(response.data['data']);
+      final response = await _apiClient.dio.post('/membership', data: membership.toJson());
+      return UserMembershipModel.fromJson(response.data);
     } catch (e) {
       throw Exception('Failed to create user membership: $e');
     }

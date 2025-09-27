@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:quantum_parking_flutter/features/user_membership/domain/models/vehicle_model.dart';
 
 class MembershipModel extends Equatable {
   final String? id;
@@ -7,7 +8,7 @@ class MembershipModel extends Equatable {
   final int value;
   final String businessId;
   final bool enable;
-  final String vehicleId;
+  final VehicleModel vehicleId;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -30,7 +31,7 @@ class MembershipModel extends Equatable {
     int? value,
     String? businessId,
     bool? enable,
-    String? vehicleId,
+    VehicleModel? vehicleId,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -55,7 +56,7 @@ class MembershipModel extends Equatable {
       'value': value,
       'businessId': businessId,
       'enable': enable,
-      'vehicleId': vehicleId,
+      'vehicleId': vehicleId.toJson(),
       'createdAt': createdAt?.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
     };
@@ -73,7 +74,7 @@ class MembershipModel extends Equatable {
       value: json['value'] as int,
       businessId: json['businessId'] as String,
       enable: json['enable'] as bool,
-      vehicleId: json['vehicleId'] as String,
+      vehicleId: VehicleModel.fromJson(json['vehicleId'] as Map<String, dynamic>),
       createdAt: json['createdAt'] != null 
           ? DateTime.parse(json['createdAt'] as String)
           : null,

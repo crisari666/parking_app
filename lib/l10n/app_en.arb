@@ -64,6 +64,7 @@
   "noRecordsAvailable": "No records available",
   "pastLogsFor": "Past Logs for {plateNumber}",
   "plateNumber": "Plate Number",
+  "userName": "User Name",
   "type": "Type",
   "checkIn": "Check In",
   "duration": "Duration",
@@ -195,5 +196,10 @@
   "value": "Value",
   "startDate": "Start Date",
   "endDate": "End Date",
-  "vehicleId": "Vehicle ID"
+  "vehicleId": "Vehicle ID",
+  "pleaseSelectStartAndEndDates": "Please select start and end dates",
+  "pleaseEnterAPlateNumber": "Please enter a plate number",
+  "pleaseEnterACost": "Please enter a cost",
+  "pleaseEnterAValidCost": "Please enter a valid cost",
+  "enable": "Enable"
 }
