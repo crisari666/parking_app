@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:quantum_parking_flutter/l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:quantum_parking_flutter/features/records/data/models/daily_closure_model.dart';
 import 'package:quantum_parking_flutter/features/records/data/models/financial_resume_model.dart';

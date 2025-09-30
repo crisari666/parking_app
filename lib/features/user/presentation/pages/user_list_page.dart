@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:quantum_parking_flutter/l10n/app_localizations.dart';
 import 'package:quantum_parking_flutter/features/user/presentation/bloc/user_bloc.dart';
 import 'package:quantum_parking_flutter/features/user/presentation/bloc/user_event.dart';
 import 'package:quantum_parking_flutter/features/user/presentation/bloc/user_state.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:quantum_parking_flutter/l10n/app_localizations.dart';
 
 class CreateUserDialog extends StatefulWidget {
   final Function(String email, String password) onCreateUser;

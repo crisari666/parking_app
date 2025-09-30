@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:quantum_parking_flutter/l10n/app_localizations.dart';
 import 'package:quantum_parking_flutter/features/user_membership/domain/models/membership_model.dart';
 import 'package:quantum_parking_flutter/features/user_membership/presentation/widgets/membership_item.dart';
 

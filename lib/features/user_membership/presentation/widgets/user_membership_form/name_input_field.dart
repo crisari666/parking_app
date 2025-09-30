@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:quantum_parking_flutter/l10n/app_localizations.dart';
 
 class NameInputField extends StatelessWidget {
   final TextEditingController controller;

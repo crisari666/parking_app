@@ -4,7 +4,7 @@ import 'package:quantum_parking_flutter/core/utils/snackbar_service.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_bloc.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_event.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_state.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:quantum_parking_flutter/l10n/app_localizations.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/widgets/qr_scanner_widget.dart';
 import 'package:quantum_parking_flutter/core/utils/parking_rate_calculator.dart';
 

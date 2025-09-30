@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/bloc/setup_bloc.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/bloc/setup_event.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:quantum_parking_flutter/l10n/app_localizations.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/bloc/setup_state.dart';
 
 class SetupSubmitButton extends StatelessWidget {

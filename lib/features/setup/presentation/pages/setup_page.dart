@@ -10,7 +10,7 @@ import 'package:quantum_parking_flutter/features/setup/presentation/bloc/setup_s
 import 'package:quantum_parking_flutter/injection/injection.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/widgets/setup_form.dart';
 import 'package:quantum_parking_flutter/core/utils/custom_scroll_behaviour.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:quantum_parking_flutter/l10n/app_localizations.dart';
 
 @RoutePage()
 class SetupPage extends StatelessWidget {

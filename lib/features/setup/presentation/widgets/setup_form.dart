@@ -19,7 +19,7 @@ import 'package:quantum_parking_flutter/features/setup/presentation/widgets/moto
 import 'package:quantum_parking_flutter/features/setup/presentation/widgets/car_night_cost_field.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/widgets/motorcycle_night_cost_field.dart';
 import 'package:quantum_parking_flutter/features/setup/presentation/widgets/student_motorcycle_hour_cost_field.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:quantum_parking_flutter/l10n/app_localizations.dart';
 import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_state.dart';
 
