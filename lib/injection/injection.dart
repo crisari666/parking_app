@@ -15,6 +15,7 @@ import 'package:quantum_parking_flutter/features/config/domain/services/config_s
 import 'package:quantum_parking_flutter/features/config/presentation/bloc/config_bloc.dart';
 import 'package:quantum_parking_flutter/features/main/data/datasources/local_storage_service.dart';
 import 'package:quantum_parking_flutter/features/main/data/datasources/vehicle_log_remote_datasource.dart';
+import 'package:quantum_parking_flutter/features/records/data/datasources/financial_remote_datasource.dart';
 import 'package:quantum_parking_flutter/features/main/data/repositories/printer_repository.dart';
 import 'package:quantum_parking_flutter/features/main/domain/repositories/vehicle_repository.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_bloc.dart';
@@ -64,6 +65,9 @@ Future<void> registerMainDependencies() async {
   final vehicleLogRemoteDatasource = VehicleLogRemoteDatasourceImpl(apiClient: getIt());
   getIt.registerSingleton<VehicleLogRemoteDatasource>(vehicleLogRemoteDatasource);
 
+  final financialRemoteDatasource = FinancialRemoteDatasourceImpl(apiClient: getIt());
+  getIt.registerSingleton<FinancialRemoteDatasource>(financialRemoteDatasource);
+
   //Repositories
   final authRepository = AuthRepositoryImpl(AuthRemoteDataSourceImpl(apiClient),);
   getIt.registerSingleton<AuthRepository>(authRepository);
@@ -71,6 +75,7 @@ Future<void> registerMainDependencies() async {
   final vehicleRepository = VehicleRepositoryImpl(
     localStorageService: getIt(),
     vehicleLogRemoteDatasource: getIt(),
+    financialRemoteDatasource: getIt(),
   );
   getIt.registerSingleton<VehicleRepository>(vehicleRepository);
 

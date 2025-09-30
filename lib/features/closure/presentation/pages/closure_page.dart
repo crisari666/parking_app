@@ -37,7 +37,7 @@ class _ClosurePageState extends State<ClosurePage> {
     return BlocProvider(
       create: (context) => ClosureBloc(
         vehicleRepository: getIt(),
-      )..add(GenerateDailyClosureRequested()),
+      )..add(GenerateDailyClosureRequested())..add(GetFinancialResumeByDate(selectedDate)),
       child: DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -73,6 +73,7 @@ class _ClosurePageState extends State<ClosurePage> {
                         selectedDate = date;
                       });
                       context.read<ClosureBloc>().add(GetClosureDataByDate(date));
+                      context.read<ClosureBloc>().add(GetFinancialResumeByDate(date));
                     },
                   ),
                   Expanded(
@@ -84,9 +85,17 @@ class _ClosurePageState extends State<ClosurePage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              DailySummaryCard(closure: state.closure!, l10n: l10n),
+                              DailySummaryCard(
+                                closure: state.closure, 
+                                financialResume: state.financialResume,
+                                l10n: l10n
+                              ),
                               const SizedBox(height: 16),
-                              FinancialSummaryCard(closure: state.closure!, l10n: l10n),
+                              FinancialSummaryCard(
+                                closure: state.closure, 
+                                financialResume: state.financialResume,
+                                l10n: l10n
+                              ),
                             ],
                           ),
                         ),
@@ -113,6 +122,7 @@ class _ClosurePageState extends State<ClosurePage> {
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             context.read<ClosureBloc>().add(GenerateDailyClosureRequested());
+            context.read<ClosureBloc>().add(GetFinancialResumeByDate(selectedDate));
           },
           child: const Icon(Icons.refresh),
         ),

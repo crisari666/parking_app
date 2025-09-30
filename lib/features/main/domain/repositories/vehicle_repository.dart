@@ -1,10 +1,12 @@
 import 'package:quantum_parking_flutter/core/utils/date_time_service.dart';
 import 'package:quantum_parking_flutter/features/main/data/datasources/local_storage_service.dart';
 import 'package:quantum_parking_flutter/features/main/data/datasources/vehicle_log_remote_datasource.dart';
+import 'package:quantum_parking_flutter/features/records/data/datasources/financial_remote_datasource.dart';
 import 'package:quantum_parking_flutter/features/main/data/models/active_vehicle_log_model.dart';
 import 'package:quantum_parking_flutter/features/main/data/models/vehicle_log_response_model.dart';
 import 'package:quantum_parking_flutter/features/records/data/models/vehicle_log_model.dart';
 import 'package:quantum_parking_flutter/features/records/data/models/daily_closure_model.dart';
+import 'package:quantum_parking_flutter/features/records/data/models/financial_resume_model.dart';
 import '../../data/models/vehicle_model.dart';
 // Removed: import '../../data/models/check_out_data.dart';
 
@@ -29,13 +31,22 @@ abstract class VehicleRepository {
   Future<VehicleLogResponseModel?> getCurrentParkingDurationAndCost(String plateNumber);
   // New method for getting vehicle logs by date
   Future<List<ActiveVehicleLogModel>> getVehicleLogsByDate(String date);
+  // Financial resume methods
+  Future<FinancialResumeModel> getFinancialResumeByDate(String date);
 } 
 
 class VehicleRepositoryImpl implements VehicleRepository {
   final VehicleLogRemoteDatasource _vehicleLogRemoteDatasource;
   final LocalStorageService _localStorageService;
+  final FinancialRemoteDatasource _financialRemoteDatasource;
 
-  VehicleRepositoryImpl({required LocalStorageService localStorageService, required VehicleLogRemoteDatasource vehicleLogRemoteDatasource}) : _localStorageService = localStorageService, _vehicleLogRemoteDatasource = vehicleLogRemoteDatasource;
+  VehicleRepositoryImpl({
+    required LocalStorageService localStorageService, 
+    required VehicleLogRemoteDatasource vehicleLogRemoteDatasource,
+    required FinancialRemoteDatasource financialRemoteDatasource,
+  }) : _localStorageService = localStorageService, 
+       _vehicleLogRemoteDatasource = vehicleLogRemoteDatasource,
+       _financialRemoteDatasource = financialRemoteDatasource;
 
   @override
   Future<VehicleLogResponseModel> checkInVehicle(VehicleModel vehicle) async {
@@ -185,5 +196,10 @@ class VehicleRepositoryImpl implements VehicleRepository {
   @override
   Future<List<ActiveVehicleLogModel>> getVehicleLogsByDate(String date) async {
     return await _vehicleLogRemoteDatasource.getVehicleLogsByDate(date);
+  }
+
+  @override
+  Future<FinancialResumeModel> getFinancialResumeByDate(String date) async {
+    return await _financialRemoteDatasource.getFinancialResumeByDate(date);
   }
 } 

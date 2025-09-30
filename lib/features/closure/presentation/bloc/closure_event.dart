@@ -29,3 +29,12 @@ class GetClosureDataByDate extends ClosureEvent {
   @override
   List<Object?> get props => [date];
 }
+
+class GetFinancialResumeByDate extends ClosureEvent {
+  final DateTime date;
+
+  const GetFinancialResumeByDate(this.date);
+
+  @override
+  List<Object?> get props => [date];
+}

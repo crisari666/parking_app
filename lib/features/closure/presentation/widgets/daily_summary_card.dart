@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quantum_parking_flutter/features/records/data/models/daily_closure_model.dart';
+import 'package:quantum_parking_flutter/features/records/data/models/financial_resume_model.dart';
 import 'package:intl/intl.dart';
 
 class DailySummaryCard extends StatelessWidget {
-  final DailyClosureModel closure;
+  final DailyClosureModel? closure;
+  final FinancialResumeModel? financialResume;
   final AppLocalizations l10n;
 
   const DailySummaryCard({
     super.key,
-    required this.closure,
+    this.closure,
+    this.financialResume,
     required this.l10n,
   });
 
@@ -49,7 +52,7 @@ class DailySummaryCard extends StatelessWidget {
                   style: const TextStyle(fontWeight: FontWeight.w500),
                 ),
                 Text(
-                  DateFormat('MMM dd, yyyy').format(closure.date),
+                  DateFormat('MMM dd, yyyy').format(financialResume?.date ?? closure?.date ?? DateTime.now()),
                   style: const TextStyle(fontSize: 16),
                 ),
               ],
@@ -64,7 +67,7 @@ class DailySummaryCard extends StatelessWidget {
                   style: const TextStyle(fontWeight: FontWeight.w500),
                 ),
                 Text(
-                  '${closure.vehiclesByType['car'] ?? 0}',
+                  '${financialResume?.vehicleBreakdown.car.count ?? closure?.vehiclesByType['car'] ?? 0}',
                   style: const TextStyle(fontSize: 16),
                 ),
               ],
@@ -79,7 +82,7 @@ class DailySummaryCard extends StatelessWidget {
                   style: const TextStyle(fontWeight: FontWeight.w500),
                 ),
                 Text(
-                  '${closure.vehiclesByType['motorcycle'] ?? 0}',
+                  '${financialResume?.vehicleBreakdown.motorcycle.count ?? closure?.vehiclesByType['motorcycle'] ?? 0}',
                   style: const TextStyle(fontSize: 16),
                 ),
               ],
@@ -94,7 +97,7 @@ class DailySummaryCard extends StatelessWidget {
                   style: const TextStyle(fontWeight: FontWeight.w500),
                 ),
                 Text(
-                  '${closure.totalVehicles}',
+                  '${financialResume?.statistics.totalVehiclesProcessed ?? closure?.totalVehicles ?? 0}',
                   style: const TextStyle(fontSize: 16),
                 ),
               ],

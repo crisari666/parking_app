@@ -17,6 +17,7 @@ class ClosureBloc extends Bloc<ClosureEvent, ClosureState> {
     on<GenerateDailyClosureRequested>(_onGenerateDailyClosure);
     on<LoadDailyClosuresRequested>(_onLoadDailyClosures);
     on<GetClosureDataByDate>(_onGetClosureDataByDate);
+    on<GetFinancialResumeByDate>(_onGetFinancialResumeByDate);
   }
 
   Future<void> _onGenerateDailyClosure(GenerateDailyClosureRequested event, Emitter<ClosureState> emit) async {
@@ -113,6 +114,25 @@ class ClosureBloc extends Bloc<ClosureEvent, ClosureState> {
       emit(state.copyWith(
         status: ClosureStatus.success,
         closure: closure,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        status: ClosureStatus.error,
+        errorMessage: e.toString(),
+      ));
+    }
+  }
+
+  Future<void> _onGetFinancialResumeByDate(GetFinancialResumeByDate event, Emitter<ClosureState> emit) async {
+    emit(state.copyWith(status: ClosureStatus.loading));
+    try {
+      final date = event.date;
+      final formattedDate = date.formatDate(format: 'yyyy-MM-dd');
+      final financialResume = await _vehicleRepository.getFinancialResumeByDate(formattedDate);
+      
+      emit(state.copyWith(
+        status: ClosureStatus.success,
+        financialResume: financialResume,
       ));
     } catch (e) {
       emit(state.copyWith(

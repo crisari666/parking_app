@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 import 'package:quantum_parking_flutter/features/records/data/models/daily_closure_model.dart';
+import 'package:quantum_parking_flutter/features/records/data/models/financial_resume_model.dart';
 
 class FinancialSummaryCard extends StatelessWidget {
-  final DailyClosureModel closure;
+  final DailyClosureModel? closure;
+  final FinancialResumeModel? financialResume;
   final AppLocalizations l10n;
 
   const FinancialSummaryCard({
     super.key,
-    required this.closure,
+    this.closure,
+    this.financialResume,
     required this.l10n,
   });
 
@@ -51,15 +55,15 @@ class FinancialSummaryCard extends StatelessWidget {
               _buildFinancialRow(
                 icon: Icons.payments_outlined,
                 label: l10n.totalSales,
-                value: closure.totalIncome,
+                value: financialResume?.summary.totalPaidByVehicles ?? closure?.totalIncome ?? 0.0,
                 color: Colors.green,
               ),
               const SizedBox(height: 16),
               _buildFinancialRow(
-                icon: Icons.discount_outlined,
-                label: l10n.totalDiscounts,
-                value: 0.00,
-                color: Colors.orange,
+                icon: Icons.card_membership,
+                label: l10n.totalMemberships,
+                value: financialResume?.summary.totalReceivedByMemberships ?? 0.0,
+                color: Colors.blue,
               ),
               const SizedBox(height: 16),
               const Divider(),
@@ -67,7 +71,7 @@ class FinancialSummaryCard extends StatelessWidget {
               _buildFinancialRow(
                 icon: Icons.account_balance_wallet_outlined,
                 label: l10n.netSales,
-                value: closure.totalIncome,
+                value: financialResume?.summary.totalRevenue ?? closure?.totalIncome ?? 0.0,
                 color: theme.primaryColor,
                 isBold: true,
               ),
@@ -85,6 +89,9 @@ class FinancialSummaryCard extends StatelessWidget {
     required Color color,
     bool isBold = false,
   }) {
+    final formatter = NumberFormat('#,##0', 'en_US');
+    final formattedValue = formatter.format(value.round());
+    
     return Row(
       children: [
         Icon(
@@ -103,7 +110,7 @@ class FinancialSummaryCard extends StatelessWidget {
           ),
         ),
         Text(
-          '\$${value.toStringAsFixed(2)}',
+          '\$$formattedValue',
           style: TextStyle(
             fontSize: isBold ? 18 : 16,
             fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
