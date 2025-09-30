@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_state.dart';
+import 'package:quantum_parking_flutter/l10n/app_localizations_context.dart';
 import 'package:quantum_parking_flutter/routes/app_router.dart';
 
 class UserMembershipDrawerOption extends StatelessWidget {
@@ -13,7 +14,7 @@ class UserMembershipDrawerOption extends StatelessWidget {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
         // Check if user has admin or user role
-        final canAccessUserMemberships = state.userRole == 'admin' || state.userRole == 'user';
+        final canAccessUserMemberships = state.userRole == 'admin' || state.userRole == 'worker';
         
         if (!canAccessUserMemberships) {
           return const SizedBox.shrink(); // Don't show the option
@@ -21,7 +22,7 @@ class UserMembershipDrawerOption extends StatelessWidget {
 
         return ListTile(
           leading: const Icon(Icons.card_membership),
-          title: const Text('User Memberships'),
+          title: Text(context.loc.userMemberships),
           onTap: () {
             AutoRouter.of(context).push(const UserMembershipRoute());
             Navigator.pop(context); // Close the drawer

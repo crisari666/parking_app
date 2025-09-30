@@ -173,7 +173,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       if (event.shouldPrint) {
         add(PrintCheckOutReceiptRequested(
           plateNumber: checkOutData.plateNumber,
-          checkInTime: checkOutData.checkInTime,
+        checkInTime: DateTimeService.fromUtc(checkOutData.checkInTime),
           checkOutTime: checkOutData.checkOutTime,
           totalCost: checkOutData.finalCost,
           vehicleType: checkOutData.vehicleType,

@@ -1,3 +1,4 @@
+import 'package:quantum_parking_flutter/core/utils/date_time_service.dart';
 import 'package:quantum_parking_flutter/features/main/data/datasources/local_storage_service.dart';
 import 'package:quantum_parking_flutter/features/main/data/datasources/vehicle_log_remote_datasource.dart';
 import 'package:quantum_parking_flutter/features/main/data/models/active_vehicle_log_model.dart';
@@ -174,7 +175,7 @@ class VehicleRepositoryImpl implements VehicleRepository {
     final checkOutTime = response.exitTime ?? DateTime.now();
     return CheckOutData.fromVehicleLogResponse(
       response,
-      checkOutTime,
+      DateTimeService.fromUtc(checkOutTime),
       discount,
       paymentMethod,
       parkingTimeString,

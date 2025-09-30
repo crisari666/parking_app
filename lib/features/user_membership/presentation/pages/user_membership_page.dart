@@ -43,8 +43,8 @@ class _UserMembershipPageState extends State<UserMembershipPage> with SingleTick
           bottom: TabBar(
             controller: _tabController,
             tabs: [
-              Tab(text: l10n.createMembership),
               Tab(text: l10n.findMemberships),
+              Tab(text: l10n.createMembership),
             ],
           ),
           actions: [
@@ -59,11 +59,8 @@ class _UserMembershipPageState extends State<UserMembershipPage> with SingleTick
         body: TabBarView(
           controller: _tabController,
           children: const [
-            // First tab: User Membership Form
-            UserMembershipFormTab(),
-            
-            // Second tab: User Membership Finder
             UserMembershipFinderTab(),
+            UserMembershipFormTab(),
           ],
         ),
       ),
