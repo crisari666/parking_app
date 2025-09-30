@@ -32,7 +32,7 @@ class MembershipItem extends StatelessWidget {
           ),
         ),
         title: Text(
-          '${l10n.value}: \$${(membership.value / 100).toStringAsFixed(2)}',
+          '${l10n.value}: \$${(membership.value).toStringAsFixed(0)}',
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: Column(
