@@ -1,9 +1,18 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quantum_parking_flutter/features/user_membership/domain/models/vehicle_model.dart';
 import 'package:quantum_parking_flutter/features/user_membership/presentation/bloc/user_membership_bloc.dart';
 import 'package:quantum_parking_flutter/features/user_membership/presentation/bloc/user_membership_event.dart';
-import 'package:quantum_parking_flutter/features/user_membership/presentation/widgets/user_membership_form/user_membership_form.dart';
+import 'package:quantum_parking_flutter/features/user_membership/presentation/bloc/user_membership_state.dart';
+import 'package:quantum_parking_flutter/features/user_membership/presentation/widgets/user_membership_form/name_input_field.dart';
+import 'package:quantum_parking_flutter/features/user_membership/presentation/widgets/user_membership_form/phone_input_field.dart';
+import 'package:quantum_parking_flutter/features/user_membership/presentation/widgets/user_membership_form/plate_number_input_field.dart';
+import 'package:quantum_parking_flutter/features/user_membership/presentation/widgets/user_membership_form/vehicle_type_dropdown.dart';
+import 'package:quantum_parking_flutter/features/user_membership/presentation/widgets/user_membership_form/date_input_field.dart';
+import 'package:quantum_parking_flutter/features/user_membership/presentation/widgets/user_membership_form/cost_input_field.dart';
+import 'package:quantum_parking_flutter/features/user_membership/presentation/widgets/user_membership_form/enable_switch_field.dart';
 
 class UserMembershipFormTab extends StatefulWidget {
   const UserMembershipFormTab({super.key});
@@ -23,9 +32,12 @@ class _UserMembershipFormTabState extends State<UserMembershipFormTab> {
   DateTime? _endDate = DateTime.now().add(const Duration(days: 30));
   String _selectedVehicleType = 'car';
   bool _isEnabled = true;
+  
+  Timer? _debounceTimer;
 
   @override
   void dispose() {
+    _debounceTimer?.cancel();
     _nameController.dispose();
     _phoneController.dispose();
     _plateNumberController.dispose();
@@ -36,71 +48,99 @@ class _UserMembershipFormTabState extends State<UserMembershipFormTab> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.createUserMembership,
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              const SizedBox(height: 24),
-              NameInputField(controller: _nameController),
-              const SizedBox(height: 16),
-              PhoneInputField(controller: _phoneController),
-              const SizedBox(height: 16),
-              PlateNumberInputField(controller: _plateNumberController),
-              const SizedBox(height: 16),
-              VehicleTypeDropdown(
-                value: _selectedVehicleType,
-                onChanged: (value) {
-                  setState(() {
-                    _selectedVehicleType = value!;
-                  });
-                },
-              ),
-              const SizedBox(height: 16),
-              DateInputField(
-                labelText: l10n.startDate,
-                selectedDate: _startDate,
-                onTap: () => _selectDate(context, true),
-                isStartDate: true,
-              ),
-              const SizedBox(height: 16),
-              DateInputField(
-                labelText: l10n.endDate,
-                selectedDate: _endDate,
-                onTap: () => _selectDate(context, false),
-              ),
-              const SizedBox(height: 16),
-              CostInputField(controller: _costController),
-              const SizedBox(height: 16),
-              EnableSwitchField(
-                value: _isEnabled,
-                onChanged: (value) {
-                  setState(() {
-                    _isEnabled = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                height: 48,
-                child: ElevatedButton(
-                  onPressed: _submitForm,
-                  child: Text(l10n.createMembership),
+    return BlocListener<UserMembershipBloc, UserMembershipState>(
+      listener: (context, state) {
+        if (state.foundVehicle != null) {
+          _autocompleteForm(state.foundVehicle!);
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.createUserMembership,
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
-              ),
-            ],
+                const SizedBox(height: 24),
+                PlateNumberInputField(
+                  controller: _plateNumberController,
+                  onChanged: _onPlateNumberChanged,
+                ),
+                const SizedBox(height: 16),
+                NameInputField(controller: _nameController),
+                const SizedBox(height: 16),
+                PhoneInputField(controller: _phoneController),
+                const SizedBox(height: 16),
+                VehicleTypeDropdown(
+                  value: _selectedVehicleType,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedVehicleType = value!;
+                    });
+                  },
+                ),
+                const SizedBox(height: 16),
+                DateInputField(
+                  labelText: l10n.startDate,
+                  selectedDate: _startDate,
+                  onTap: () => _selectDate(context, true),
+                  isStartDate: true,
+                ),
+                const SizedBox(height: 16),
+                DateInputField(
+                  labelText: l10n.endDate,
+                  selectedDate: _endDate,
+                  onTap: () => _selectDate(context, false),
+                ),
+                const SizedBox(height: 16),
+                CostInputField(controller: _costController),
+                const SizedBox(height: 16),
+                EnableSwitchField(
+                  value: _isEnabled,
+                  onChanged: (value) {
+                    setState(() {
+                      _isEnabled = value;
+                    });
+                  },
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: ElevatedButton(
+                    onPressed: _submitForm,
+                    child: Text(l10n.createMembership),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  void _onPlateNumberChanged() {
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () {
+      final plateNumber = _plateNumberController.text.trim();
+      if (plateNumber.isNotEmpty && plateNumber.length >= 5) {
+        context.read<UserMembershipBloc>().add(FindVehicleByPlate(plateNumber));
+      }
+    });
+  }
+
+  void _autocompleteForm(VehicleModel vehicle) {
+    setState(() {
+      _nameController.text = vehicle.userName;
+      _phoneController.text = vehicle.phone;
+      _selectedVehicleType = vehicle.vehicleType;
+    });
   }
 
   Future<void> _selectDate(BuildContext context, bool isStartDate) async {

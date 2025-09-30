@@ -16,6 +16,7 @@ class UserMembershipBloc extends Bloc<UserMembershipEvent, UserMembershipState> 
     on<SelectUserMembership>(_onSelectUserMembership);
     on<ClearSelectedUserMembership>(_onClearSelectedUserMembership);
     on<ClearUserMembershipMessage>(_onClearUserMembershipMessage);
+    on<FindVehicleByPlate>(_onFindVehicleByPlate);
   }
 
   Future<void> _onLoadActiveMemberships(LoadActiveMemberships event, Emitter<UserMembershipState> emit) async {
@@ -83,5 +84,14 @@ class UserMembershipBloc extends Bloc<UserMembershipEvent, UserMembershipState> 
       isMembershipUpdated: false,
       isMembershipDeleted: false,
     ));
+  }
+
+  Future<void> _onFindVehicleByPlate(FindVehicleByPlate event, Emitter<UserMembershipState> emit) async {
+    try {
+      final vehicle = await _userMembershipRepository.getVehicleByPlate(event.plateNumber);
+      emit(state.copyWith(foundVehicle: vehicle));
+    } catch (e) {
+      emit(state.copyWith(foundVehicle: null));
+    }
   }
 } 

@@ -59,4 +59,13 @@ class SelectUserMembership extends UserMembershipEvent {
 
 class ClearSelectedUserMembership extends UserMembershipEvent {}
 
-class ClearUserMembershipMessage extends UserMembershipEvent {} 
+class ClearUserMembershipMessage extends UserMembershipEvent {}
+
+class FindVehicleByPlate extends UserMembershipEvent {
+  final String plateNumber;
+
+  const FindVehicleByPlate(this.plateNumber);
+
+  @override
+  List<Object> get props => [plateNumber];
+} 

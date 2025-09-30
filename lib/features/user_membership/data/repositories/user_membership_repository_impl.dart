@@ -1,10 +1,12 @@
 import 'package:quantum_parking_flutter/features/user_membership/data/datasources/user_membership_remote_datasource.dart';
 import 'package:quantum_parking_flutter/features/user_membership/domain/models/user_membership_model.dart';
 import 'package:quantum_parking_flutter/features/user_membership/domain/models/membership_model.dart';
+import 'package:quantum_parking_flutter/features/user_membership/domain/models/vehicle_model.dart';
 
 abstract class UserMembershipRepository {
   Future<UserMembershipModel> createUserMembership(UserMembershipModel membership);
   Future<List<MembershipModel>> getActiveMemberships();
+  Future<VehicleModel?> getVehicleByPlate(String plateNumber);
 } 
 
 class UserMembershipRepositoryImpl implements UserMembershipRepository {
@@ -28,6 +30,15 @@ class UserMembershipRepositoryImpl implements UserMembershipRepository {
       return await _remoteDataSource.getActiveMemberships();
     } catch (e) {
       throw Exception('Failed to get active memberships: $e');
+    }
+  }
+
+  @override
+  Future<VehicleModel?> getVehicleByPlate(String plateNumber) async {
+    try {
+      return await _remoteDataSource.getVehicleByPlate(plateNumber);
+    } catch (e) {
+      throw Exception('Failed to get vehicle by plate: $e');
     }
   }
 } 

@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:quantum_parking_flutter/features/user_membership/domain/models/user_membership_model.dart';
 import 'package:quantum_parking_flutter/features/user_membership/domain/models/membership_model.dart';
+import 'package:quantum_parking_flutter/features/user_membership/domain/models/vehicle_model.dart';
 
 class UserMembershipState extends Equatable {
   final bool isLoading;
@@ -8,6 +9,7 @@ class UserMembershipState extends Equatable {
   final List<MembershipModel> activeMemberships;
   final UserMembershipModel? selectedMembership;
   final MembershipModel? selectedActiveMembership;
+  final VehicleModel? foundVehicle;
   final String? message;
   final String? error;
   final bool isMembershipCreated;
@@ -20,6 +22,7 @@ class UserMembershipState extends Equatable {
     this.activeMemberships = const [],
     this.selectedMembership,
     this.selectedActiveMembership,
+    this.foundVehicle,
     this.message,
     this.error,
     this.isMembershipCreated = false,
@@ -33,6 +36,7 @@ class UserMembershipState extends Equatable {
     List<MembershipModel>? activeMemberships,
     UserMembershipModel? selectedMembership,
     MembershipModel? selectedActiveMembership,
+    VehicleModel? foundVehicle,
     String? message,
     String? error,
     bool? isMembershipCreated,
@@ -45,6 +49,7 @@ class UserMembershipState extends Equatable {
       activeMemberships: activeMemberships ?? this.activeMemberships,
       selectedMembership: selectedMembership ?? this.selectedMembership,
       selectedActiveMembership: selectedActiveMembership ?? this.selectedActiveMembership,
+      foundVehicle: foundVehicle ?? this.foundVehicle,
       message: message ?? this.message,
       error: error ?? this.error,
       isMembershipCreated: isMembershipCreated ?? this.isMembershipCreated,
@@ -60,6 +65,7 @@ class UserMembershipState extends Equatable {
         activeMemberships,
         selectedMembership,
         selectedActiveMembership,
+        foundVehicle,
         message,
         error,
         isMembershipCreated,
