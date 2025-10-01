@@ -1,0 +1,106 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quantum_parking_flutter/features/auth/data/repositories/auth_repository.dart';
+import 'package:quantum_parking_flutter/features/auth/domain/models/user.dart';
+import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_event.dart';
+import 'package:quantum_parking_flutter/features/auth/presentation/bloc/auth_state.dart';
+import 'package:quantum_parking_flutter/features/setup/data/datasources/setup_local_datasource.dart';
+
+
+// Bloc
+class AuthBloc extends Bloc<AuthEvent, AuthState> {
+  final AuthRepository _authRepository;
+  final SetupLocalDatasource _setupLocalDatasource;
+  String _email = '';
+  String _password = '';
+  String? _userRole;
+
+    AuthBloc({
+    required AuthRepository authRepository,
+    required SetupLocalDatasource setupLocalDatasource,
+  })  : _authRepository = authRepository,
+        _setupLocalDatasource = setupLocalDatasource,
+        super(const AuthInitial()) {
+    on<EmailChanged>(_onEmailChanged);
+    on<PasswordChanged>(_onPasswordChanged);
+    on<LoginRequested>(_onLoginRequested);
+    on<RegisterRequested>(_onRegisterRequested);
+    on<CheckAuthStatus>(_onCheckAuthStatus);
+    on<LogoutRequested>(_onLogoutRequested);
+    on<ValidateSession>(_onValidateSession);
+  }
+
+  void _onEmailChanged(EmailChanged event, Emitter<AuthState> emit) {
+    _email = event.email;
+  }
+
+  void _onPasswordChanged(PasswordChanged event, Emitter<AuthState> emit) {
+    _password = event.password;
+  }
+
+  Future<void> _onLoginRequested(LoginRequested event, Emitter<AuthState> emit) async {
+    emit(AuthLoading(email: _email, password: _password, userRole: _userRole));
+    try {
+      final loginResponse = await _authRepository.login(_email, _password);
+      final user = User(
+        email: loginResponse.email ?? '',
+        password: _password,
+      );
+      await _authRepository.saveUser(user);
+      _userRole = loginResponse.role;
+      emit(AuthSuccess(email: _email, password: _password, userRole: _userRole));
+    } catch (e) {
+      emit(AuthError(e.toString(), email: _email, password: _password, userRole: _userRole));
+    }
+  }
+
+  Future<void> _onRegisterRequested(RegisterRequested event, Emitter<AuthState> emit) async {
+    emit(AuthLoading(email: _email, password: _password, userRole: _userRole));
+    try {
+      final user = User(email: _email, password: _password);
+      await _authRepository.saveUser(user);
+      emit(AuthSuccess(email: _email, password: _password, userRole: _userRole));
+    } catch (e) {
+      emit(AuthError(e.toString(), email: _email, password: _password, userRole: _userRole));
+    }
+  }
+
+  Future<void> _onCheckAuthStatus(CheckAuthStatus event, Emitter<AuthState> emit) async {
+    try {
+      final user = await _authRepository.getCurrentUser();
+      final loginResponse = await _authRepository.getCurrentLoginResponse();
+      
+      if (user != null && loginResponse != null) {
+        _userRole = loginResponse.role;
+        emit(AuthSuccess(email: _email, password: _password, userRole: _userRole));
+      } else {
+        emit(AuthInitial(email: _email, password: _password, userRole: _userRole));
+      }
+    } catch (e) {
+      emit(AuthError(e.toString(), email: _email, password: _password, userRole: _userRole));
+    }
+  }
+
+  Future<void> _onLogoutRequested(LogoutRequested event, Emitter<AuthState> emit) async {
+    try {
+      await _authRepository.logout();
+      await _setupLocalDatasource.clear();
+      _userRole = null;
+      emit(const AuthInitial());
+    } catch (e) {
+      emit(AuthError(e.toString(), email: _email, password: _password, userRole: _userRole));
+    }
+  }
+
+  Future<void> _onValidateSession(ValidateSession event, Emitter<AuthState> emit) async {
+    try {
+      final isValid = await _authRepository.validateSession();
+      if (!isValid) {
+        // If session is invalid, trigger logout
+        add(LogoutRequested());
+      }
+    } catch (e) {
+      // If validation fails, trigger logout
+      add(LogoutRequested());
+    }
+  }
+} 

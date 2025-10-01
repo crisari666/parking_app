@@ -32,6 +32,7 @@ alwaysApply: false
     - Use descriptive and meaningful event names for Bloc.
     - Handle state transitions and side effects in Bloc's mapEventToState.
     - Prefer context.read() or context.watch() for accessing Cubit/Bloc states in widgets.
+    - If the Bloc State have more than 4 attributes dont user sealed clasess
     
     Firebase Integration Guidelines
     - Use Firebase Authentication for user sign-in, sign-up, and password management.
@@ -40,6 +41,9 @@ alwaysApply: false
     - Use Firebase Analytics for tracking user behavior and app performance.
     - Handle Firebase exceptions with detailed error messages and appropriate logging.
     - Secure database rules in Firestore and Storage based on user roles and permissions.
+
+    Localizations
+    - Always use strings for Text widgets using localizacions
     
     Performance Optimization
     - Use const widgets where possible to optimize rebuilds.
@@ -66,7 +70,8 @@ alwaysApply: false
     - Implement @JsonKey(includeFromJson: true, includeToJson: false) for read-only fields.
     
     Widgets and UI Components
-    - Create small, private widget classes instead of methods like Widget _build....
+    - Create small, private widget classes wiht own files instead of methods like Widget _build....
+    - Create small files with the widget inside
     - Implement RefreshIndicator for pull-to-refresh functionality.
     - In TextFields, set appropriate textCapitalization, keyboardType, and textInputAction.
     - Always include an errorBuilder when using Image.network.
