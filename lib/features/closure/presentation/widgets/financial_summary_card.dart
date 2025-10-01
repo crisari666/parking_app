@@ -37,7 +37,7 @@ class FinancialSummaryCard extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.analytics_outlined,
-                    color: theme.primaryColor,
+                    color: theme.colorScheme.primary,
                     size: 24,
                   ),
                   const SizedBox(width: 8),
@@ -46,33 +46,36 @@ class FinancialSummaryCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: theme.primaryColor,
+                      color: theme.colorScheme.onSurface,
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 24),
               _buildFinancialRow(
+                context: context,
                 icon: Icons.payments_outlined,
                 label: l10n.totalSales,
                 value: financialResume?.summary.totalPaidByVehicles ?? closure?.totalIncome ?? 0.0,
-                color: Colors.green,
+                color: theme.colorScheme.primary,
               ),
               const SizedBox(height: 16),
               _buildFinancialRow(
+                context: context,
                 icon: Icons.card_membership,
                 label: l10n.totalMemberships,
                 value: financialResume?.summary.totalReceivedByMemberships ?? 0.0,
-                color: Colors.blue,
+                color: theme.colorScheme.secondary,
               ),
               const SizedBox(height: 16),
               const Divider(),
               const SizedBox(height: 16),
               _buildFinancialRow(
+                context: context,
                 icon: Icons.account_balance_wallet_outlined,
                 label: l10n.netSales,
                 value: financialResume?.summary.totalRevenue ?? closure?.totalIncome ?? 0.0,
-                color: theme.primaryColor,
+                color: theme.colorScheme.primary,
                 isBold: true,
               ),
             ],
@@ -83,12 +86,14 @@ class FinancialSummaryCard extends StatelessWidget {
   }
 
   Widget _buildFinancialRow({
+    required BuildContext context,
     required IconData icon,
     required String label,
     required double value,
     required Color color,
     bool isBold = false,
   }) {
+    final theme = Theme.of(context);
     final formatter = NumberFormat('#,##0', 'en_US');
     final formattedValue = formatter.format(value.round());
     
@@ -105,7 +110,7 @@ class FinancialSummaryCard extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: 16,
-              color: Colors.grey[700],
+              color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
         ),
