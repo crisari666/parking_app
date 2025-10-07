@@ -202,5 +202,15 @@
   "pleaseEnterAPlateNumber": "Por favor ingrese un número de placa",
   "pleaseEnterACost": "Por favor ingrese un costo",
   "pleaseEnterAValidCost": "Por favor ingrese un costo válido",
-  "enable": "Habilitar"
+  "enable": "Habilitar",
+  "about": "Acerca de",
+  "appDescription": "Un sistema de gestión de estacionamiento con almacenamiento local y capacidades de sincronización en la nube.",
+  "versionInformation": "Información de Versión",
+  "appVersion": "Versión de la App",
+  "buildNumber": "Número de Build",
+  "packageName": "Nombre del Paquete",
+  "developerInformation": "Información del Desarrollador",
+  "developedBy": "Desarrollado Por",
+  "developer": "Desarrollador",
+  "copyright": "© 2024 Quantum Devs. Todos los derechos reservados."
 }

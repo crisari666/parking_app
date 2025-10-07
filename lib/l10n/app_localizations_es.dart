@@ -648,4 +648,35 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get enable => 'Habilitar';
+
+  @override
+  String get about => 'Acerca de';
+
+  @override
+  String get appDescription =>
+      'Un sistema de gestión de estacionamiento con almacenamiento local y capacidades de sincronización en la nube.';
+
+  @override
+  String get versionInformation => 'Información de Versión';
+
+  @override
+  String get appVersion => 'Versión de la App';
+
+  @override
+  String get buildNumber => 'Número de Build';
+
+  @override
+  String get packageName => 'Nombre del Paquete';
+
+  @override
+  String get developerInformation => 'Información del Desarrollador';
+
+  @override
+  String get developedBy => 'Desarrollado Por';
+
+  @override
+  String get developer => 'Desarrollador';
+
+  @override
+  String get copyright => '© 2024 Quantum Devs. Todos los derechos reservados.';
 }

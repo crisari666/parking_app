@@ -48,6 +48,14 @@ class AppDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            leading: const Icon(Icons.info),
+            title: Text(l10n.about),
+            onTap: () {
+              AutoRouter.of(context).push(const AboutRoute());
+              Navigator.pop(context); // Close the drawer
+            },
+          ),
+          ListTile(
             leading: const Icon(Icons.logout),
             title: Text(l10n.logout),
             onTap: () {

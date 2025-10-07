@@ -1321,6 +1321,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enable'**
   String get enable;
+
+  /// No description provided for @about.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get about;
+
+  /// No description provided for @appDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'A parking management system with local storage and cloud sync capabilities.'**
+  String get appDescription;
+
+  /// No description provided for @versionInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Version Information'**
+  String get versionInformation;
+
+  /// No description provided for @appVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'App Version'**
+  String get appVersion;
+
+  /// No description provided for @buildNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Build Number'**
+  String get buildNumber;
+
+  /// No description provided for @packageName.
+  ///
+  /// In en, this message translates to:
+  /// **'Package Name'**
+  String get packageName;
+
+  /// No description provided for @developerInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Developer Information'**
+  String get developerInformation;
+
+  /// No description provided for @developedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Developed By'**
+  String get developedBy;
+
+  /// No description provided for @developer.
+  ///
+  /// In en, this message translates to:
+  /// **'Developer'**
+  String get developer;
+
+  /// No description provided for @copyright.
+  ///
+  /// In en, this message translates to:
+  /// **'© 2024 Quantum Devs. All rights reserved.'**
+  String get copyright;
 }
 
 class _AppLocalizationsDelegate

@@ -636,4 +636,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get enable => 'Enable';
+
+  @override
+  String get about => 'About';
+
+  @override
+  String get appDescription =>
+      'A parking management system with local storage and cloud sync capabilities.';
+
+  @override
+  String get versionInformation => 'Version Information';
+
+  @override
+  String get appVersion => 'App Version';
+
+  @override
+  String get buildNumber => 'Build Number';
+
+  @override
+  String get packageName => 'Package Name';
+
+  @override
+  String get developerInformation => 'Developer Information';
+
+  @override
+  String get developedBy => 'Developed By';
+
+  @override
+  String get developer => 'Developer';
+
+  @override
+  String get copyright => '© 2024 Quantum Devs. All rights reserved.';
 }

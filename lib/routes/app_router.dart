@@ -12,6 +12,7 @@ import 'package:quantum_parking_flutter/features/records/presentation/pages/vehi
 import 'package:quantum_parking_flutter/features/setup/presentation/pages/setup_page.dart';
 import 'package:quantum_parking_flutter/features/user/presentation/pages/user_list_page.dart';
 import 'package:quantum_parking_flutter/features/user_membership/presentation/pages/user_membership_page.dart';
+import 'package:quantum_parking_flutter/features/about/presentation/pages/about_page.dart';
 
 part 'app_router.gr.dart';
 
@@ -32,6 +33,7 @@ class AppRouter extends RootStackRouter {
       AutoRoute(page: PrinterSetupRoute.page, path: 'printer-setup'),
       AutoRoute(page: UserListRoute.page, path: 'users'),
       AutoRoute(page: UserMembershipRoute.page, path: 'user-memberships'),
+      AutoRoute(page: AboutRoute.page, path: 'about'),
     ]),
     AutoRoute(page: LogoutRoute.page, path: '/logout'),
   ];
