@@ -1381,6 +1381,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'© 2024 Quantum Devs. All rights reserved.'**
   String get copyright;
+
+  /// No description provided for @scanPlateNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan Plate Number'**
+  String get scanPlateNumber;
+
+  /// No description provided for @tapToCapturePlate.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the button below to capture a plate'**
+  String get tapToCapturePlate;
+
+  /// No description provided for @capturePlate.
+  ///
+  /// In en, this message translates to:
+  /// **'Capture Plate'**
+  String get capturePlate;
+
+  /// No description provided for @processing.
+  ///
+  /// In en, this message translates to:
+  /// **'Processing...'**
+  String get processing;
+
+  /// No description provided for @vehicleDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle Details'**
+  String get vehicleDetails;
 }
 
 class _AppLocalizationsDelegate

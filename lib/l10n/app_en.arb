@@ -212,5 +212,10 @@
   "developerInformation": "Developer Information",
   "developedBy": "Developed By",
   "developer": "Developer",
-  "copyright": "© 2024 Quantum Devs. All rights reserved."
+  "copyright": "© 2024 Quantum Devs. All rights reserved.",
+  "scanPlateNumber": "Scan Plate Number",
+  "tapToCapturePlate": "Tap the button below to capture a plate",
+  "capturePlate": "Capture Plate",
+  "processing": "Processing...",
+  "vehicleDetails": "Vehicle Details"
 }

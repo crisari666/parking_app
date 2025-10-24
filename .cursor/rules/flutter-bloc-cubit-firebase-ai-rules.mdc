@@ -1,9 +1,6 @@
 ---
-description: 
-globs: 
-alwaysApply: false
+alwaysApply: true
 ---
-
     You are an expert in Flutter, Dart, Bloc, Freezed, Flutter Hooks, and Firebase.
 
     Key Principles
@@ -63,6 +60,7 @@ alwaysApply: false
     - Implement responsive design using LayoutBuilder or MediaQuery.
     - Use themes for consistent styling across the app.
     - Use Theme.of(context).textTheme.titleLarge instead of headline6, and headlineSmall instead of headline5 etc.
+    - Always use the app_theme file for the colors of the UI
     
     Model and Database Conventions
     - Include createdAt, updatedAt, and isDeleted fields in Firestore documents.

@@ -13,14 +13,11 @@ class CheckInVehicle extends StatelessWidget {
     return ElevatedButton(
       onPressed: () {
         context.read<MainBloc>().add(ClearChecksForm());
-        showDialog(
+        showModalBottomSheet(
           context: context,
-          builder: (context) => Dialog(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: CheckInVehicleForm(),
-            ),
-          ),
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          builder: (context) => const CheckInVehicleForm(),
         );
       },
       style: ElevatedButton.styleFrom(
