@@ -47,26 +47,20 @@ class _CheckInVehicleFormState extends State<CheckInVehicleForm> {
         }
       },
       child: Container(
-        height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-        ),
+        color: Colors.transparent,
+        //height: MediaQuery.of(context).size.height,
+        // decoration: BoxDecoration(
+        //   color: Theme.of(context).colorScheme.surface,
+        //   borderRadius: const BorderRadius.only(
+        //     topLeft: Radius.circular(20),
+        //     topRight: Radius.circular(20),
+        //   ),
+        // ),
         child: Column(
           children: [
             // Camera section (top part - direct camera)
             Container(
               height: MediaQuery.of(context).size.height * 0.5,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
-                ),
-              ),
               child: Stack(
                 children: [
                   // Camera widget taking full space
@@ -213,12 +207,15 @@ class _CheckInVehicleFormState extends State<CheckInVehicleForm> {
             ),
           ),
           const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () {
-              context.read<MainBloc>().add(CheckInRequested());
-            },
-            child: Text(context.loc.checkIn),
-                    ),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                context.read<MainBloc>().add(CheckInRequested());
+              },
+              child: Text(context.loc.checkIn),
+            ),
+          ),
                   ],
                 ),
               ),

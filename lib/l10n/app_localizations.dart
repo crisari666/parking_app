@@ -1411,6 +1411,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Vehicle Details'**
   String get vehicleDetails;
+
+  /// No description provided for @plateDetected.
+  ///
+  /// In en, this message translates to:
+  /// **'Plate Detected'**
+  String get plateDetected;
 }
 
 class _AppLocalizationsDelegate

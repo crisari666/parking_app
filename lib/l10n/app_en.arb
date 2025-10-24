@@ -217,5 +217,6 @@
   "tapToCapturePlate": "Tap the button below to capture a plate",
   "capturePlate": "Capture Plate",
   "processing": "Processing...",
-  "vehicleDetails": "Vehicle Details"
+  "vehicleDetails": "Vehicle Details",
+  "plateDetected": "Plate Detected"
 }

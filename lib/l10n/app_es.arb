@@ -217,5 +217,6 @@
   "tapToCapturePlate": "Toca el botón de abajo para capturar una placa",
   "capturePlate": "Capturar Placa",
   "processing": "Procesando...",
-  "vehicleDetails": "Detalles del Vehículo"
+  "vehicleDetails": "Detalles del Vehículo",
+  "plateDetected": "Placa Detectada"
 }

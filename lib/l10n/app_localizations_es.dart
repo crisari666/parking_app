@@ -695,4 +695,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get vehicleDetails => 'Detalles del Vehículo';
+
+  @override
+  String get plateDetected => 'Placa Detectada';
 }

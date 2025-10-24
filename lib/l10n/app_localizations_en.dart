@@ -682,4 +682,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get vehicleDetails => 'Vehicle Details';
+
+  @override
+  String get plateDetected => 'Plate Detected';
 }

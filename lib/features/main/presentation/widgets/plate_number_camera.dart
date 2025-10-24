@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:logger/logger.dart';
+import 'plate_detected_notification.dart';
 
 class PlateNumberCamera extends StatefulWidget {
   final Function(String) onPlateRecognized;
@@ -23,7 +26,9 @@ class _PlateNumberCameraState extends State<PlateNumberCamera> {
   bool _isProcessing = false;
   bool _isInitialized = false;
   TextRecognizer? _textRecognizer;
-  DateTime? _lastScanTime;
+  final Logger _logger = Logger();
+  bool _hasPermission = false;
+  bool _showPlateDetected = false;
 
   @override
   void initState() {
@@ -31,8 +36,8 @@ class _PlateNumberCameraState extends State<PlateNumberCamera> {
     if (widget.initialPlate != null && widget.initialPlate!.isNotEmpty) {
       _recognizedPlate = widget.initialPlate!;
     }
-    _initializeCamera();
     _textRecognizer = TextRecognizer();
+    _checkPermissionsAndInitialize();
   }
 
   @override
@@ -42,6 +47,29 @@ class _PlateNumberCameraState extends State<PlateNumberCamera> {
     super.dispose();
   }
 
+  /// Check camera permissions before initializing
+  Future<void> _checkPermissionsAndInitialize() async {
+    try {
+      final status = await Permission.camera.request();
+      if (status.isGranted) {
+        setState(() {
+          _hasPermission = true;
+        });
+        await _initializeCamera();
+      } else {
+        setState(() {
+          _recognizedPlate = 'Camera permission denied. Please enable camera access in settings.';
+        });
+        _logger.e('Camera permission denied');
+      }
+    } catch (e) {
+      setState(() {
+        _recognizedPlate = 'Error checking permissions: $e';
+      });
+      _logger.e('Permission check error: $e');
+    }
+  }
+
   /// Initialize the camera
   Future<void> _initializeCamera() async {
     try {
@@ -49,8 +77,9 @@ class _PlateNumberCameraState extends State<PlateNumberCamera> {
       if (_cameras!.isNotEmpty) {
         _cameraController = CameraController(
           _cameras![0],
-          ResolutionPreset.high,
+          ResolutionPreset.medium, // Reduced resolution to prevent memory issues
           enableAudio: false,
+          imageFormatGroup: ImageFormatGroup.yuv420, // Explicit format
         );
         
         await _cameraController!.initialize();
@@ -60,9 +89,14 @@ class _PlateNumberCameraState extends State<PlateNumberCamera> {
             _isInitialized = true;
           });
           
-          // Start continuous scanning
-          _startContinuousScanning();
+          // Don't start continuous scanning automatically
+          // User will trigger scanning with button press
         }
+      } else {
+        setState(() {
+          _recognizedPlate = 'No cameras available on this device';
+        });
+        _logger.e('No cameras available');
       }
     } catch (e) {
       if (mounted) {
@@ -70,48 +104,57 @@ class _PlateNumberCameraState extends State<PlateNumberCamera> {
           _recognizedPlate = 'Error initializing camera: $e';
         });
       }
+      _logger.e('Camera initialization error: $e');
     }
   }
 
-  /// Start continuous scanning for plate numbers
-  void _startContinuousScanning() {
-    if (_cameraController != null && _cameraController!.value.isInitialized) {
-      _cameraController!.startImageStream(_processCameraImage);
-    }
-  }
 
-  /// Process camera image stream for plate detection
-  Future<void> _processCameraImage(CameraImage image) async {
-    if (_isProcessing || _textRecognizer == null) return;
-    
-    // Throttle scanning to avoid too frequent processing
-    final now = DateTime.now();
-    if (_lastScanTime != null && now.difference(_lastScanTime!).inMilliseconds < 2000) {
+  /// Capture and process a single image for plate recognition
+  Future<void> _captureAndProcessImage() async {
+    if (_cameraController == null || !_cameraController!.value.isInitialized || _isProcessing) {
       return;
     }
-    _lastScanTime = now;
 
     try {
       setState(() {
         _isProcessing = true;
       });
 
-      final InputImage inputImage = _inputImageFromCameraImage(image);
-      final RecognizedText recognizedText = await _textRecognizer!.processImage(inputImage);
+      // Take a picture
+      final XFile imageFile = await _cameraController!.takePicture();
       
-      String rawText = recognizedText.text.toUpperCase();
-      String extractedPlate = _extractLicensePlate(rawText);
+      // Create InputImage from file path (simpler and more reliable)
+      final InputImage inputImage = InputImage.fromFilePath(imageFile.path);
 
-      if (extractedPlate.isNotEmpty && extractedPlate != 'NOT_FOUND') {
-        if (mounted) {
-          setState(() {
-            _recognizedPlate = extractedPlate;
-          });
-          widget.onPlateRecognized(extractedPlate);
+      if (_textRecognizer != null) {
+        final RecognizedText recognizedText = await _textRecognizer!.processImage(inputImage);
+        
+        String rawText = recognizedText.text.toUpperCase();
+        String extractedPlate = _extractLicensePlate(rawText);
+
+        if (extractedPlate.isNotEmpty && extractedPlate != 'NOT_FOUND') {
+          if (mounted) {
+            setState(() {
+              _recognizedPlate = extractedPlate;
+              _showPlateDetected = true;
+            });
+            widget.onPlateRecognized(extractedPlate);
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              _recognizedPlate = 'No plate detected. Try again.';
+            });
+          }
         }
       }
     } catch (e) {
-      // Silent error handling for continuous scanning
+      _logger.e('Error capturing and processing image: $e');
+      if (mounted) {
+        setState(() {
+          _recognizedPlate = 'Error processing image: $e';
+        });
+      }
     } finally {
       if (mounted) {
         setState(() {
@@ -121,38 +164,35 @@ class _PlateNumberCameraState extends State<PlateNumberCamera> {
     }
   }
 
-  /// Convert CameraImage to InputImage
-  InputImage _inputImageFromCameraImage(CameraImage image) {
-    final camera = _cameras![0];
-    final rotation = InputImageRotationValue.fromRawValue(camera.sensorOrientation);
-    final format = InputImageFormatValue.fromRawValue(image.format.raw);
-    final plane = image.planes.first;
-    
-    return InputImage.fromBytes(
-      bytes: plane.bytes,
-      metadata: InputImageMetadata(
-        size: Size(image.width.toDouble(), image.height.toDouble()),
-        rotation: rotation ?? InputImageRotation.rotation0deg,
-        format: format ?? InputImageFormat.nv21,
-        bytesPerRow: plane.bytesPerRow,
-      ),
-    );
-  }
+
 
 
   /// Simple heuristic/regex to filter recognized text for a common plate pattern.
   String _extractLicensePlate(String rawText) {
-    // Regex for many common plate formats (e.g., AAA-111, 1AA-1111, A1A-111).
-    final RegExp plateRegex = RegExp(r'[A-Z0-9]{2,4}[ -]?[A-Z0-9]{3,4}', caseSensitive: false);
-    
     // Clean up the text by removing newlines and non-plate-related symbols
     String cleanText = rawText.replaceAll(RegExp(r'[^\w\s\-]'), '').trim();
+    
+    // Multiple regex patterns for different plate formats
+    final List<RegExp> platePatterns = [
+      // Standard format: ABC-1234, ABC1234
+      RegExp(r'[A-Z]{3}[ -]?[0-9]{4}', caseSensitive: false),
+      // Format with letters and numbers mixed: A1B-2345
+      RegExp(r'[A-Z0-9]{2,4}[ -]?[A-Z0-9]{3,4}', caseSensitive: false),
+      // Short format: AB-123
+      RegExp(r'[A-Z]{2}[ -]?[0-9]{3}', caseSensitive: false),
+      // Long format: ABC-12345
+      RegExp(r'[A-Z]{3}[ -]?[0-9]{5}', caseSensitive: false),
+    ];
 
-    final matches = plateRegex.allMatches(cleanText);
-
-    if (matches.isNotEmpty) {
-      // Return the first match found, removing any spaces or dashes for a clean result
-      return matches.first.group(0)?.replaceAll(RegExp(r'[ -]'), '') ?? 'NOT_FOUND';
+    for (final pattern in platePatterns) {
+      final matches = pattern.allMatches(cleanText);
+      if (matches.isNotEmpty) {
+        String plate = matches.first.group(0)?.replaceAll(RegExp(r'[ -]'), '') ?? '';
+        // Validate plate length (typically 5-8 characters)
+        if (plate.length >= 5 && plate.length <= 8) {
+          return plate;
+        }
+      }
     }
 
     return '';
@@ -161,13 +201,13 @@ class _PlateNumberCameraState extends State<PlateNumberCamera> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey[100],
+      decoration: const BoxDecoration(
+        color: Colors.transparent,
       ),
       child: Stack(
         children: [
           // Live camera preview
-          if (_isInitialized && _cameraController != null)
+          if (_isInitialized && _cameraController != null && _hasPermission)
             Positioned.fill(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
@@ -185,32 +225,75 @@ class _PlateNumberCameraState extends State<PlateNumberCamera> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      if (_recognizedPlate.contains('Error'))
+                      if (_recognizedPlate.contains('Error') || _recognizedPlate.contains('permission'))
                         Icon(
                           Icons.error_outline,
                           size: 60,
                           color: Colors.red[400],
                         )
+                      else if (!_hasPermission)
+                        Icon(
+                          Icons.camera_alt_outlined,
+                          size: 60,
+                          color: Colors.orange[400],
+                        )
                       else
                         const CircularProgressIndicator(),
                       const SizedBox(height: 16),
                       Text(
-                        _recognizedPlate.contains('Error') 
+                        _recognizedPlate.contains('Error') || _recognizedPlate.contains('permission')
                             ? _recognizedPlate
-                            : 'Initializing camera...',
+                            : !_hasPermission
+                                ? 'Requesting camera permission...'
+                                : 'Initializing camera...',
                         style: TextStyle(
                           color: Colors.grey[600],
                           fontSize: 16,
                         ),
                         textAlign: TextAlign.center,
                       ),
+                      if (!_hasPermission && _recognizedPlate.contains('permission'))
+                        const SizedBox(height: 16),
+                      if (!_hasPermission && _recognizedPlate.contains('permission'))
+                        ElevatedButton(
+                          onPressed: () async {
+                            await _checkPermissionsAndInitialize();
+                          },
+                          child: const Text('Retry Permission'),
+                        ),
                     ],
                   ),
                 ),
               ),
             ),
           
-          // Scanning indicator overlay
+          // Single capture button overlay
+          if (_isInitialized && _cameraController != null && _hasPermission)
+            Positioned(
+              bottom: 30,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: IconButton(
+                    icon: Icon(
+                      _isProcessing ? Icons.hourglass_empty : Icons.touch_app,
+                      color: Colors.white,
+                      size: 32,
+                    ),
+                    onPressed: _isProcessing ? null : _captureAndProcessImage,
+                    iconSize: 32,
+                    padding: const EdgeInsets.all(16),
+                  ),
+                ),
+              ),
+            ),
+          
+          // Processing indicator overlay
           if (_isProcessing)
             Positioned.fill(
               child: Container(
@@ -227,7 +310,7 @@ class _PlateNumberCameraState extends State<PlateNumberCamera> {
                       ),
                       SizedBox(height: 16),
                       Text(
-                        'Scanning...',
+                        'Processing image...',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
@@ -240,47 +323,15 @@ class _PlateNumberCameraState extends State<PlateNumberCamera> {
               ),
             ),
           
-          // Recognized plate display overlay
-          if (_recognizedPlate.isNotEmpty && !_recognizedPlate.contains('Error') && !_recognizedPlate.contains('Initializing'))
-            Positioned(
-              bottom: 20,
-              left: 20,
-              right: 20,
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.green[100],
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.green[300]!),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.2),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.check_circle,
-                      color: Colors.green[700],
-                      size: 24,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        'Plate detected: $_recognizedPlate',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.green[800],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+          // Plate detected notification overlay
+          if (_showPlateDetected)
+            PlateDetectedNotification(
+              plateNumber: _recognizedPlate,
+              onDismiss: () {
+                setState(() {
+                  _showPlateDetected = false;
+                });
+              },
             ),
         ],
       ),
