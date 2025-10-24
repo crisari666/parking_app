@@ -143,7 +143,8 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
   }
 
   void _validateCurrentSession() {
-    // Validate the current JWT session
+    // Check auth status first to load user info, then validate session
+    context.read<AuthBloc>().add(CheckAuthStatus());
     context.read<AuthBloc>().add(ValidateSession());
   }
 

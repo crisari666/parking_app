@@ -70,6 +70,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final loginResponse = await _authRepository.getCurrentLoginResponse();
       
       if (user != null && loginResponse != null) {
+        _email = user.email;
         _userRole = loginResponse.role;
         emit(AuthSuccess(email: _email, password: _password, userRole: _userRole));
       } else {
