@@ -188,6 +188,17 @@ class _PlateNumberCameraState extends State<PlateNumberCamera> {
       final matches = pattern.allMatches(cleanText);
       if (matches.isNotEmpty) {
         String plate = matches.first.group(0)?.replaceAll(RegExp(r'[ -]'), '') ?? '';
+        
+        // Fix OCR misreading "0" as "O" in specific plate patterns
+        // For pattern ABC12(3 or D), replace "O" with "0" in the 4th position
+        if (plate.length >= 4 && 
+            RegExp(r'^[A-Z]{3}[0-9O]$').hasMatch(plate.substring(0, 4))) {
+          // Check if 4th character is "O" and replace with "0"
+          if (plate[3] == 'O') {
+            plate = plate.substring(0, 3) + '0' + plate.substring(4);
+          }
+        }
+        
         // Validate plate length (typically 5-8 characters)
         if (plate.length >= 5 && plate.length <= 8) {
           return plate;
