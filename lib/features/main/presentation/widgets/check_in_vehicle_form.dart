@@ -43,7 +43,7 @@ class _CheckInVehicleFormState extends State<CheckInVehicleForm> {
             context: context,
             message: context.loc.vehicleCheckedInSuccess,
           );
-          Navigator.of(context).pop();
+          Navigator.of(context).popUntil((route) => route.isFirst);
         }
       },
       child: Container(
@@ -59,7 +59,7 @@ class _CheckInVehicleFormState extends State<CheckInVehicleForm> {
         child: Column(
           children: [
             // Camera section (top part - direct camera)
-            Container(
+            SizedBox(
               height: MediaQuery.of(context).size.height * 0.5,
               child: Stack(
                 children: [
@@ -115,9 +115,10 @@ class _CheckInVehicleFormState extends State<CheckInVehicleForm> {
                     topRight: Radius.circular(20),
                   ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                     Text(
                       context.loc.vehicleDetails,
                       style: TextStyle(
@@ -216,7 +217,8 @@ class _CheckInVehicleFormState extends State<CheckInVehicleForm> {
               child: Text(context.loc.checkIn),
             ),
           ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

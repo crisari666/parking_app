@@ -18,7 +18,12 @@ class CheckInVehicle extends StatelessWidget {
           isScrollControlled: true,
           backgroundColor: Colors.transparent,
           useSafeArea: true,
-          builder: (context) => const CheckInVehicleForm(),
+          builder: (context) => Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child: const CheckInVehicleForm(),
+          ),
         );
       },
       style: ElevatedButton.styleFrom(
