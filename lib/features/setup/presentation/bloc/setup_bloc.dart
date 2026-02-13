@@ -25,6 +25,7 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
   String _businessResolution = '';
   String _address = '';
   String _schedule = '';
+  String _footer = '';
   SetupBloc({
     required SetupLocalDatasource localDatasource, 
     required BusinessRemoteDatasource businessRemoteDatasource,
@@ -71,6 +72,7 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
         _businessResolution = setup.businessResolution;
         _address = setup.address;
         _schedule = setup.schedule;
+        _footer = setup.footer ?? '';
         emit(SetupSuccess(setup, isFromSave: false));
       } else {
         emit(const SetupSuccess(null, isFromSave: false));
@@ -99,6 +101,7 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
         _carNightCost = setup.carNightCost;
         _motorcycleNightCost = setup.motorcycleNightCost;
         _studentMotorcycleHourCost = setup.studentMotorcycleHourCost;
+        _footer = setup.footer ?? '';
         emit(SetupSuccess(setup, isFromSave: false));
       } else {
         emit(const SetupSuccess(null, isFromSave: false));
@@ -161,6 +164,7 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
         businessResolution: _businessResolution,
         address: _address,
         schedule: _schedule,
+        footer: _footer,
       );
       final savedSetup = await _localDatasource.saveSetup(newSetup);
       if(savedSetup.businessId == null) {
@@ -183,6 +187,7 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
           businessResolution: savedSetup.businessResolution,
           address: savedSetup.address,
           schedule: savedSetup.schedule,
+          footer: savedSetup.footer,
         );
         await _localDatasource.saveSetup(updatedSetup);
         emit(SetupSuccess(updatedSetup, isFromSave: true));
@@ -206,6 +211,7 @@ class SetupBloc extends Bloc<SetupEvent, SetupState> {
           businessResolution: savedSetup.businessResolution,
           address: savedSetup.address,
           schedule: savedSetup.schedule,
+          footer: savedSetup.footer,
         );
         await _localDatasource.saveSetup(updatedSetup);
         emit(SetupSuccess(updatedSetup, isFromSave: true));

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import 'package:quantum_parking_flutter/l10n/app_localizations.dart';
 import 'package:quantum_parking_flutter/core/utils/snackbar_service.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/printer_setup_bloc.dart';
@@ -52,16 +53,16 @@ class PrinterSetupDevice extends StatelessWidget {
                       value: state.selectedPrinter,
                       hint: Text(l10n.selectPrinter),
                       isExpanded: true,
-                      items: state.pairedDevices.map((String device) {
+                      items: state.pairedDevices.map((BluetoothInfo device) {
                         return DropdownMenuItem<String>(
-                          value: device,
-                          child: Text(device),
+                          value: device.macAdress,
+                          child: Text('${device.name} - ${device.macAdress}'),
                         );
                       }).toList(),
-                      onChanged: (String? value) {
-                        if (value != null) {
+                      onChanged: (String? macAddress) {
+                        if (macAddress != null) {
                           context.read<PrinterSetupBloc>().add(
-                            PrinterSetupConnectToPrinter(value),
+                            PrinterSetupConnectToPrinter(macAddress),
                           );
                         }
                       },

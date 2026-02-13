@@ -58,26 +58,25 @@ class PrinterRepository {
     }
   }
 
-  // Connect to a specific printer
-  Future<bool>  connectToPrinter(String printerInfo) async {
+  // Connect to a specific printer by MAC address
+  Future<bool> connectToPrinter(String macAddress) async {
     try {
-      final String macAddress = printerInfo.split(' - ')[1];
       final bool result = await PrintBluetoothThermal.connect(
         macPrinterAddress: macAddress,
       );
 
       if (result) {
         await updatePrinterConnection(
-          printerName: printerInfo,
+          printerName: macAddress,
           isConnected: true,
         );
-        _logger.d('Successfully connected to printer: $printerInfo');
+        _logger.d('Successfully connected to printer: $macAddress');
       } else {
         await updatePrinterConnection(
           printerName: null,
           isConnected: false,
         );
-        _logger.e('Failed to connect to printer: $printerInfo');
+        _logger.e('Failed to connect to printer: $macAddress');
       }
 
       return result;
