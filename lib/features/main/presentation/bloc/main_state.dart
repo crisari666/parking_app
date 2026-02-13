@@ -97,11 +97,13 @@ class MainState extends Equatable {
     required String message,
     bool isCheckin = false,
     bool isCheckout = false,
+    required bool isPrinterConnected,
   }) => MainState(
     message: message,
     messageType: MessageType.error,
     isCheckin: isCheckin,
     isCheckout: isCheckout,
+    isPrinterConnected: isPrinterConnected,
   );
 
   MainState copyWith({

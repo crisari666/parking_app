@@ -144,12 +144,12 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     emit(state.copyWith(isLoading: true));
     try {
       if (state.vehicleLog == null) {
-        emit(MainState.error(message: 'Placa requerida', isCheckout: false));
+        emit(MainState.error(message: 'Placa requerida', isCheckout: false, isPrinterConnected: state.isPrinterConnected));
         return;
       }
       final setup = await _setupLocalDatasource.getSetup();
       if (setup == null) {
-        emit(MainState.error(message: 'Configuración de negocio no encontrada', isCheckout: false));
+        emit(MainState.error(message: 'Configuración de negocio no encontrada', isCheckout: false, isPrinterConnected: state.isPrinterConnected));
         return;
       }
 
@@ -182,7 +182,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         ));
       }
     } catch (e) {
-      emit(MainState.error(message: e.toString(), isCheckout: false));
+      emit(MainState.error(message: e.toString(), isCheckout: false, isPrinterConnected: state.isPrinterConnected));
     }
   }
 
@@ -190,7 +190,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     emit(state.copyWith(isLoading: true));
     try {
       if (state.plateNumber.isEmpty || state.vehicleType.isEmpty) {
-        emit(MainState.error(message: 'Placa y tipo de vehiculo requeridos', isCheckin: true));
+        emit(MainState.error(message: 'Placa y tipo de vehiculo requeridos', isCheckin: true, isPrinterConnected: state.isPrinterConnected));
         return;
       }
 
@@ -212,7 +212,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         isCheckin: true
       ));
     } catch (e) {
-      emit(MainState.error(message: e.toString()));
+      emit(MainState.error(message: e.toString(), isPrinterConnected: state.isPrinterConnected));
     }
   }
 
@@ -236,7 +236,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         emit(state.copyWith(businessSetup: setup, isLoading: false));
       }
     } catch (e) {
-      emit(MainState.error(message: e.toString()));
+      emit(MainState.error(message: e.toString(), isPrinterConnected: state.isPrinterConnected));
     }
   }
 
@@ -245,13 +245,13 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     try {
       final setup = await _setupLocalDatasource.getSetup();
       if (setup == null) {
-        emit(MainState.error(message: 'Configuración de negocio no encontrada', isCheckout: false));
+        emit(MainState.error(message: 'Configuración de negocio no encontrada', isCheckout: false, isPrinterConnected: state.isPrinterConnected));
         return;
       }
 
       final VehicleLogResponseModel? parkingInfo = await _vehicleRepository.getCurrentParkingDurationAndCost(event.plateNumber);
       if (parkingInfo == null || parkingInfo.exitTime != null) {
-        emit(MainState.error(message: 'Vehiculo no encontrado', isCheckout: false));
+        emit(MainState.error(message: 'Vehiculo no encontrado', isCheckout: false, isPrinterConnected: state.isPrinterConnected));
         return;
       }
 
@@ -277,7 +277,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         paymentMethod: state.paymentMethod ?? 'cash',
       ));
     } catch (e) {
-      emit(MainState.error(message: e.toString()));
+      emit(MainState.error(message: e.toString(), isPrinterConnected: state.isPrinterConnected));
     }
   }
 
@@ -286,7 +286,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       // Get business setup from state (optimized to avoid local storage access)
       final businessSetup = state.businessSetup;
       if (businessSetup == null) {
-        emit(MainState.error(message: 'Configuración de negocio no encontrada. Por favor, verifique la configuración primero.'));
+        emit(MainState.error(message: 'Configuración de negocio no encontrada. Por favor, verifique la configuración primero.', isPrinterConnected: state.isPrinterConnected));
         return;
       }
 
@@ -306,11 +306,11 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           messageType: MessageType.success
         ));
       } else {
-        emit(MainState.error(message: 'Error al imprimir el QR: No se pudo conectar con la impresora'));
+        emit(MainState.error(message: 'Error al imprimir el QR: No se pudo conectar con la impresora', isPrinterConnected: state.isPrinterConnected));
       }
     } catch (e) {
       _logger.e('Error printing QR code: $e');
-      emit(MainState.error(message: 'Error al imprimir el QR: $e'));
+      emit(MainState.error(message: 'Error al imprimir el QR: $e', isPrinterConnected: state.isPrinterConnected));
     }
   }
 
@@ -319,7 +319,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       // Get business setup from state
       final businessSetup = state.businessSetup;
       if (businessSetup == null) {
-        emit(MainState.error(message: 'Configuración de negocio no encontrada. Por favor, verifique la configuración primero.'));
+        emit(MainState.error(message: 'Configuración de negocio no encontrada. Por favor, verifique la configuración primero.', isPrinterConnected: state.isPrinterConnected));
         return;
       }
 
@@ -341,11 +341,11 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           messageType: MessageType.success
         ));
       } else {
-        emit(MainState.error(message: 'Error al imprimir el recibo: No se pudo conectar con la impresora'));
+        emit(MainState.error(message: 'Error al imprimir el recibo: No se pudo conectar con la impresora', isPrinterConnected: state.isPrinterConnected));
       }
     } catch (e) {
       _logger.e('Error printing check-out receipt: $e');
-      emit(MainState.error(message: 'Error al imprimir el recibo: $e'));
+      emit(MainState.error(message: 'Error al imprimir el recibo: $e', isPrinterConnected: state.isPrinterConnected));
     }
   }
 

@@ -43,6 +43,9 @@ class _CheckInVehicleFormState extends State<CheckInVehicleForm> {
             context: context,
             message: context.loc.vehicleCheckedInSuccess,
           );
+          
+        }
+        if(state.messageType == MessageType.error) {
           Navigator.of(context).popUntil((route) => route.isFirst);
         }
       },

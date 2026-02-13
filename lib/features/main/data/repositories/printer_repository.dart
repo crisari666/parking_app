@@ -92,8 +92,39 @@ class PrinterRepository {
     }
   }
 
+  /// Normalizes MAC address for comparison (removes separators, lowercase).
+  static String _normalizeMac(String mac) =>
+      mac.replaceAll(RegExp(r'[:\-\s]'), '').toLowerCase();
+
+  /// Returns true if [macAddress] appears in the system's paired Bluetooth list.
+  /// Retries once after a short delay to handle first-launch Bluetooth not ready.
+  Future<bool> _isStoredPrinterInPairedList(String macAddress) async {
+    final normalizedStored = _normalizeMac(macAddress);
+
+    Future<bool> checkPaired() async {
+      final List<dynamic> paired =
+          await PrintBluetoothThermal.pairedBluetooths;
+      for (final d in paired) {
+        final deviceMac = (d is BluetoothInfo)
+            ? d.macAdress
+            : (d is Map ? d['macAdress'] ?? d['macAddress'] : null);
+        if (deviceMac != null &&
+            _normalizeMac(deviceMac.toString()) == normalizedStored) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    if (await checkPaired()) return true;
+    await Future<void>.delayed(const Duration(milliseconds: 1500));
+    return checkPaired();
+  }
+
   /// Ensures the stored printer is connected: if a printer is stored and we are
   /// not connected, tries to connect to it. The device must be paired first.
+  /// Only attempts connection if the printer appears in the paired devices
+  /// list (with one retry for first-launch Bluetooth delay).
   /// Returns true if connected (or already was), false otherwise.
   Future<bool> ensureStoredPrinterConnected() async {
     try {
@@ -105,6 +136,16 @@ class PrinterRepository {
       bool isConnected = await checkCurrentConnectionStatus();
       if (isConnected) {
         return true;
+      }
+
+      final inPairedList =
+          await _isStoredPrinterInPairedList(stored.macAddress);
+      if (!inPairedList) {
+        _logger.w(
+          'Stored printer ${stored.name} (${stored.macAddress}) not in paired '
+          'list. Skipping connect (Bluetooth may not be ready yet).',
+        );
+        return false;
       }
 
       // Try to connect to stored printer (must be paired with device).
@@ -144,28 +185,46 @@ class PrinterRepository {
     }
   }
 
-  // Connect to a specific printer by MAC address
+  // Connect to a specific printer by MAC address.
+  // The plugin may return true before the socket is stable; we verify after a
+  // short delay to avoid reporting connected when the connection then fails.
   Future<bool> connectToPrinter(String macAddress) async {
     try {
       final bool result = await PrintBluetoothThermal.connect(
         macPrinterAddress: macAddress,
       );
 
-      if (result) {
-        await updatePrinterConnection(
-          printerName: macAddress,
-          isConnected: true,
-        );
-        _logger.d('Successfully connected to printer: $macAddress');
-      } else {
+      if (!result) {
         await updatePrinterConnection(
           printerName: null,
           isConnected: false,
         );
         _logger.e('Failed to connect to printer: $macAddress');
+        return false;
       }
 
-      return result;
+      // Plugin can report success then socket fails; wait and verify.
+      await Future<void>.delayed(const Duration(milliseconds: 800));
+      final bool stillConnected =
+          await PrintBluetoothThermal.connectionStatus;
+
+      if (stillConnected) {
+        await updatePrinterConnection(
+          printerName: macAddress,
+          isConnected: true,
+        );
+        _logger.d('Successfully connected to printer: $macAddress');
+        return true;
+      }
+
+      _logger.w(
+        'Printer connection unstable after connect: $macAddress',
+      );
+      await updatePrinterConnection(
+        printerName: null,
+        isConnected: false,
+      );
+      return false;
     } catch (e) {
       _logger.e('Error connecting to printer: $e');
       await updatePrinterConnection(
