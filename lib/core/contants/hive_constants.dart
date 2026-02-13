@@ -6,6 +6,8 @@ abstract class HiveConstants {
   static const String businessesBox = 'businesses_box';
   static const String userBox = 'user_box';
   static const String configBox = 'config_box';
+  static const String printerBox = 'printer_box';
+  static const String storedPrinterKey = 'stored_printer';
   static const String setupKey = 'business_setup';
   static const String businessesKey = 'businesses';
   static const String configKey = 'app_config';

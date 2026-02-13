@@ -108,6 +108,17 @@ class PrinterSetupBloc extends Bloc<PrinterSetupEvent, PrinterSetupState> {
         if (result == true) {
           final List<BluetoothInfo> pairedDevices =
               await PrintBluetoothThermal.pairedBluetooths;
+          String name = event.macAddress;
+          for (final d in pairedDevices) {
+            if (d.macAdress == event.macAddress) {
+              name = d.name;
+              break;
+            }
+          }
+          await _printerRepository.saveStoredPrinter(
+            macAddress: event.macAddress,
+            name: name,
+          );
           emit(PrinterSetupSuccess(
             pairedDevices: pairedDevices,
             selectedPrinter: event.macAddress,

@@ -1,25 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
+import 'package:quantum_parking_flutter/injection/injection.dart';
 import 'package:quantum_parking_flutter/l10n/app_localizations.dart';
 import 'package:quantum_parking_flutter/core/utils/snackbar_service.dart';
+import 'package:quantum_parking_flutter/features/main/data/repositories/printer_repository.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/printer_setup_bloc.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/printer_setup_event.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/printer_setup_state.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class PrinterSetupDevice extends StatelessWidget {
   const PrinterSetupDevice({super.key});
 
-  Future<void> _setDefaultPrinter(BuildContext context, String printerName) async {
+  Future<void> _setDefaultPrinter(
+    BuildContext context,
+    String macAddress,
+    String name,
+  ) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('default_printer', printerName);
-      
+      await getIt<PrinterRepository>().saveStoredPrinter(
+        macAddress: macAddress,
+        name: name,
+      );
       if (context.mounted) {
         SnackbarService.instance.showSuccessSnackbar(
           context: context,
-          message: 'Default printer set to: $printerName',
+          message: 'Default printer set to: $name',
         );
       }
     } catch (e) {
@@ -70,10 +76,20 @@ class PrinterSetupDevice extends StatelessWidget {
                     const SizedBox(height: 16),
                     if (state.isConnected && state.selectedPrinter != null)
                       ElevatedButton.icon(
-                        onPressed: () => _setDefaultPrinter(
-                          context,
-                          state.selectedPrinter!,
-                        ),
+                        onPressed: () {
+                          String name = state.selectedPrinter!;
+                          for (final d in state.pairedDevices) {
+                            if (d.macAdress == state.selectedPrinter) {
+                              name = d.name;
+                              break;
+                            }
+                          }
+                          _setDefaultPrinter(
+                            context,
+                            state.selectedPrinter!,
+                            name,
+                          );
+                        },
                         icon: const Icon(Icons.save),
                         label: const Text('Set as Default Printer'),
                       ),

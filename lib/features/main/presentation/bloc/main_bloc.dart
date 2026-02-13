@@ -357,12 +357,14 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     add(FindVehicleInParkingRequested(event.plateNumber));
   }
 
-  Future<void> _handleCheckPrinterConnectionStatus(CheckPrinterConnectionStatus event, Emitter<MainState> emit) async {
+  Future<void> _handleCheckPrinterConnectionStatus(
+    CheckPrinterConnectionStatus event,
+    Emitter<MainState> emit,
+  ) async {
     try {
-      final bool isConnected = await _printerRepository.checkCurrentConnectionStatus();
-      
-      // The state will be updated automatically via the stream subscription
-      // No need to manually emit here as the stream will handle it
+      // Try to connect to stored printer if any; then current status
+      // is reflected via the connection state stream.
+      await _printerRepository.ensureStoredPrinterConnected();
     } catch (e) {
       _logger.e('Error checking printer connection status: $e');
     }
