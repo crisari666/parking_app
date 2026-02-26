@@ -17,7 +17,15 @@ class CheckInVehicleForm extends StatefulWidget {
 
 class _CheckInVehicleFormState extends State<CheckInVehicleForm> {
   final TextEditingController _textEditingController = TextEditingController();
+  final FocusNode _plateFocusNode = FocusNode();
   String _currentPlateNumber = '';
+
+  @override
+  void dispose() {
+    _plateFocusNode.dispose();
+    _textEditingController.dispose();
+    super.dispose();
+  }
 
   void _onPlateRecognized(String plateNumber) {
     setState(() {
@@ -61,9 +69,9 @@ class _CheckInVehicleFormState extends State<CheckInVehicleForm> {
         // ),
         child: Column(
           children: [
-            // Camera section (top part - direct camera)
+            // Camera section (top part) - shrink when keyboard is visible so form stays in view
             SizedBox(
-              height: MediaQuery.of(context).size.height * 0.5,
+              height: (MediaQuery.of(context).size.height - MediaQuery.of(context).viewInsets.bottom) * 0.5,
               child: Stack(
                 children: [
                   // Camera widget taking full space
@@ -119,6 +127,7 @@ class _CheckInVehicleFormState extends State<CheckInVehicleForm> {
                   ),
                 ),
                 child: SingleChildScrollView(
+                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -134,9 +143,22 @@ class _CheckInVehicleFormState extends State<CheckInVehicleForm> {
           
           // License plate input field
           TextField(
+            focusNode: _plateFocusNode,
             controller: _textEditingController,
             keyboardType: TextInputType.visiblePassword,
             textCapitalization: TextCapitalization.characters,
+            onTap: () {
+              // Scroll the field into view when keyboard opens
+              Future.delayed(const Duration(milliseconds: 300), () {
+                if (context.mounted) {
+                  Scrollable.ensureVisible(
+                    context,
+                    alignment: 0.5,
+                    duration: const Duration(milliseconds: 250),
+                  );
+                }
+              });
+            },
             decoration: InputDecoration(
               labelText: context.loc.licensePlate,
               border: const OutlineInputBorder(),
