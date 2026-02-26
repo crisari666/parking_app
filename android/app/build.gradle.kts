@@ -16,8 +16,8 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace = "com.app.quantum_parking_flutter"
     compileSdk = flutter.compileSdkVersion
-    //ndkVersion = flutter.ndkVersion
-    ndkVersion = "28.1.13356709" 
+    // 16KB page size support (Android 15+); use NDK 28.2+ with AGP 8.5+
+    ndkVersion = "29.0.13113456"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
