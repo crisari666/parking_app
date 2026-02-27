@@ -88,7 +88,6 @@ class _CheckOutVehicleFormState extends State<CheckOutVehicleForm> {
         if (state.isCheckout) {
           _clearForm();
           SnackbarService.instance.showSuccessSnackbar(
-            context: context,
             message: l10n.success,
           );
           Navigator.of(context).popUntil((route) => route.isFirst); // Close dialog on success

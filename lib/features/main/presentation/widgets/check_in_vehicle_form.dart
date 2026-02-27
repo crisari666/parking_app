@@ -48,7 +48,6 @@ class _CheckInVehicleFormState extends State<CheckInVehicleForm> {
             _currentPlateNumber = '';
           });
           SnackbarService.instance.showSuccessSnackbar(
-            context: context,
             message: context.loc.vehicleCheckedInSuccess,
           );
           

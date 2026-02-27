@@ -97,7 +97,6 @@ class PrinterTestButtonDevice extends StatelessWidget {
           
           if (context.mounted) {
             SnackbarService.instance.showSuccessSnackbar(
-              context: context,
               message: 'Test QR code printed successfully',
             );
           }
@@ -118,7 +117,6 @@ class PrinterTestButtonDevice extends StatelessWidget {
       _logger.e('Error printing test QR code: $e');
       if (context.mounted) {
         SnackbarService.instance.showErrorSnackbar(
-          context: context,
           message: 'Error printing: $e',
         );
       }

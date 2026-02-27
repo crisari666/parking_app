@@ -7,9 +7,24 @@ class SnackbarService {
 
   static SnackbarService get instance => _instance;
 
+  BuildContext? _scaffoldContext;
+
+  /// Initializes the service with the scaffold context (e.g. from MainPage).
+  /// All snackbars will be shown using this context to avoid stacking from different scopes.
+  void init(BuildContext context) {
+    _scaffoldContext = context;
+  }
+
+  /// Clears the stored context. Call from MainPage.dispose().
+  void clearContext() {
+    _scaffoldContext = null;
+  }
+
+  bool get _hasValidContext =>
+      _scaffoldContext != null && _scaffoldContext!.mounted;
+
   /// Shows a snackbar with the given message and optional configuration
   void showSnackbar({
-    required BuildContext context,
     required String message,
     Duration duration = const Duration(seconds: 3),
     Color? backgroundColor,
@@ -17,9 +32,10 @@ class SnackbarService {
     bool showDismissAction = true,
     VoidCallback? onDismiss,
   }) {
-    // Check if context is still mounted
-    if (!context.mounted) return;
-    
+    if (!_hasValidContext) return;
+
+    final context = _scaffoldContext!;
+
     // Hide any existing snackbar first
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
@@ -47,13 +63,11 @@ class SnackbarService {
 
   /// Shows a success snackbar with green background
   void showSuccessSnackbar({
-    required BuildContext context,
     required String message,
     Duration duration = const Duration(seconds: 3),
     VoidCallback? onDismiss,
   }) {
     showSnackbar(
-      context: context,
       message: message,
       duration: duration,
       backgroundColor: Colors.green,
@@ -63,13 +77,11 @@ class SnackbarService {
 
   /// Shows an error snackbar with red background
   void showErrorSnackbar({
-    required BuildContext context,
     required String message,
     Duration duration = const Duration(seconds: 5),
     VoidCallback? onDismiss,
   }) {
     showSnackbar(
-      context: context,
       message: message,
       duration: duration,
       backgroundColor: Colors.red,
@@ -79,13 +91,11 @@ class SnackbarService {
 
   /// Shows a warning snackbar with orange background
   void showWarningSnackbar({
-    required BuildContext context,
     required String message,
     Duration duration = const Duration(seconds: 4),
     VoidCallback? onDismiss,
   }) {
     showSnackbar(
-      context: context,
       message: message,
       duration: duration,
       backgroundColor: Colors.orange,
@@ -95,17 +105,15 @@ class SnackbarService {
 
   /// Shows an info snackbar with blue background
   void showInfoSnackbar({
-    required BuildContext context,
     required String message,
     Duration duration = const Duration(seconds: 3),
     VoidCallback? onDismiss,
   }) {
     showSnackbar(
-      context: context,
       message: message,
       duration: duration,
       backgroundColor: Colors.blue,
       onDismiss: onDismiss,
     );
   }
-} 
+}

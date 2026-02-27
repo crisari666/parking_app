@@ -31,72 +31,53 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
 
   void _showSnackbarBasedOnMessageType(BuildContext context, MainState state) {
     if (state.message == null) return;
-    
+
     final message = state.message!;
     final messageType = state.messageType;
-    
+
     // Auto-clear message after 4 seconds to prevent stale messages
     Future.delayed(const Duration(seconds: 4), () {
       if (mounted && context.mounted) {
         context.read<MainBloc>().add(ClearMessage());
       }
     });
-    
+
+    final mainBloc = context.read<MainBloc>();
+    final onDismiss = () {
+      if (mounted && context.mounted) {
+        mainBloc.add(ClearMessage());
+      }
+    };
+
     switch (messageType) {
       case MessageType.success:
         SnackbarService.instance.showSuccessSnackbar(
-          context: context,
           message: message,
-          onDismiss: () {
-            if (mounted && context.mounted) {
-              context.read<MainBloc>().add(ClearMessage());
-            }
-          },
+          onDismiss: onDismiss,
         );
         break;
       case MessageType.error:
         SnackbarService.instance.showErrorSnackbar(
-          context: context,
           message: message,
-          onDismiss: () {
-            if (mounted && context.mounted) {
-              context.read<MainBloc>().add(ClearMessage());
-            }
-          },
+          onDismiss: onDismiss,
         );
         break;
       case MessageType.warning:
         SnackbarService.instance.showWarningSnackbar(
-          context: context,
           message: message,
-          onDismiss: () {
-            if (mounted && context.mounted) {
-              context.read<MainBloc>().add(ClearMessage());
-            }
-          },
+          onDismiss: onDismiss,
         );
         break;
       case MessageType.info:
         SnackbarService.instance.showInfoSnackbar(
-          context: context,
           message: message,
-          onDismiss: () {
-            if (mounted && context.mounted) {
-              context.read<MainBloc>().add(ClearMessage());
-            }
-          },
+          onDismiss: onDismiss,
         );
         break;
       default:
-        // Default to info for messages without specific type
         SnackbarService.instance.showInfoSnackbar(
-          context: context,
           message: message,
-          onDismiss: () {
-            if (mounted && context.mounted) {
-              context.read<MainBloc>().add(ClearMessage());
-            }
-          },
+          onDismiss: onDismiss,
         );
         break;
     }
@@ -109,6 +90,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
     // Verify setup when page is loaded
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
+        SnackbarService.instance.init(context);
         context.read<MainBloc>().add(VerifySetupRequested());
         // Perform initial printer hardware check
         _performPrinterHardwareCheck();
@@ -122,6 +104,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    SnackbarService.instance.clearContext();
     WidgetsBinding.instance.removeObserver(this);
     _sessionValidationTimer?.cancel();
     super.dispose();

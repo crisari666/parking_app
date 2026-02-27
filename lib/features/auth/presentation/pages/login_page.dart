@@ -52,7 +52,6 @@ class LoginPage extends StatelessWidget {
               AutoRouter.of(context).replace(const MainRoute());
             } else if (state is AuthError) {
               SnackbarService.instance.showErrorSnackbar(
-                context: context,
                 message: state.message,
               );
             }

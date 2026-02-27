@@ -24,14 +24,12 @@ class PrinterSetupDevice extends StatelessWidget {
       );
       if (context.mounted) {
         SnackbarService.instance.showSuccessSnackbar(
-          context: context,
           message: 'Default printer set to: $name',
         );
       }
     } catch (e) {
       if (context.mounted) {
         SnackbarService.instance.showErrorSnackbar(
-          context: context,
           message: 'Error setting default printer: $e',
         );
       }

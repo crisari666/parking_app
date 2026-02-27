@@ -30,13 +30,11 @@ class SetupPage extends StatelessWidget {
           if (state is SetupSuccess && state.setup != null) {
             if (state.isFromSave) {
               SnackbarService.instance.showSuccessSnackbar(
-                context: context,
                 message: l10n.setupSavedSuccess,
               );
             }
           } else if (state is SetupError) {
             SnackbarService.instance.showErrorSnackbar(
-              context: context,
               message: state.message,
             );
           }
