@@ -93,7 +93,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   }
 
   void _handlePlateNumberChanged(PlateNumberChanged event, Emitter<MainState> emit) {
-    emit(state.copyWith(plateNumber: event.plateNumber));
+    emit(state.copyWith(plateNumber: event.plateNumber, isCheckin: false));
   }
 
   void _handleVehicleTypeChanged(VehicleTypeChanged event, Emitter<MainState> emit) {
