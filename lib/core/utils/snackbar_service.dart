@@ -8,9 +8,16 @@ class SnackbarService {
   static SnackbarService get instance => _instance;
 
   BuildContext? _scaffoldContext;
+  GlobalKey<ScaffoldMessengerState>? _rootMessengerKey;
+
+  /// Registers the root ScaffoldMessenger key (from MaterialApp). Use in main() so
+  /// snackbars work from any route (e.g. Login, Setup) when MainPage is not mounted.
+  void registerRootMessengerKey(GlobalKey<ScaffoldMessengerState> key) {
+    _rootMessengerKey = key;
+  }
 
   /// Initializes the service with the scaffold context (e.g. from MainPage).
-  /// All snackbars will be shown using this context to avoid stacking from different scopes.
+  /// When MainPage is visible, this context is used so all snackbars use the same scope.
   void init(BuildContext context) {
     _scaffoldContext = context;
   }
@@ -20,10 +27,15 @@ class SnackbarService {
     _scaffoldContext = null;
   }
 
-  bool get _hasValidContext =>
-      _scaffoldContext != null && _scaffoldContext!.mounted;
+  ScaffoldMessengerState? get _messenger {
+    if (_scaffoldContext != null && _scaffoldContext!.mounted) {
+      return ScaffoldMessenger.maybeOf(_scaffoldContext!);
+    }
+    return _rootMessengerKey?.currentState;
+  }
 
-  /// Shows a snackbar with the given message and optional configuration
+  /// Shows a snackbar with the given message and optional configuration.
+  /// Clears the entire snackbar queue first so only this one is shown (single dismiss).
   void showSnackbar({
     required String message,
     Duration duration = const Duration(seconds: 3),
@@ -32,15 +44,14 @@ class SnackbarService {
     bool showDismissAction = true,
     VoidCallback? onDismiss,
   }) {
-    if (!_hasValidContext) return;
+    final messenger = _messenger;
+    if (messenger == null) return;
 
-    final context = _scaffoldContext!;
-
-    // Hide any existing snackbar first
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    // Clear all queued snackbars so only this one shows (avoids stacking / multiple dismiss taps)
+    messenger.clearSnackBars();
 
     // Show the new snackbar
-    ScaffoldMessenger.of(context).showSnackBar(
+    messenger.showSnackBar(
       SnackBar(
         content: Text(message),
         duration: duration,
@@ -50,10 +61,8 @@ class SnackbarService {
             ? SnackBarAction(
                 label: 'Dismiss',
                 onPressed: () {
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                    onDismiss?.call();
-                  }
+                  messenger.hideCurrentSnackBar();
+                  onDismiss?.call();
                 },
               )
             : null,
