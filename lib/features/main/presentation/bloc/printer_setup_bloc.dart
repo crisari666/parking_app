@@ -73,11 +73,12 @@ class PrinterSetupBloc extends Bloc<PrinterSetupEvent, PrinterSetupState> {
   ) async {
     try {
       PrintBluetoothThermal.connect;
-      final List<BluetoothInfo> pairedDevices = await PrintBluetoothThermal.pairedBluetooths;
-      final bool isConnected = await _printerRepository.checkCurrentConnectionStatus(override: true);      
-      final List<String> printerNames = List<String>.from(pairedDevices.map((device) => '${device.name} - ${device.macAdress}')).toList();
+      final List<BluetoothInfo> pairedDevices =
+          await PrintBluetoothThermal.pairedBluetooths;
+      final bool isConnected =
+          await _printerRepository.checkCurrentConnectionStatus(override: true);
       emit(PrinterSetupSuccess(
-        pairedDevices: printerNames,
+        pairedDevices: pairedDevices,
         isConnected: isConnected,
       ));
     } catch (e) {
@@ -91,19 +92,35 @@ class PrinterSetupBloc extends Bloc<PrinterSetupEvent, PrinterSetupState> {
     Emitter<PrinterSetupState> emit,
   ) async {
     try {
-      final bool isConnected = await _printerRepository.checkCurrentConnectionStatus();
+      final bool isConnected =
+          await _printerRepository.checkCurrentConnectionStatus();
       if (isConnected) {
+        final List<BluetoothInfo> pairedDevices =
+            await PrintBluetoothThermal.pairedBluetooths;
         emit(PrinterSetupSuccess(
-          pairedDevices: const [],
+          pairedDevices: pairedDevices,
           isConnected: isConnected,
         ));
       } else {
-        final bool result = await _printerRepository.connectToPrinter(event.macAddress);
+        final bool result =
+            await _printerRepository.connectToPrinter(event.macAddress);
 
         if (result == true) {
-          final List pairedDevices = await PrintBluetoothThermal.pairedBluetooths;
+          final List<BluetoothInfo> pairedDevices =
+              await PrintBluetoothThermal.pairedBluetooths;
+          String name = event.macAddress;
+          for (final d in pairedDevices) {
+            if (d.macAdress == event.macAddress) {
+              name = d.name;
+              break;
+            }
+          }
+          await _printerRepository.saveStoredPrinter(
+            macAddress: event.macAddress,
+            name: name,
+          );
           emit(PrinterSetupSuccess(
-            pairedDevices: pairedDevices.cast<String>(),
+            pairedDevices: pairedDevices,
             selectedPrinter: event.macAddress,
             isConnected: true,
           ));
@@ -123,10 +140,11 @@ class PrinterSetupBloc extends Bloc<PrinterSetupEvent, PrinterSetupState> {
   ) async {
     try {
       await _printerRepository.disconnectPrinter();
-      final List pairedDevices = await PrintBluetoothThermal.pairedBluetooths;
-      
+      final List<BluetoothInfo> pairedDevices =
+          await PrintBluetoothThermal.pairedBluetooths;
+
       emit(PrinterSetupSuccess(
-        pairedDevices: pairedDevices.cast<String>(),
+        pairedDevices: pairedDevices,
         isConnected: false,
       ));
     } catch (e) {

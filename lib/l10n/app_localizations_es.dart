@@ -679,4 +679,23 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get copyright => '© 2024 Quantum Devs. Todos los derechos reservados.';
+
+  @override
+  String get scanPlateNumber => 'Escanear Número de Placa';
+
+  @override
+  String get tapToCapturePlate =>
+      'Toca el botón de abajo para capturar una placa';
+
+  @override
+  String get capturePlate => 'Capturar Placa';
+
+  @override
+  String get processing => 'Procesando...';
+
+  @override
+  String get vehicleDetails => 'Detalles del Vehículo';
+
+  @override
+  String get plateDetected => 'Placa Detectada';
 }

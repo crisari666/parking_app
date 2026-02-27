@@ -62,7 +62,6 @@ class _PrintButtonState extends State<PrintButton> {
           _logger.e('Some permissions were not granted');
           if (mounted) {
             SnackbarService.instance.showWarningSnackbar(
-              context: context,
               message: 'Please grant all required permissions in settings',
               duration: const Duration(seconds: 5),
             );
@@ -78,7 +77,6 @@ class _PrintButtonState extends State<PrintButton> {
       _logger.e('Error checking permissions: $e');
       if (mounted) {
         SnackbarService.instance.showErrorSnackbar(
-          context: context,
           message: 'Error checking permissions: $e',
           duration: const Duration(seconds: 5),
         );
@@ -124,7 +122,6 @@ class _PrintButtonState extends State<PrintButton> {
       _logger.e('Error connecting to printer: $e');
       if (mounted) {
         SnackbarService.instance.showErrorSnackbar(
-          context: context,
           message: 'Error connecting to printer: $e',
         );
       }
@@ -134,7 +131,6 @@ class _PrintButtonState extends State<PrintButton> {
   Future<void> _printTicket() async {
     if (!_isConnected) {
       SnackbarService.instance.showWarningSnackbar(
-        context: context,
         message: 'Please connect to a printer first',
       );
       return;
@@ -184,7 +180,6 @@ class _PrintButtonState extends State<PrintButton> {
       _logger.e('Error printing ticket: $e');
       if (mounted) {
         SnackbarService.instance.showErrorSnackbar(
-          context: context,
           message: 'Error printing: $e',
         );
       }

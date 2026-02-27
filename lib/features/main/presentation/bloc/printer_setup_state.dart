@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 
 abstract class PrinterSetupState extends Equatable {
   const PrinterSetupState();
@@ -12,7 +13,7 @@ class PrinterSetupInitial extends PrinterSetupState {}
 class PrinterSetupLoading extends PrinterSetupState {}
 
 class PrinterSetupSuccess extends PrinterSetupState {
-  final List<String> pairedDevices;
+  final List<BluetoothInfo> pairedDevices;
   final String? selectedPrinter;
   final bool isConnected;
 
@@ -23,7 +24,11 @@ class PrinterSetupSuccess extends PrinterSetupState {
   });
 
   @override
-  List<Object?> get props => [pairedDevices, selectedPrinter, isConnected];
+  List<Object?> get props => [
+        pairedDevices.map((d) => d.macAdress).toList(),
+        selectedPrinter,
+        isConnected,
+      ];
 }
 
 class PrinterSetupError extends PrinterSetupState {

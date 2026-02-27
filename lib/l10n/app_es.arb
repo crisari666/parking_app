@@ -212,5 +212,11 @@
   "developerInformation": "Información del Desarrollador",
   "developedBy": "Desarrollado Por",
   "developer": "Desarrollador",
-  "copyright": "© 2024 Quantum Devs. Todos los derechos reservados."
+  "copyright": "© 2024 Quantum Devs. Todos los derechos reservados.",
+  "scanPlateNumber": "Escanear Número de Placa",
+  "tapToCapturePlate": "Toca el botón de abajo para capturar una placa",
+  "capturePlate": "Capturar Placa",
+  "processing": "Procesando...",
+  "vehicleDetails": "Detalles del Vehículo",
+  "plateDetected": "Placa Detectada"
 }

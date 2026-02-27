@@ -21,7 +21,6 @@ class LogoutPage extends StatelessWidget {
           context.router.replace(const LoginRoute());
         } else if (state is AuthError) {
           SnackbarService.instance.showErrorSnackbar(
-            context: context,
             message: state.message,
           );
         }

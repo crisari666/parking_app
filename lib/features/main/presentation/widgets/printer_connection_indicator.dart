@@ -1,9 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_bloc.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_event.dart';
 import 'package:quantum_parking_flutter/features/main/presentation/bloc/main_state.dart';
 import 'package:quantum_parking_flutter/l10n/app_localizations_context.dart';
+import 'package:quantum_parking_flutter/routes/app_router.dart';
 
 class PrinterConnectionIndicator extends StatelessWidget {
   const PrinterConnectionIndicator({super.key});
@@ -15,9 +17,15 @@ class PrinterConnectionIndicator extends StatelessWidget {
         return Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
+            GestureDetector(
+              onTap: () {
+                if (!state.isPrinterConnected) {
+                  context.router.push(const PrinterSetupRoute());
+                }
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
                 color: state.isPrinterConnected 
                     ? Colors.green.withValues(alpha: 0.1)
                     : Colors.red.withValues(alpha: 0.1),
@@ -63,6 +71,7 @@ class PrinterConnectionIndicator extends StatelessWidget {
                   ],
                 ],
               ),
+            ),
             ),
             if (state.isPrinterConnected) ...[
               const SizedBox(width: 8),

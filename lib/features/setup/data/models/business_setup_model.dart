@@ -55,6 +55,9 @@ class BusinessSetupModel extends HiveObject {
   @HiveField(16)
   final String schedule;
 
+  @HiveField(17)
+  final String? footer;
+
   BusinessSetupModel({
     this.name,
     required this.businessName,
@@ -68,6 +71,7 @@ class BusinessSetupModel extends HiveObject {
     required this.carNightCost,
     required this.motorcycleNightCost,
     required this.studentMotorcycleHourCost,
+    required this.footer,
     this.businessId,
     required this.businessNit,
     required this.businessResolution,
@@ -92,6 +96,7 @@ class BusinessSetupModel extends HiveObject {
       businessResolution: '',
       address: '',
       schedule: '',
+      footer: '',
     );
 
   }
@@ -115,6 +120,7 @@ class BusinessSetupModel extends HiveObject {
       'businessResolution': businessResolution,
       'address': address,
       'schedule': schedule,
+      'footer': footer,
     };
   }
 
@@ -137,6 +143,7 @@ class BusinessSetupModel extends HiveObject {
       businessResolution: json['businessResolution'] ?? '',
       address: json['address'] ?? '',
       schedule: json['schedule'] ?? '',
+      footer: json['footer'] ?? '',
     );
   }
 } 

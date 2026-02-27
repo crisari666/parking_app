@@ -24,7 +24,6 @@ class RegisterPage extends StatelessWidget {
             AutoRouter.of(context).push(const MainRoute());
                   } else if (state is AuthError) {
           SnackbarService.instance.showErrorSnackbar(
-            context: context,
             message: state.message,
           );
         }

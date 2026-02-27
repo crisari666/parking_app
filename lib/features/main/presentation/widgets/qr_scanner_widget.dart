@@ -25,6 +25,7 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
   @override
   void initState() {
     super.initState();
+    controller = MobileScannerController();
     _checkCameraPermission();
   }
 
@@ -97,7 +98,7 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
       body: Stack(
         children: [
           MobileScanner(
-            controller: MobileScannerController(),
+            controller: controller!,
             onDetect: (capture) {
               final List<Barcode> barcodes = capture.barcodes;
               for (final barcode in barcodes) {
